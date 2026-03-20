@@ -1,0 +1,46 @@
+<header th:fragment="navbar" class="topbar">
+    <!-- Toggle Sidebar -->
+    <button class="topbar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Search -->
+    <div class="topbar-search">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Tìm sản phẩm, đơn hàng, khách hàng...">
+    </div>
+
+    <!-- Right actions -->
+    <div class="topbar-actions">
+        <!-- Notification -->
+        <button class="topbar-btn" title="Thông báo">
+            <i class="fas fa-bell"></i>
+            <span class="badge-dot"></span>
+        </button>
+
+        <!-- Messages -->
+        <button class="topbar-btn" title="Tin nhắn">
+            <i class="fas fa-envelope"></i>
+        </button>
+
+        <div class="topbar-divider"></div>
+
+        <!-- User Dropdown -->
+        <div class="dropdown">
+            <button class="topbar-user" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff&bold=true&size=60" alt="Admin">
+                <div class="topbar-user-info">
+                    <strong>Administrator</strong>
+                    <small>Super Admin</small>
+                </div>
+                <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem; color: #94a3b8;"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Hồ sơ</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                <li><div class="dropdown-divider"></div></li>
+                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
