@@ -1,6 +1,8 @@
 package com.example.project.controller.admin;
 
 import com.example.project.dto.CategoryDTO;
+import com.example.project.handler.CategoryHandlerResult;
+import com.example.project.handler.CategoryRequestHandler;
 import com.example.project.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,9 @@ public class AdminCategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryRequestHandler categoryRequestHandler;
 
     // ══════════════════════════════════════════════
     //  LIST — GET /admin/categories
@@ -52,16 +57,12 @@ public class AdminCategoryController {
     @PostMapping("/create")
     public String create(@ModelAttribute CategoryDTO categoryDTO,
                          RedirectAttributes redirectAttributes) {
-        // Kiểm tra tên đã tồn tại chưa
-        if (categoryService.existsByName(categoryDTO.getName())) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Tên danh mục '" + categoryDTO.getName() + "' đã tồn tại!");
-            return "redirect:/admin/categories/create";
-        }
-
-        categoryService.create(categoryDTO);
-        redirectAttributes.addFlashAttribute("success", "Tạo danh mục thành công!");
-        return "redirect:/admin/categories"; // Quay về danh sách
+        // Gửi request tới handler xử lý
+        CategoryHandlerResult result = categoryRequestHandler.handleCreateRequest(
+                categoryDTO,
+                redirectAttributes
+        );
+        return "redirect:" + result.getRedirectUrl();
     }
 
     // ══════════════════════════════════════════════
@@ -82,9 +83,13 @@ public class AdminCategoryController {
     public String update(@PathVariable Long id,
                          @ModelAttribute CategoryDTO categoryDTO,
                          RedirectAttributes redirectAttributes) {
-        categoryService.update(id, categoryDTO);
-        redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
-        return "redirect:/admin/categories";
+        // Gửi request tới handler xử lý
+        CategoryHandlerResult result = categoryRequestHandler.handleUpdateRequest(
+                id,
+                categoryDTO,
+                redirectAttributes
+        );
+        return "redirect:" + result.getRedirectUrl();
     }
 
     // ══════════════════════════════════════════════
@@ -93,8 +98,11 @@ public class AdminCategoryController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id,
                          RedirectAttributes redirectAttributes) {
-        categoryService.deleteById(id);
-        redirectAttributes.addFlashAttribute("success", "Xóa danh mục thành công!");
-        return "redirect:/admin/categories";
+        // Gửi request tới handler xử lý
+        CategoryHandlerResult result = categoryRequestHandler.handleDeleteRequest(
+                id,
+                redirectAttributes
+        );
+        return "redirect:" + result.getRedirectUrl();
     }
 }
