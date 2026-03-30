@@ -3,26 +3,25 @@ package com.example.project.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "subjects")
+public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String code;
+
+    @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "CLOB")
+    @Enumerated(EnumType.STRING)
+    private SubjectLevel level;
+
     private String description;
 
-    public Category() {
-    }
-
-    public Category(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+    public Subject() {
     }
 
     public Long getId() {
@@ -33,12 +32,28 @@ public class Category {
         this.id = id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public SubjectLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(SubjectLevel level) {
+        this.level = level;
     }
 
     public String getDescription() {
