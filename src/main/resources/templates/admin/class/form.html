@@ -1,0 +1,118 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1 th:text="${pageTitle}">Lớp học</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/classes}">Lớp học</a></li>
+                    <li class="breadcrumb-item active" th:text="${pageTitle}">Form</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/classes}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header-clean">
+            <h5>Thông tin lớp học</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <form th:action="${formAction}" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Mã lớp *</label>
+                    <input type="text" name="code" class="form-control" placeholder="VD: CLS-001" th:value="${clazz.code}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['code'] != null}" th:text="${errors['code']}"></div>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Tên lớp *</label>
+                    <input type="text" name="name" class="form-control" placeholder="Tên lớp" th:value="${clazz.name}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Khóa học *</label>
+                    <select name="courseId" class="form-select">
+                        <option value="" disabled th:selected="${clazz.course == null}">Chọn khóa học</option>
+                        <option th:each="course : ${courses}"
+                                th:value="${course.id}"
+                                th:text="${course.name}"
+                                th:selected="${clazz.course != null and course.id == clazz.course.id}"></option>
+                    </select>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['courseId'] != null}" th:text="${errors['courseId']}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Giáo viên</label>
+                    <select name="teacherId" class="form-select">
+                        <option value="" th:selected="${clazz.teacher == null}">Chưa phân công</option>
+                        <option th:each="teacher : ${teachers}"
+                                th:value="${teacher.id}"
+                                th:text="${teacher.name}"
+                                th:selected="${clazz.teacher != null and teacher.id == clazz.teacher.id}"></option>
+                    </select>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['teacherId'] != null}" th:text="${errors['teacherId']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ngày bắt đầu</label>
+                    <input type="date" name="startDate" class="form-control" th:value="${clazz.startDate}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['startDate'] != null}" th:text="${errors['startDate']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ngày kết thúc</label>
+                    <input type="date" name="endDate" class="form-control" th:value="${clazz.endDate}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['endDate'] != null}" th:text="${errors['endDate']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tổng số buổi</label>
+                    <input type="number" name="totalSessions" class="form-control" th:value="${clazz.totalSessions}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['totalSessions'] != null}" th:text="${errors['totalSessions']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Phòng học</label>
+                    <input type="text" name="room" class="form-control" th:value="${clazz.room}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Trạng thái</label>
+                    <select name="status" class="form-select">
+                        <option th:each="st : ${statuses}"
+                                th:value="${st}"
+                                th:text="${st == T(com.example.project.entity.ClassStatus).DANG_HOC ? 'Đang học' : (st == T(com.example.project.entity.ClassStatus).KET_THUC ? 'Kết thúc' : 'Mới')}"
+                                th:selected="${clazz.status != null and st == clazz.status}"></option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Mô tả</label>
+                    <textarea name="description" class="form-control" rows="3" th:text="${clazz.description}"></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Thêm học viên</label>
+                    <div class="card" style="border:1px solid #e2e8f0;">
+                        <div class="card-body" style="padding:0.75rem; max-height:220px; overflow:auto;">
+                            <div th:each="student : ${students}" class="form-check" style="margin-bottom:0.4rem;">
+                                <input class="form-check-input" type="checkbox" name="studentIds"
+                                       th:value="${student.id}"
+                                       th:checked="${selectedStudentIds != null && selectedStudentIds.contains(student.id)}">
+                                <label class="form-check-label">
+                                    <span th:text="${student.code}"></span> - <span th:text="${student.name}"></span>
+                                </label>
+                            </div>
+                            <div th:if="${#lists.isEmpty(students)}" style="color:#64748b; font-size:0.8rem;">
+                                Chưa có học viên trong hệ thống.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a th:href="@{/admin/classes}" class="btn-ghost">Hủy</a>
+                    <button type="submit" class="btn-primary-solid">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</div>

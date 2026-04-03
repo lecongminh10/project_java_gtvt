@@ -1,0 +1,107 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1>Chuyển lớp</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/classes}">Lớp học</a></li>
+                    <li class="breadcrumb-item active">Chuyển lớp</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/classes}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header-clean">
+            <h5>Lớp hiện tại</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <div class="row g-2">
+                <div class="col-md-4"><strong>Mã lớp:</strong> <span th:text="${sourceClass.code}"></span></div>
+                <div class="col-md-4"><strong>Tên lớp:</strong> <span th:text="${sourceClass.name}"></span></div>
+                <div class="col-md-4"><strong>Khóa học:</strong> <span th:text="${sourceClass.course != null ? sourceClass.course.name : '-'}"></span></div>
+                <div class="col-md-4"><strong>Giáo viên:</strong> <span th:text="${sourceClass.teacher != null ? sourceClass.teacher.name : '-'}"></span></div>
+                <div class="col-md-4"><strong>Trạng thái:</strong> <span th:text="${sourceClass.status != null ? sourceClass.status : '-'}"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header-clean">
+            <h5>Tạo lớp mới</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <div class="alert alert-warning" th:if="${errors != null && errors['transfer'] != null}" th:text="${errors['transfer']}"></div>
+            <form th:action="@{/admin/classes/{id}/transfer(id=${sourceClass.id})}" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Mã lớp *</label>
+                    <input type="text" name="code" class="form-control" th:value="${draft.code}" th:disabled="${locked}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['code'] != null}" th:text="${errors['code']}"></div>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Tên lớp *</label>
+                    <input type="text" name="name" class="form-control" th:value="${draft.name}" th:disabled="${locked}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Khóa học *</label>
+                    <select name="courseId" class="form-select" th:disabled="${locked}">
+                        <option value="" disabled>Chọn khóa học</option>
+                        <option th:each="course : ${courses}"
+                                th:value="${course.id}"
+                                th:text="${course.name}"
+                                th:selected="${draft.course != null and course.id == draft.course.id}"></option>
+                    </select>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['courseId'] != null}" th:text="${errors['courseId']}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Giáo viên</label>
+                    <select name="teacherId" class="form-select" th:disabled="${locked}">
+                        <option value="">Chưa phân công</option>
+                        <option th:each="teacher : ${teachers}"
+                                th:value="${teacher.id}"
+                                th:text="${teacher.name}"
+                                th:selected="${draft.teacher != null and teacher.id == draft.teacher.id}"></option>
+                    </select>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['teacherId'] != null}" th:text="${errors['teacherId']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ngày bắt đầu</label>
+                    <input type="date" name="startDate" class="form-control" th:value="${draft.startDate}" th:disabled="${locked}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['startDate'] != null}" th:text="${errors['startDate']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ngày kết thúc</label>
+                    <input type="date" name="endDate" class="form-control" th:value="${draft.endDate}" th:disabled="${locked}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['endDate'] != null}" th:text="${errors['endDate']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tổng số buổi</label>
+                    <input type="number" name="totalSessions" class="form-control" th:value="${draft.totalSessions}" th:disabled="${locked}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['totalSessions'] != null}" th:text="${errors['totalSessions']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Phòng học</label>
+                    <input type="text" name="room" class="form-control" th:value="${draft.room}" th:disabled="${locked}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Mô tả</label>
+                    <textarea name="description" class="form-control" rows="3" th:text="${draft.description}" th:disabled="${locked}"></textarea>
+                </div>
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a th:href="@{/admin/classes}" class="btn-ghost">Hủy</a>
+                    <button type="submit" class="btn-primary-solid" th:disabled="${locked}">Xác nhận chuyển lớp</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</div>
