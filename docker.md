@@ -8,9 +8,9 @@
    ```bash
    cd docker
    ```
-2. Build va chay toan bo service:
+2. Chay hot reload:
    ```bash
-   docker compose up --build -d
+   docker compose up -d
    ```
 
 ## Kiem tra

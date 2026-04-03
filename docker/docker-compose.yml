@@ -16,10 +16,10 @@ services:
       retries: 10
 
   app:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
+    image: maven:3.9-eclipse-temurin-17
     container_name: project_app
+    working_dir: /app
+    command: mvn -DskipTests spring-boot:run
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/project_gtvt?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
@@ -27,11 +27,17 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_THYMELEAF_PREFIX: file:/app/src/main/resources/templates/
+      SPRING_WEB_RESOURCES_STATIC_LOCATIONS: file:/app/src/main/resources/static/
+    volumes:
+      - ..:/app
+      - maven_cache:/root/.m2
     ports:
       - "8081:8081"
     depends_on:
       mysql:
         condition: service_healthy
+
 
   adminer:
     image: adminer:4
@@ -44,3 +50,4 @@ services:
 
 volumes:
   mysql_data:
+  maven_cache:
