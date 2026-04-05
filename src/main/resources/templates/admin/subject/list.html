@@ -1,0 +1,141 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+    <div layout:fragment="content">
+
+        <!-- Table + Activity -->
+        <div class="row g-3">
+
+            <!-- Subject Table -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header-clean">
+                        <h5><i class="fas fa-book me-2 text-primary"></i>Danh sách môn học</h5>
+                        <a class="btn-ghost" href="#" style="font-size: 0.8rem;">Xem tất cả <i
+                                class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                    <div style="padding: 1rem; border-bottom: 1px solid #f1f5f9;">
+                        <div class="d-flex gap-3">
+                            <div style="position: relative; flex: 1; max-width: 400px;">
+                                <i class="fas fa-search"
+                                   style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                                <input placeholder="Tìm kiếm môn học..."
+                                       style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;"
+                                       type="text">
+                            </div>
+                            <select style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;">
+                                <option>Tất cả cấp học</option>
+                                <option>Tiểu học</option>
+                                <option>THCS</option>
+                                <option>THPT</option>
+                            </select>
+                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"><i
+                                    class="fas fa-filter me-1"></i> Lọc
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-admin">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Level</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--                            <tr>-->
+                            <!--                                <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.code}"></span>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="font-weight: 600;" th:text="${subject.name}"></td>-->
+                            <!--                                <td><span class="badge-status"-->
+                            <!--                                          th:classappend="${subject.level == 'THCS' ? 'badge-info' : (subject.level == 'THPT' ? 'badge-success' : 'badge-pending')}"-->
+                            <!--                                          th:text="${subject.level}"></span></td>-->
+                            <!--                                <td style="color: #64748b;" th:text="${subject.description}"></td>-->
+                            <!--                            </tr>-->
+                            <tr>
+                                <td><span style="font-weight:600; color: #2563eb;">MH005</span></td>
+                                <td style="font-weight: 600;">Lịch sử</td>
+                                <td><span class="badge-status badge-info">THCS</span></td>
+                                <td style="color: #64748b;">Môn lịch sử Việt Nam và thế giới</td>
+                                <td style="color: #64748b;">Descrition</td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight:600; color: #2563eb;">MH006</span></td>
+                                <td style="font-weight: 600;">Địa lý</td>
+                                <td><span class="badge-status badge-success">THPT</span></td>
+                                <td style="color: #64748b;">Môn địa lý tự nhiên và kinh tế xã hội</td>
+                                <td style="color: #64748b;">Descrition</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="col-lg-4 d-flex flex-column gap-3">
+
+                <!-- Top Subjects -->
+                <div class="card">
+                    <div class="card-header-clean">
+                        <h5><i class="fas fa-fire me-2" style="color:#f59e0b;"></i>Môn học phổ biến</h5>
+                    </div>
+                    <div style="padding: 0.75rem 1rem;">
+                        <!-- Item -->
+                        <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="stat-card-icon icon-blue"
+                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
+                                    class="fas fa-calculator"></i></div>
+                            <div style="flex:1;">
+                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Toán học</div>
+                                <div style="font-size:0.75rem;color:#64748b;">8 khóa học</div>
+                            </div>
+                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">Hot</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="stat-card-icon icon-violet"
+                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
+                                    class="fas fa-language"></i></div>
+                            <div style="flex:1;">
+                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Tiếng Anh</div>
+                                <div style="font-size:0.75rem;color:#64748b;">6 khóa học</div>
+                            </div>
+                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">+22%</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 py-2">
+                            <div class="stat-card-icon icon-amber"
+                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
+                                    class="fas fa-flask"></i></div>
+                            <div style="flex:1;">
+                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Hóa học</div>
+                                <div style="font-size:0.75rem;color:#64748b;">5 khóa học</div>
+                            </div>
+                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">+15%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header-clean">
+                        <h5><i class="fas fa-bolt me-2 text-primary"></i>Thao tác nhanh</h5>
+                    </div>
+                    <div style="padding: 0.75rem 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-plus"></i> Thêm
+                            MH</a>
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-layer-group"></i>
+                            Cấp học</a>
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-tags"></i> Danh
+                            mục</a>
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-chart-bar"></i>
+                            Báo cáo</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
