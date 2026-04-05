@@ -20,4 +20,17 @@ public class AdminDashboardController {
         model.addAttribute("pageTitle", "User Management");
         return "admin/user/list";
     }
+
+    @GetMapping("/subjects")
+    public String listSubjects(Model model) {
+        model.addAttribute("pageTitle", "Subjects Management");
+        return "admin/subject/list";
+    }
+
+
+    @GetMapping("/courses")
+    public String listCourses(Model model) {
+        model.addAttribute("pageTitle", "Courses Management");
+        return "admin/course/list";
+    }
 }
