@@ -1,0 +1,65 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+    <div class="container-fluid p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Expiring Contracts (Next 30 Days)</h1>
+            <a th:href="@{/admin/teachers}" class="btn btn-secondary">Back to Teachers</a>
+        </div>
+        
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            Teachers with contracts expiring within the next 30 days are listed below. Take action to renew or extend contracts as needed.
+        </div>
+        
+        <div class="card">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contract Type</th>
+                        <th>End Date</th>
+                        <th>Days Until Expiry</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="teacher : ${teachers}" th:classappend="${teacher.daysUntilExpiry <= 7} ? 'table-danger' : 'table-warning'">
+                        <td><strong th:text="${teacher.code}"></strong></td>
+                        <td th:text="${teacher.name}"></td>
+                        <td th:text="${teacher.email}"></td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${teacher.contractType}"></span>
+                        </td>
+                        <td>
+                            <strong th:text="${#temporals.format(teacher.contractEndDate, 'dd/MM/yyyy')}"></strong>
+                        </td>
+                        <td>
+                            <span class="badge" th:classappend="${teacher.daysUntilExpiry <= 7} ? 'bg-danger' : 'bg-warning'" th:text="${teacher.daysUntilExpiry} + ' days'"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/teachers/{id}(id=${teacher.id})}" class="btn btn-sm btn-outline-primary">View</a>
+                            <a th:href="@{/admin/teachers/{id}/contract(id=${teacher.id})}" class="btn btn-sm btn-outline-warning">Renew Contract</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(teachers)}">
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-check-circle"></i> No contracts expiring within the next 30 days
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-4">
+            <p class="text-muted">
+                <small>
+                    <strong>Legend:</strong> 
+                    <span class="badge bg-danger">Red</span> = Expires within 7 days (URGENT)
+                    <span class="badge bg-warning">Yellow</span> = Expires within 30 days (REVIEW SOON)
+                </small>
+            </p>
+        </div>
+    </div>
+</div>

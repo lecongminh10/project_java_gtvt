@@ -1,0 +1,151 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+    <div class="container-fluid p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Teacher Details: <span th:text="${teacher.code}"></span></h1>
+            <a th:href="@{/admin/teachers}" class="btn btn-secondary">Back to List</a>
+        </div>
+        
+        <ul class="nav nav-tabs mb-4" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#basicInfo" type="button">Basic Info</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#salary" type="button">Salary</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contract" type="button">Contract</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#performance" type="button">Performance</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content">
+            <!-- Basic Info Tab -->
+            <div class="tab-pane fade show active" id="basicInfo" role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Code:</strong> <span th:text="${teacher.code}"></span></p>
+                                <p class="mb-2"><strong>Full Name:</strong> <span th:text="${teacher.name}"></span></p>
+                                <p class="mb-2"><strong>Email:</strong> <span th:text="${teacher.email}"></span></p>
+                                <p class="mb-2"><strong>Phone:</strong> <span th:text="${teacher.phone}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Date of Birth:</strong> <span th:text="${teacher.dateOfBirth}"></span></p>
+                                <p class="mb-2"><strong>Status:</strong> 
+                                    <span class="badge" th:text="${teacher.status}" th:classappend="${teacher.status == 'ACTIVE'} ? 'bg-success' : 'bg-danger'"></span>
+                                </p>
+                                <p class="mb-2"><strong>Created:</strong> <span th:text="${#temporals.format(teacher.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                                <p class="mb-0"><strong>Updated:</strong> <span th:text="${#temporals.format(teacher.updatedAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{/admin/teachers/{id}/edit(id=${teacher.id})}" class="btn btn-primary btn-sm">Edit Basic Info</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salary Tab -->
+            <div class="tab-pane fade" id="salary" role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Salary Amount:</strong></p>
+                                <h4 th:if="${teacher.salary}"><span th:text="${#numbers.formatDecimal(teacher.salary, 0, 'DEFAULT', 0, 'DEFAULT')}"></span> <span th:text="${teacher.salaryCurrency}"></span></h4>
+                                <p th:if="!${teacher.salary}" class="text-muted">Not set</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Pay Period:</strong></p>
+                                <p th:text="${teacher.salaryPayPeriod}"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Currency:</strong></p>
+                                <p th:text="${teacher.salaryCurrency}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{/admin/teachers/{id}/salary(id=${teacher.id})}" class="btn btn-primary btn-sm">Update Salary</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contract Tab -->
+            <div class="tab-pane fade" id="contract" role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Contract Start Date:</strong></p>
+                                <p th:text="${teacher.contractStartDate}"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Contract End Date:</strong></p>
+                                <p th:if="${teacher.contractEndDate}" th:text="${#temporals.format(teacher.contractEndDate, 'dd/MM/yyyy')}"></p>
+                                <p th:if="!${teacher.contractEndDate}" class="text-muted">Ongoing (no end date)</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Contract Type:</strong></p>
+                                <p th:text="${teacher.contractType}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{/admin/teachers/{id}/contract(id=${teacher.id})}" class="btn btn-primary btn-sm">Update Contract</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Performance Tab -->
+            <div class="tab-pane fade" id="performance" role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Performance Rating:</strong></p>
+                                <h4 th:if="${teacher.performanceRating}"><span th:text="${teacher.performanceRating}"></span> / 5.0</h4>
+                                <p th:if="!${teacher.performanceRating}" class="text-muted">No rating yet</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p class="mb-2"><strong>Last Review Date:</strong></p>
+                                <p th:if="${teacher.lastPerformanceReviewDate}" th:text="${#temporals.format(teacher.lastPerformanceReviewDate, 'dd/MM/yyyy HH:mm')}"></p>
+                                <p th:if="!${teacher.lastPerformanceReviewDate}" class="text-muted">No reviews yet</p>
+                                <p class="mb-0 mt-3"><strong>Last Review Notes:</strong></p>
+                                <p th:text="${teacher.lastReviewerNotes}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{/admin/teachers/{id}/performance-review(id=${teacher.id})}" class="btn btn-primary btn-sm">Add Performance Review</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <form th:action="@{/admin/teachers/{id}/status(id=${teacher.id})}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-warning btn-sm" th:text="${teacher.status == 'ACTIVE'} ? 'Deactivate' : 'Activate'"></button>
+            </form>
+            <form th:action="@{/admin/teachers/{id}/delete(id=${teacher.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete Teacher</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bootstrap = window.bootstrap;
+            if (bootstrap) {
+                const tabElements = document.querySelectorAll('button[data-bs-toggle="tab"]');
+                tabElements.forEach(tabEl => {
+                    new bootstrap.Tab(tabEl);
+                });
+            }
+        });
+    </script>
+</div>

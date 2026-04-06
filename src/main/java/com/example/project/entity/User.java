@@ -1,6 +1,8 @@
 package com.example.project.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -27,7 +29,38 @@ public class User {
 
     private String employeeCode;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @Transient
+    private boolean passwordChanged = false;
+
     public User() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        encodePasswordIfChanged();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+        encodePasswordIfChanged();
+    }
+
+    private void encodePasswordIfChanged() {
+        if (passwordChanged || (password != null && !password.startsWith("$2a$"))) {
+            // Only encode if password is not already encoded (doesn't start with bcrypt
+            // prefix)
+            if (password != null && !password.startsWith("$2a$")) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                password = encoder.encode(password);
+                passwordChanged = false;
+            }
+        }
     }
 
     // Getters and setters
@@ -102,5 +135,29 @@ public class User {
 
     public void setEmployeeCode(String employeeCode) {
         this.employeeCode = employeeCode;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isPasswordChanged() {
+        return passwordChanged;
+    }
+
+    public void setPasswordChanged(boolean passwordChanged) {
+        this.passwordChanged = passwordChanged;
     }
 }

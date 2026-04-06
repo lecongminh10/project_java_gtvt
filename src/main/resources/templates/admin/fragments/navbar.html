@@ -39,7 +39,13 @@
                 <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Hồ sơ</a></li>
                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Cài đặt</a></li>
                 <li><div class="dropdown-divider"></div></li>
-                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                <li>
+                    <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;">
+                    </form>
+                    <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

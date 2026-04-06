@@ -1,0 +1,91 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+    <div class="container-fluid p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Teachers</h1>
+            <a th:href="@{/admin/teachers/new}" class="btn btn-primary">Add Teacher</a>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="search" class="form-control" placeholder="Search by code, name or email" th:value="${search}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="status" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Active</option>
+                            <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="expiringOnly" id="expiringOnly" th:checked="${expiringOnly}">
+                            <label class="form-check-label" for="expiringOnly">Expiring Contracts Only</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-secondary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Salary</th>
+                        <th>Contract End</th>
+                        <th>Rating</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="teacher : ${teachers}">
+                        <td><strong th:text="${teacher.code}"></strong></td>
+                        <td th:text="${teacher.name}"></td>
+                        <td th:text="${teacher.email}"></td>
+                        <td>
+                            <span class="badge" th:text="${teacher.status}" th:classappend="${teacher.status == 'ACTIVE'} ? 'bg-success' : 'bg-danger'"></span>
+                        </td>
+                        <td>
+                            <span th:if="${teacher.salary}" th:text="${#numbers.formatDecimal(teacher.salary, 0, 'DEFAULT', 0, 'DEFAULT')} + ' ' + ${teacher.salaryCurrency}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${teacher.contractEndDate}" th:text="${#temporals.format(teacher.contractEndDate, 'dd/MM/yyyy')}"></span>
+                            <span th:unless="${teacher.contractEndDate}" class="text-muted">Ongoing</span>
+                        </td>
+                        <td>
+                            <span th:if="${teacher.performanceRating}" th:text="${teacher.performanceRating} + '/5.0'"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/teachers/{id}(id=${teacher.id})}" class="btn btn-sm btn-outline-primary">View</a>
+                            <a th:href="@{/admin/teachers/{id}/edit(id=${teacher.id})}" class="btn btn-sm btn-outline-warning">Edit</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(teachers)}">
+                        <td colspan="8" class="text-center text-muted py-4">No teachers found</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div th:if="${totalPages > 1}" class="card-footer bg-white">
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/teachers(page=0,search=${search},status=${status})}">First</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(0, totalPages-1)}" class="page-item" th:classappend="${currentPage == pageNum} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/teachers(page=${pageNum},search=${search},status=${status})}" th:text="${pageNum + 1}"></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

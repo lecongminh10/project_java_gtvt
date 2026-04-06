@@ -1,0 +1,127 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+    <div class="container-fluid p-4">
+        <h1 class="h3 mb-4">Teacher Form</h1>
+        
+        <div th:if="${error}" class="alert alert-danger"><span th:text="${error}"></span></div>
+        
+        <form th:action="${teacher.id} ? @{/admin/teachers/{id}/edit(id=${teacher.id})} : @{/admin/teachers}" method="post" class="needs-validation">
+            <!-- Basic Information -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Code</label>
+                                <input type="text" name="code" class="form-control" th:value="${teacher.code}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" name="name" class="form-control" th:value="${teacher.name}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" th:value="${teacher.email}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" name="phone" class="form-control" th:value="${teacher.phone}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" name="dateOfBirth" class="form-control" th:value="${teacher.dateOfBirth}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-select">
+                                    <option value="ACTIVE" th:selected="${teacher.status == 'ACTIVE' || !teacher.id}">Active</option>
+                                    <option value="INACTIVE" th:selected="${teacher.status == 'INACTIVE'}">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salary Information -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Salary Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Salary Amount</label>
+                                <input type="number" name="salary" step="0.01" class="form-control" th:value="${teacher.salary}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Currency</label>
+                                <select name="salaryCurrency" class="form-select">
+                                    <option value="VND" th:selected="${teacher.salaryCurrency == 'VND' || !teacher.salaryCurrency}">VND</option>
+                                    <option value="USD" th:selected="${teacher.salaryCurrency == 'USD'}">USD</option>
+                                    <option value="EUR" th:selected="${teacher.salaryCurrency == 'EUR'}">EUR</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Pay Period</label>
+                                <select name="salaryPayPeriod" class="form-select">
+                                    <option value="MONTHLY" th:selected="${teacher.salaryPayPeriod == 'MONTHLY' || !teacher.salaryPayPeriod}">Monthly</option>
+                                    <option value="HOURLY" th:selected="${teacher.salaryPayPeriod == 'HOURLY'}">Hourly</option>
+                                    <option value="CONTRACT" th:selected="${teacher.salaryPayPeriod == 'CONTRACT'}">Per Contract</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contract Information -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Contract Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Contract Start Date</label>
+                                <input type="date" name="contractStartDate" class="form-control" th:value="${teacher.contractStartDate}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Contract End Date (leave blank for ongoing)</label>
+                                <input type="date" name="contractEndDate" class="form-control" th:value="${teacher.contractEndDate}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Contract Type</label>
+                                <select name="contractType" class="form-select">
+                                    <option value="FULL_TIME" th:selected="${teacher.contractType == 'FULL_TIME' || !teacher.contractType}">Full Time</option>
+                                    <option value="PART_TIME" th:selected="${teacher.contractType == 'PART_TIME'}">Part Time</option>
+                                    <option value="FREELANCE" th:selected="${teacher.contractType == 'FREELANCE'}">Freelance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a th:href="@{/admin/teachers}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

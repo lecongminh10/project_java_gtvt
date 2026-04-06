@@ -1,84 +1,55 @@
-package com.example.project.entity;
+package com.example.project.dto;
 
-import jakarta.persistence.*;
+import com.example.project.entity.UserStatus;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
-@Entity
-@Table(name = "teachers")
-public class Teacher {
+public class TeacherDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String code;
-
-    @Column(nullable = false)
     private String name;
-
     private LocalDate dob;
     private String email;
     private String phone;
-
-    @Enumerated(EnumType.STRING)
     private UserStatus status;
-
-    @ManyToMany
-    @JoinTable(name = "teacher_subjects", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private Set<Subject> subjects = new HashSet<>();
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    // ─── SALARY FIELDS ───────────────────────────────────────
-    @Column(precision = 10, scale = 2)
+    // Salary
     private BigDecimal salary;
+    private String salaryCurrency;
+    private String salaryPayPeriod;
 
-    private String salaryCurrency; // "VND", "USD", etc.
-
-    private String salaryPayPeriod; // "MONTHLY", "HOURLY", "CONTRACT"
-
-    // ─── CONTRACT FIELDS ────────────────────────────────────────
+    // Contract
     private LocalDate contractStartDate;
-    private LocalDate contractEndDate; // null for ongoing contracts
+    private LocalDate contractEndDate;
+    private String contractType;
 
-    private String contractType; // "FULL_TIME", "PART_TIME", "FREELANCE"
-
-    // ─── PERFORMANCE FIELDS ─────────────────────────────────────
-    private Double performanceRating; // 1.0 - 5.0 scale
+    // Performance
+    private Double performanceRating;
     private LocalDateTime lastPerformanceReviewDate;
-    @Column(columnDefinition = "TEXT")
     private String lastReviewerNotes;
 
-    public Teacher() {
+    // Relationships
+    private UserDTO userInfo;
+
+    // Constructors
+    public TeacherDTO() {
     }
 
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (updatedAt == null) {
-            updatedAt = LocalDateTime.now();
-        }
+    public TeacherDTO(Long id, String code, String name, String email, UserStatus status) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.email = email;
+        this.status = status;
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    // ─── GETTERS AND SETTERS ────────────────────────────────────
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -127,28 +98,12 @@ public class Teacher {
         this.phone = phone;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public UserStatus getStatus() {
         return status;
     }
 
     public void setStatus(UserStatus status) {
         this.status = status;
-    }
-
-    public Set<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -166,8 +121,6 @@ public class Teacher {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    // ─── SALARY GETTERS AND SETTERS ─────────────────────────────
 
     public BigDecimal getSalary() {
         return salary;
@@ -193,8 +146,6 @@ public class Teacher {
         this.salaryPayPeriod = salaryPayPeriod;
     }
 
-    // ─── CONTRACT GETTERS AND SETTERS ───────────────────────────
-
     public LocalDate getContractStartDate() {
         return contractStartDate;
     }
@@ -219,8 +170,6 @@ public class Teacher {
         this.contractType = contractType;
     }
 
-    // ─── PERFORMANCE GETTERS AND SETTERS ────────────────────────
-
     public Double getPerformanceRating() {
         return performanceRating;
     }
@@ -243,5 +192,27 @@ public class Teacher {
 
     public void setLastReviewerNotes(String lastReviewerNotes) {
         this.lastReviewerNotes = lastReviewerNotes;
+    }
+
+    public UserDTO getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserDTO userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "TeacherDTO{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", status=" + status +
+                ", salary=" + salary +
+                ", contractType='" + contractType + '\'' +
+                ", performanceRating=" + performanceRating +
+                '}';
     }
 }

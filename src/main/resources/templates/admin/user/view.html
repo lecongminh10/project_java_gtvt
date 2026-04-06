@@ -1,0 +1,62 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+    <div class="container-fluid p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">User Details</h1>
+            <a th:href="@{/admin/users}" class="btn btn-secondary">Back</a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="mb-2"><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+                        <p class="mb-2"><strong>Full Name:</strong> <span th:text="${user.fullName}"></span></p>
+                        <p class="mb-2"><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                        <p class="mb-2"><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
+                        <p class="mb-2"><strong>Employee Code:</strong> <span th:text="${user.employeeCode}"></span></p>
+                        <p class="mb-2"><strong>Created:</strong> <span th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p class="mb-0"><strong>Updated:</strong> <span th:text="${#temporals.format(user.updatedAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Role: <span th:text="${user.role}" class="badge bg-info"></span></h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/users/{id}/role(id=${user.id})}" method="post" class="d-flex align-items-center gap-2">
+                            <select name="role" class="form-select form-select-sm">
+                                <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${user.role == r}"></option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-warning">Change</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Status: <span th:text="${user.status}" class="badge" th:classappend="${user.status == 'ACTIVE'} ? 'bg-success' : 'bg-danger'"></span></h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/users/{id}/status(id=${user.id})}" method="post" class="d-flex align-items-center gap-2">
+                            <select name="status" class="form-select form-select-sm">
+                                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${user.status == s}"></option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-warning">Change</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="btn btn-primary">Edit User</a>
+            <a th:href="@{/admin/users/{id}/reset-password(id=${user.id})}" class="btn btn-danger">Reset Password</a>
+            <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                <button type="submit" class="btn btn-danger">Delete User</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,10 +3,10 @@
         <!-- Top Bar -->
         <div class="nav-topbar">
             <div class="container d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-truck me-1"></i> Miễn phí vận chuyển đơn từ 500.000đ</span>
+                <span><i class="fas fa-graduation-cap me-1"></i> Khám phá các khóa học IELTS & Giao tiếp mới nhất 2026</span>
                 <div class="d-flex gap-3">
-                    <a th:href="@{/}">Hỗ trợ 24/7</a>
-                    <a th:href="@{/admin/dashboard}"><i class="fas fa-user-shield me-1"></i>Quản trị</a>
+                    <a th:href="@{/}">Hotline: 1800 6789</a>
+                    <a th:href="@{/admin/dashboard}"><i class="fas fa-user-shield me-1"></i>Portal</a>
                 </div>
             </div>
         </div>
@@ -15,45 +15,29 @@
         <div class="nav-main">
             <div class="container d-flex align-items-center">
                 <!-- Brand -->
-                <a th:href="@{/}" class="nav-brand me-3">
-                    <div class="nav-brand-icon"><i class="fas fa-bolt"></i></div>
-                    TechStore
+                <a th:href="@{/}" class="nav-brand me-4">
+                    <div class="nav-brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                    ELC Center
                 </a>
 
-                <!-- Search Bar -->
-                <div class="nav-search d-none d-md-block">
-                    <input type="text" placeholder="Tìm iPhone, laptop, tai nghe...">
-                    <button class="search-btn"><i class="fas fa-search"></i></button>
-                </div>
+                <!-- Nav Links -->
+                <nav class="d-none d-lg-flex gap-4">
+                    <a th:href="@{/}" class="text-decoration-none text-dark fw-600">Trang chủ</a>
+                    <a href="#courses" class="text-decoration-none text-dark fw-500">Khóa học</a>
+                    <a href="#teachers" class="text-decoration-none text-dark fw-500">Giảng viên</a>
+                    <a href="#about" class="text-decoration-none text-dark fw-500">Về ELC</a>
+                </nav>
 
                 <!-- Actions -->
                 <div class="nav-actions ms-auto">
                     <a th:href="@{/login}" class="nav-action-btn">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user-circle"></i>
                         <span>Đăng nhập</span>
                     </a>
-                    <a th:href="@{/cart}" class="nav-action-btn">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="badge-cart">3</span>
-                        <span>Giỏ hàng</span>
+                    <a href="#" class="btn-hero-primary d-none d-md-flex" style="font-size:0.8rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-clipboard-check"></i> Thi thử ngay
                     </a>
                 </div>
-            </div>
-        </div>
-
-        <!-- Categories row -->
-        <div class="nav-categories">
-            <div class="container">
-                <ul>
-                    <li><a th:href="@{/}" class="active">Trang chủ</a></li>
-                    <li><a href="#">Điện thoại</a></li>
-                    <li><a href="#">Laptop</a></li>
-                    <li><a href="#">Máy tính bảng</a></li>
-                    <li><a href="#">Tai nghe</a></li>
-                    <li><a href="#">Smartwatch</a></li>
-                    <li><a href="#">Phụ kiện</a></li>
-                    <li><a href="#" class="nav-hot"><i class="fas fa-fire-alt me-1"></i>Flash Sale</a></li>
-                </ul>
             </div>
         </div>
     </nav>

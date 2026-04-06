@@ -9,16 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminDashboardController {
 
-    @GetMapping({"", "/", "/dashboard"})
+    @GetMapping({ "", "/", "/dashboard" })
     public String dashboard(Model model) {
         model.addAttribute("pageTitle", "Admin Dashboard");
         return "admin/dashboard";
-    }
-
-    @GetMapping("/users")
-    public String listUsers(Model model) {
-        model.addAttribute("pageTitle", "User Management");
-        return "admin/user/list";
     }
 
     @GetMapping("/subjects")
@@ -26,7 +20,6 @@ public class AdminDashboardController {
         model.addAttribute("pageTitle", "Subjects Management");
         return "admin/subject/list";
     }
-
 
     @GetMapping("/courses")
     public String listCourses(Model model) {
