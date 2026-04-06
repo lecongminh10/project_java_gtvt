@@ -1,0 +1,91 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1>Chi tiết lớp học</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/classes}">Lớp học</a></li>
+                    <li class="breadcrumb-item active">Chi tiết</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/classes}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+            <a th:if="${clazz.status != T(com.example.project.entity.ClassStatus).KET_THUC}"
+               th:href="@{/admin/classes/{id}/edit(id=${clazz.id})}" class="btn-primary-solid">
+                <i class="fas fa-pencil"></i> Sửa
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header-clean">
+            <h5>Thông tin lớp học</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Mã lớp</div>
+                    <div style="font-weight:600;" th:text="${clazz.code}"></div>
+                </div>
+                <div class="col-md-8">
+                    <div class="text-muted" style="font-size:0.75rem;">Tên lớp</div>
+                    <div style="font-weight:600;" th:text="${clazz.name}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Khóa học</div>
+                    <div style="font-weight:600;" th:text="${clazz.course != null ? clazz.course.name : '-'}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Giáo viên</div>
+                    <div style="font-weight:600;" th:text="${clazz.teacher != null ? clazz.teacher.name : '-'}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Trạng thái</div>
+                    <div>
+                        <span th:if="${clazz.status != null}"
+                              class="badge-status"
+                              th:classappend="${clazz.status == T(com.example.project.entity.ClassStatus).DANG_HOC ? ' badge-success' : (clazz.status == T(com.example.project.entity.ClassStatus).KET_THUC ? ' badge-danger' : ' badge-info')}">
+                            <span th:text="${clazz.status == T(com.example.project.entity.ClassStatus).DANG_HOC ? 'Đang học' : (clazz.status == T(com.example.project.entity.ClassStatus).KET_THUC ? 'Kết thúc' : 'Mới')}"></span>
+                        </span>
+                        <span th:if="${clazz.status == null}" class="badge-status badge-pending">Chưa đặt</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Ngày bắt đầu</div>
+                    <div style="font-weight:600;" th:text="${clazz.startDate != null ? #temporals.format(clazz.startDate, 'dd/MM/yyyy') : '-'}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Ngày kết thúc</div>
+                    <div style="font-weight:600;" th:text="${clazz.endDate != null ? #temporals.format(clazz.endDate, 'dd/MM/yyyy') : '-'}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Tổng số buổi</div>
+                    <div style="font-weight:600;" th:text="${clazz.totalSessions != null ? clazz.totalSessions : '-'}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted" style="font-size:0.75rem;">Phòng học</div>
+                    <div style="font-weight:600;" th:text="${clazz.room != null ? clazz.room : '-'}"></div>
+                </div>
+                <div class="col-12">
+                    <div class="text-muted" style="font-size:0.75rem;">Mô tả</div>
+                    <div th:text="${clazz.description != null ? clazz.description : '-'}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Ngày tạo</div>
+                    <div th:text="${clazz.createdAt != null ? #temporals.format(clazz.createdAt, 'dd/MM/yyyy HH:mm') : '-'}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Cập nhật</div>
+                    <div th:text="${clazz.updatedAt != null ? #temporals.format(clazz.updatedAt, 'dd/MM/yyyy HH:mm') : '-'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>

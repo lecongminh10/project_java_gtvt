@@ -19,7 +19,7 @@ services:
     image: maven:3.9-eclipse-temurin-17
     container_name: project_app
     working_dir: /app
-    command: mvn -DskipTests spring-boot:run
+    command: sh /app/docker/dev-run.sh
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/project_gtvt?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
@@ -29,6 +29,7 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_THYMELEAF_PREFIX: file:/app/src/main/resources/templates/
       SPRING_WEB_RESOURCES_STATIC_LOCATIONS: file:/app/src/main/resources/static/
+      SPRING_DEVTOOLS_RESTART_TRIGGER_FILE: /app/.reloadtrigger
     volumes:
       - ..:/app
       - maven_cache:/root/.m2
