@@ -1,0 +1,92 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1>Quản lý khóa học</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item active">Khóa học</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/courses/new}" class="btn-primary-solid"><i class="fas fa-plus"></i> Thêm khóa học</a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card mb-3">
+        <div class="card-header-clean">
+            <div class="d-flex align-items-center gap-2" style="flex:1;">
+                <div class="topbar-search" style="max-width:320px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm theo mã, tên khóa học...">
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-ghost"><i class="fas fa-filter"></i> Lọc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table-admin">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Tên khóa học</th>
+                        <th>Môn học</th>
+                        <th>Buổi</th>
+                        <th>Tuần</th>
+                        <th>Học phí</th>
+                        <th>Trạng thái</th>
+                        <th>Cập nhật</th>
+                        <th class="text-end">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="course : ${courses}">
+                        <td th:text="${course.code}"></td>
+                        <td th:text="${course.name}"></td>
+                        <td th:text="${course.subject != null ? course.subject.name : '-'}"></td>
+                        <td th:text="${course.sessionsCount != null ? course.sessionsCount : '-'}"></td>
+                        <td th:text="${course.durationWeeks != null ? course.durationWeeks : '-'}"></td>
+                        <td th:text="${course.fee != null ? #numbers.formatDecimal(course.fee, 0, 'COMMA', 2, 'POINT') : '-'}"></td>
+                        <td>
+                            <span th:if="${course.status != null}"
+                                  class="badge-status"
+                                  th:classappend="${course.status == T(com.example.project.entity.ClassStatus).DANG_HOC ? ' badge-success' : (course.status == T(com.example.project.entity.ClassStatus).KET_THUC ? ' badge-danger' : ' badge-info')}">
+                                <span th:text="${course.status == T(com.example.project.entity.ClassStatus).DANG_HOC ? 'Đang học' : (course.status == T(com.example.project.entity.ClassStatus).KET_THUC ? 'Kết thúc' : 'Mới')}"></span>
+                            </span>
+                            <span th:if="${course.status == null}" class="badge-status badge-pending">Chưa đặt</span>
+                        </td>
+                        <td th:text="${course.updatedAt != null ? #temporals.format(course.updatedAt, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+                        <td class="text-end">
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a th:href="@{/admin/courses/{id}(id=${course.id})}" class="btn-icon" title="Xem"><i class="fas fa-eye"></i></a>
+                                <a th:href="@{/admin/courses/{id}/edit(id=${course.id})}" class="btn-icon" title="Sửa"><i class="fas fa-pencil"></i></a>
+                                <form th:action="@{/admin/courses/{id}/delete(id=${course.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn-icon danger" title="Xóa" onclick="return confirm('Xóa khóa học này?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(courses)}">
+                        <td colspan="9" class="text-center" style="color:#64748b; padding:1.5rem;">
+                            Chưa có khóa học nào.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</div>

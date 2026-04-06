@@ -1,0 +1,80 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1>Chi tiết khóa học</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/courses}">Khóa học</a></li>
+                    <li class="breadcrumb-item active">Chi tiết</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/courses}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+            <a th:href="@{/admin/courses/{id}/edit(id=${course.id})}" class="btn-primary-solid"><i class="fas fa-pencil"></i> Sửa</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header-clean">
+            <h5>Thông tin khóa học</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Mã khóa học</div>
+                    <div style="font-weight:600;" th:text="${course.code}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Tên khóa học</div>
+                    <div style="font-weight:600;" th:text="${course.name}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Môn học</div>
+                    <div style="font-weight:600;" th:text="${course.subject != null ? course.subject.name : '-'}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted" style="font-size:0.75rem;">Số buổi</div>
+                    <div style="font-weight:600;" th:text="${course.sessionsCount != null ? course.sessionsCount : '-'}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted" style="font-size:0.75rem;">Số tuần</div>
+                    <div style="font-weight:600;" th:text="${course.durationWeeks != null ? course.durationWeeks : '-'}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted" style="font-size:0.75rem;">Học phí</div>
+                    <div style="font-weight:600;" th:text="${course.fee != null ? #numbers.formatDecimal(course.fee, 0, 'COMMA', 2, 'POINT') : '-'}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted" style="font-size:0.75rem;">Trạng thái</div>
+                    <div>
+                        <span th:if="${course.status != null}"
+                              class="badge-status"
+                              th:classappend="${course.status == T(com.example.project.entity.ClassStatus).DANG_HOC ? ' badge-success' : (course.status == T(com.example.project.entity.ClassStatus).KET_THUC ? ' badge-danger' : ' badge-info')}">
+                            <span th:text="${course.status == T(com.example.project.entity.ClassStatus).DANG_HOC ? 'Đang học' : (course.status == T(com.example.project.entity.ClassStatus).KET_THUC ? 'Kết thúc' : 'Mới')}"></span>
+                        </span>
+                        <span th:if="${course.status == null}" class="badge-status badge-pending">Chưa đặt</span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="text-muted" style="font-size:0.75rem;">Mô tả</div>
+                    <div th:text="${course.description != null ? course.description : '-'}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Ngày tạo</div>
+                    <div th:text="${course.createdAt != null ? #temporals.format(course.createdAt, 'dd/MM/yyyy HH:mm') : '-'}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted" style="font-size:0.75rem;">Cập nhật</div>
+                    <div th:text="${course.updatedAt != null ? #temporals.format(course.updatedAt, 'dd/MM/yyyy HH:mm') : '-'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
