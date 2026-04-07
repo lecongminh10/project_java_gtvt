@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/login", "/static/**", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/teacher/**").hasRole("TEACHER")
+                        .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -89,4 +89,5 @@ public class SecurityConfig {
                 .ignoring()
                 .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**");
     }
+
 }

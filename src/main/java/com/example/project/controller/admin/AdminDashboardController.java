@@ -21,7 +21,7 @@ public class AdminDashboardController {
         return "admin/subject/list";
     }
 
-    @GetMapping("/courses")
+    @GetMapping("/courses-dashboard")
     public String listCourses(Model model) {
         model.addAttribute("pageTitle", "Courses Management");
         return "admin/course/list";
