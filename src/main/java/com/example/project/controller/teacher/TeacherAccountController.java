@@ -5,6 +5,7 @@ import com.example.project.entity.User;
 import com.example.project.repository.TeacherRepository;
 import com.example.project.repository.UserRepository;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -24,17 +26,23 @@ public class TeacherAccountController {
 
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public TeacherAccountController(TeacherRepository teacherRepository, UserRepository userRepository) {
+    public TeacherAccountController(TeacherRepository teacherRepository,
+                                    UserRepository userRepository,
+                                    PasswordEncoder passwordEncoder) {
         this.teacherRepository = teacherRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
     public String viewAccount(@RequestParam(value = "id", required = false) Long id,
                               @RequestParam(value = "username", required = false) String username,
-                              Model model) {
-        Optional<Teacher> teacherOpt = resolveTeacher(id, username);
+                              Model model,
+                              Principal principal) {
+        String resolvedUsername = resolveUsername(principal, username);
+        Optional<Teacher> teacherOpt = resolveTeacher(principal != null ? null : id, resolvedUsername);
         if (teacherOpt.isEmpty()) {
             model.addAttribute("pageTitle", "Tài khoản giáo viên");
             model.addAttribute("hasTeacher", false);
@@ -53,8 +61,10 @@ public class TeacherAccountController {
     public String updateAccount(@RequestParam(value = "id", required = false) Long id,
                                 @RequestParam(value = "username", required = false) String username,
                                 @ModelAttribute("form") TeacherAccountForm form,
-                                RedirectAttributes redirectAttributes) {
-        Optional<Teacher> teacherOpt = resolveTeacher(id, username);
+                                RedirectAttributes redirectAttributes,
+                                Principal principal) {
+        String resolvedUsername = resolveUsername(principal, username);
+        Optional<Teacher> teacherOpt = resolveTeacher(principal != null ? null : id, resolvedUsername);
         if (teacherOpt.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy giáo viên để cập nhật.");
             return "redirect:/teacher/account";
@@ -77,7 +87,44 @@ public class TeacherAccountController {
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công.");
-        return buildRedirectUrl(id, username);
+        return buildRedirectUrl(principal, id, resolvedUsername);
+    }
+
+    @PostMapping("/password")
+    public String updatePassword(@RequestParam("currentPassword") String currentPassword,
+                                 @RequestParam("newPassword") String newPassword,
+                                 @RequestParam("confirmPassword") String confirmPassword,
+                                 RedirectAttributes redirectAttributes,
+                                 Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            redirectAttributes.addFlashAttribute("passwordError", "Bạn cần đăng nhập để đổi mật khẩu.");
+            return "redirect:/login";
+        }
+
+        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        if (userOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("passwordError", "Không tìm thấy tài khoản đăng nhập.");
+            return "redirect:/teacher/account";
+        }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            redirectAttributes.addFlashAttribute("passwordError", "Mật khẩu hiện tại không đúng.");
+            return "redirect:/teacher/account";
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            redirectAttributes.addFlashAttribute("passwordError", "Mật khẩu mới không được để trống.");
+            return "redirect:/teacher/account";
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("passwordError", "Mật khẩu xác nhận không khớp.");
+            return "redirect:/teacher/account";
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        redirectAttributes.addFlashAttribute("passwordSuccess", "Đổi mật khẩu thành công.");
+        return "redirect:/teacher/account";
     }
 
     private Optional<Teacher> resolveTeacher(Long id, String username) {
@@ -90,7 +137,10 @@ public class TeacherAccountController {
         return teacherRepository.findFirstByOrderByIdAsc();
     }
 
-    private String buildRedirectUrl(Long id, String username) {
+    private String buildRedirectUrl(Principal principal, Long id, String username) {
+        if (principal != null) {
+            return "redirect:/teacher/account";
+        }
         if (username != null && !username.isBlank()) {
             return "redirect:/teacher/account?username=" + username.trim();
         }
@@ -98,6 +148,16 @@ public class TeacherAccountController {
             return "redirect:/teacher/account?id=" + id;
         }
         return "redirect:/teacher/account";
+    }
+
+    private String resolveUsername(Principal principal, String username) {
+        if (principal != null && principal.getName() != null) {
+            return principal.getName();
+        }
+        if (username != null && !username.isBlank()) {
+            return username.trim();
+        }
+        return null;
     }
 
     public static class TeacherAccountForm {
