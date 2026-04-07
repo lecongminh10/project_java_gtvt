@@ -43,31 +43,17 @@
                                 <th>Description</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <!--                            <tr>-->
-                            <!--                                <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.code}"></span>-->
-                            <!--                                </td>-->
-                            <!--                                <td style="font-weight: 600;" th:text="${subject.name}"></td>-->
-                            <!--                                <td><span class="badge-status"-->
-                            <!--                                          th:classappend="${subject.level == 'THCS' ? 'badge-info' : (subject.level == 'THPT' ? 'badge-success' : 'badge-pending')}"-->
-                            <!--                                          th:text="${subject.level}"></span></td>-->
-                            <!--                                <td style="color: #64748b;" th:text="${subject.description}"></td>-->
-                            <!--                            </tr>-->
+                            <tbody th:each="subject: ${subjects}">
                             <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">MH005</span></td>
-                                <td style="font-weight: 600;">Lịch sử</td>
-                                <td><span class="badge-status badge-info">THCS</span></td>
-                                <td style="color: #64748b;">Môn lịch sử Việt Nam và thế giới</td>
-                                <td style="color: #64748b;">Descrition</td>
+                                <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.id}"></span>
+                                <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.code}"></span>
+                                </td>
+                                <td style="font-weight: 600;" th:text="${subject.name}"></td>
+                                <td><span class="badge-status"
+                                          th:classappend="${subject.level == 'THCS' ? 'badge-info' : (subject.level == 'THPT' ? 'badge-success' : 'badge-pending')}"
+                                          th:text="${subject.level}"></span></td>
+                                <td style="color: #64748b;" th:text="${subject.description}"></td>
                             </tr>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">MH006</span></td>
-                                <td style="font-weight: 600;">Địa lý</td>
-                                <td><span class="badge-status badge-success">THPT</span></td>
-                                <td style="color: #64748b;">Môn địa lý tự nhiên và kinh tế xã hội</td>
-                                <td style="color: #64748b;">Descrition</td>
-                            </tr>
-
                             </tbody>
                         </table>
                     </div>
