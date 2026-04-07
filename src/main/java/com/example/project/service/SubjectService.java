@@ -5,10 +5,12 @@ import com.example.project.dto.SubjectDTO;
 import java.util.List;
 import java.util.Optional;
 
-public interface SubjectService {
-    SubjectDTO create(SubjectDTO subject);
 
-    SubjectDTO update(Long id, SubjectDTO subject);
+public interface SubjectService extends BaseService<SubjectDTO, Long> {
+
+    SubjectDTO create(SubjectDTO subjectDTO);
+
+    SubjectDTO update(Long id, SubjectDTO subjectDTO);
 
     List<SubjectDTO> findAll();
 

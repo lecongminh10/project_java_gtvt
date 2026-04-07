@@ -1,0 +1,58 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+    <div layout:fragment="content">
+
+        <!--
+            Nếu product.id == null → action = /create  (THÊM MỚI)
+            Nếu product.id != null → action = /{id}/edit (SỬA)
+            Dùng 1 form chung cho cả 2 trường hợp!
+        -->
+        <form method="post"
+              style="max-width: 600px;"
+              th:action="${actionUrl}"
+              th:object="${subject}">
+
+            <input th:field="*{id}" type="hidden">
+
+            <div class="form-input-wrap">
+                <label class="form-label-clean">Tên môn học</label>
+                <!-- th:field="*{name}" bind input với SubjectDTO.name -->
+                <input class="form-control-clean" required th:field="*{name}" type="text">
+            </div>
+
+            <div class="form-input-wrap">
+                <label class="form-label-clean">Code</label>
+                <input class="form-control-clean" required th:field="*{code}" type="text">
+            </div>
+
+
+            <div class="form-input-wrap">
+                <label class="form-label-clean">Level</label>
+                <select class="form-control-clean" th:field="*{level}">
+                    <option value="">Default</option>
+                    <option value="TIEU_HOC">TIEU_HOC</option>
+                    <option value="THCS">THCS</option>
+                    <option value="THPT">THPT</option>
+                </select>
+            </div>
+
+
+            <div class="form-input-wrap">
+                <label class="form-label-clean">Mô tả</label>
+                <textarea class="form-control-clean" rows="4" th:field="*{description}"></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn-primary-solid" type="submit">
+                    <i class="fas fa-save"></i>
+                    <!-- Tự đổi chữ nút theo ngữ cảnh -->
+                    <span th:text="${subject.id == null} ? 'Tạo mới' : 'Lưu thay đổi'"></span>
+                </button>
+                <a class="btn-ghost" th:href="@{/admin/subjects}">Hủy</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
