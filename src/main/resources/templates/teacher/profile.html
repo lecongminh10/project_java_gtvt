@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thông tin cá nhân</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h2>Thông tin cá nhân</h2>
+
+<p><b>Username:</b> <span th:text="${user.username}"></span></p>
+<p><b>Họ tên:</b> <span th:text="${user.fullName}"></span></p>
+<p><b>Email:</b> <span th:text="${user.email}"></span></p>
+<p><b>SĐT:</b> <span th:text="${user.phone}"></span></p>
+
+<hr>
+
+<h3>Đổi mật khẩu</h3>
+
+<form method="post" th:action="@{/teacher/profile/change-password}">
+    <div>
+        <label>Mật khẩu cũ:</label>
+        <input type="password" name="oldPassword" required>
+    </div>
+
+    <div>
+        <label>Mật khẩu mới:</label>
+        <input type="password" name="newPassword" required>
+    </div>
+
+    <button type="submit">Xác nhận</button>
+</form>
+
+<div th:if="${param.success}">
+    <p style="color: green;">Đổi mật khẩu thành công</p>
+</div>
+<div th:if="${param.error}">
+    <p style="color: red;">Mật khẩu cũ không đúng</p>
+</div>
+
+<a href="/teacher/materials">Xem tài liệu</a>
+
+
+<a href="/teacher/materials">Quản lý tài liệu</a>
+</body>
+</html>

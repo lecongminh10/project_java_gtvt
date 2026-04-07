@@ -1,0 +1,21 @@
+<h2>Danh sách tài liệu</h2>
+
+<a href="/teacher/materials/add">Thêm tài liệu</a>
+
+<table border="1">
+    <tr>
+        <th>Tiêu đề</th>
+        <th>File</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="m : ${materials}">
+        <td th:text="${m.title}"></td>
+        <td>
+            <a th:href="@{'/uploads/' + ${m.filePath}}" target="_blank">Xem</a>
+        </td>
+        <td>
+            <a th:href="@{'/teacher/materials/delete/' + ${m.id}}">Xóa</a>
+        </td>
+    </tr>
+</table>

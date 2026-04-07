@@ -14,3 +14,6 @@ INSERT INTO teachers (code, name, dob, email, phone, status, user_id, salary, sa
 VALUES
   ('TCH001', 'John Doe', '1990-05-15', 'john@elc.local', '0987654321', 'ACTIVE', 2, 15000000.00, 'VND', 'MONTHLY', '2024-01-01', '2025-12-31', 'FULL_TIME', 4.5, NOW(), 'Excellent teacher, very engaged with students', NOW(), NOW()),
   ('TCH002', 'Jane Smith', '1992-08-20', 'jane@elc.local', '0976543210', 'ACTIVE', 3, 12000000.00, 'VND', 'MONTHLY', '2024-06-01', '2026-05-31', 'FULL_TIME', 4.0, NOW(), 'Good teaching skills, needs improvement in classroom management', NOW(), NOW());
+
+INSERT INTO document(name, type, file_path)
+VALUES ('Grammar Basic', 'PDF', 'C:/test/grammar.pdf');
