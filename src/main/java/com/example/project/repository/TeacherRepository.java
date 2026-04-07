@@ -35,4 +35,8 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     boolean existsByCode(String code);
 
     List<Teacher> findByEmail(String email);
+
+	Optional<Teacher> findByUserUsername(String username);
+
+    Optional<Teacher> findFirstByOrderByIdAsc();
 }

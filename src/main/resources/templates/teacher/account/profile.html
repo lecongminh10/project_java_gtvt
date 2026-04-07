@@ -1,0 +1,69 @@
+<div layout:decorate="~{teacher/layout/teacher-layout}">
+<div layout:fragment="content" class="teacher-page">
+
+    <div class="teacher-card" th:if="${hasTeacher}">
+        <div class="teacher-card-header">
+            <div>
+                <h2>Thông tin cá nhân</h2>
+                <p>Cập nhật các thông tin liên hệ để nhà trường dễ dàng kết nối.</p>
+            </div>
+            <div class="teacher-card-chip">
+                <i class="fas fa-id-badge"></i>
+                <span th:text="${teacher.code}">GV001</span>
+            </div>
+        </div>
+
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+        <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+        <form class="teacher-form" th:action="@{/teacher/account}" method="post" th:object="${form}">
+            <input type="hidden" name="id" th:value="${teacher.id}">
+            <input type="hidden" name="username" th:value="${form.username}" th:if="${form.username}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" class="form-control" th:field="*{name}" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tài khoản</label>
+                    <input type="text" class="form-control" th:value="${form.username}" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" placeholder="name@school.edu.vn">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" class="form-control" th:field="*{phone}" placeholder="090...">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Ngày sinh</label>
+                    <input type="date" class="form-control" th:field="*{dob}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Trạng thái</label>
+                    <input type="text" class="form-control" th:value="${teacher.status}" readonly>
+                </div>
+            </div>
+
+            <div class="teacher-form-actions">
+                <button type="submit" class="btn-primary-solid">
+                    <i class="fas fa-save me-1"></i>Lưu thay đổi
+                </button>
+                <a th:href="@{/teacher/account}" class="btn-ghost">Hủy</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="teacher-card" th:if="${!hasTeacher}">
+        <div class="teacher-empty">
+            <i class="fas fa-circle-exclamation"></i>
+            <div>
+                <h3>Chưa có giáo viên</h3>
+                <p>Không tìm thấy dữ liệu giáo viên để hiển thị.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
