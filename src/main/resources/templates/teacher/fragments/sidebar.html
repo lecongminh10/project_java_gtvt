@@ -45,11 +45,12 @@
         </a>
 
         <div class="sidebar-section-label">Khác</div>
-        <a class="sidebar-item" th:href="@{/teacher/documents}">
+          <a class="sidebar-item" th:href="@{/teacher/documents}"
+              th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/teacher/documents')} ? ' active' : ''">
             <i class="fas fa-file-pdf"></i>
-            <span>Tài liệu</span>
+            <span>Tài liệu đào tạo</span>
         </a>
-        <a class="sidebar-item" th:href="@{/teacher/profile}">
+        <a class="sidebar-item" th:href="@{/teacher/account}">
             <i class="fas fa-user-circle"></i>
             <span>Hồ sơ của tôi</span>
         </a>
