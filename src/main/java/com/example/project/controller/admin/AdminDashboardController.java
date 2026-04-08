@@ -9,21 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminDashboardController {
 
-    @GetMapping({ "", "/", "/dashboard" })
+    @GetMapping({"", "/", "/dashboard"})
     public String dashboard(Model model) {
         model.addAttribute("pageTitle", "Admin Dashboard");
         return "admin/dashboard";
-    }
-
-    @GetMapping("/subjects")
-    public String listSubjects(Model model) {
-        model.addAttribute("pageTitle", "Subjects Management");
-        return "admin/subject/list";
-    }
-
-    @GetMapping("/courses")
-    public String listCourses(Model model) {
-        model.addAttribute("pageTitle", "Courses Management");
-        return "admin/course/list";
     }
 }

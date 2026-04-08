@@ -2,6 +2,7 @@ package com.example.project.service.impl;
 
 import com.example.project.dto.SubjectDTO;
 import com.example.project.entity.Subject;
+import com.example.project.entity.SubjectLevel;
 import com.example.project.repository.SubjectRepository;
 import com.example.project.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
         return dto;
     }
 
+    @Override
     protected Subject toEntity(SubjectDTO dto) {
         if (dto == null) return null;
         Subject subject = new Subject();
@@ -81,5 +83,11 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
     @Override
     public Optional<SubjectDTO> findById(Long id) {
         return subjectRepository.findById(id).map(this::toDTO);
+    }
+
+    @Override
+    public List<SubjectDTO> searchSubject(String name, SubjectLevel level) {
+        return subjectRepository.searchSubjects(name, level).stream()
+                .filter(s -> s.getName().equals(name) || s.getLevel() == level).map(this::toDTO).collect(Collectors.toList());
     }
 }

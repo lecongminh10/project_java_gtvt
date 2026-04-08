@@ -13,24 +13,40 @@
                                 class="fas fa-arrow-right ms-1"></i></a>
                     </div>
                     <div style="padding: 1rem; border-bottom: 1px solid #f1f5f9;">
-                        <div class="d-flex gap-3">
+                        <form class="d-flex gap-3" method="get">
                             <div style="position: relative; flex: 1; max-width: 400px;">
                                 <i class="fas fa-search"
                                    style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                                <input placeholder="Tìm kiếm môn học..."
-                                       style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;"
-                                       type="text">
+                                <input
+                                        name="subjectName"
+                                        placeholder="Tìm kiếm môn học..."
+                                        style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;"
+                                        th:value="${subjectName}"
+                                        type="text">
                             </div>
-                            <select style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;">
-                                <option>Tất cả cấp học</option>
-                                <option>Tiểu học</option>
-                                <option>THCS</option>
-                                <option>THPT</option>
+                            <select
+                                    name="subjectLevel"
+                                    style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;"
+                                    th:value="${subjectLevel}"
+                            >
+                                <option value="">Tất cả cấp học</option>
+                                <option th:each="s : ${T(com.example.project.entity.SubjectLevel).values()}"
+                                        th:selected="${subjectLevel == s}"
+                                        th:text="${s}"
+                                        th:value="${s}">
+                                </option>
                             </select>
-                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"><i
+                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"
+                                    type="submit"><i
                                     class="fas fa-filter me-1"></i> Lọc
                             </button>
-                        </div>
+                            <button class="btn btn-primary"
+                                    onclick="resetSearchForm()"
+                                    style="padding: 0.5rem 1rem; font-size: 0.875rem;"
+                                    type="button"
+                            > Reset
+                            </button>
+                        </form>
                     </div>
                     <div class="table-responsive">
                         <table class="table-admin">
@@ -134,3 +150,8 @@
 
     </div>
 </div>
+<script th:inline="javascript">
+    function resetSearchForm() {
+        window.location.href = "/admin/subjects";
+    }
+</script>

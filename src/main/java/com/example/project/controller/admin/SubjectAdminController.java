@@ -1,11 +1,14 @@
 package com.example.project.controller.admin;
 
 import com.example.project.dto.SubjectDTO;
+import com.example.project.entity.SubjectLevel;
 import com.example.project.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/subjects")
@@ -16,9 +19,14 @@ public class SubjectAdminController {
 
     // Return UI
     @GetMapping("")
-    public String listSubjects(Model model) {
+    public String listSubjects(@RequestParam(required = false) String subjectName, @RequestParam(required = false) SubjectLevel subjectLevel, Model model) {
+        List<SubjectDTO> subjects = ((subjectName != null && !subjectName.isEmpty()) || subjectLevel != null)
+                ? subjectService.searchSubject(subjectName, subjectLevel)
+                : subjectService.findAll();
         model.addAttribute("pageTitle", "Subjects Management");
-        model.addAttribute("subjects", subjectService.findAll());
+        model.addAttribute("subjectName", subjectName);
+        model.addAttribute("subjectLevel", subjectLevel);
+        model.addAttribute("subjects", subjects);
         return "admin/subject/list";
     }
 
