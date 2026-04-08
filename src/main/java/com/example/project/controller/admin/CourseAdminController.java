@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/courses")
+@RequestMapping("/admin/courses-management")
 public class CourseAdminController {
 
     private final CourseRepository courseRepository;

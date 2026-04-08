@@ -55,7 +55,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/static/**", "/css/**", "/js/**").permitAll()
+                    .requestMatchers("/", "/login", "/static/**", "/css/**", "/js/**").permitAll()
+                    .requestMatchers("/forgot-password").permitAll()
+                    .requestMatchers("/reset-password", "/reset-password/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/reset-password").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/reset-password").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .anyRequest().authenticated())

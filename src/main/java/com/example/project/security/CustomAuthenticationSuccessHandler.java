@@ -29,7 +29,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 redirectUrl = "/admin/dashboard";
                 break;
             } else if (role.equals("ROLE_TEACHER")) {
-                redirectUrl = "/teacher/dashboard";
+                redirectUrl = "/teacher/account";
                 break;
             }
         }

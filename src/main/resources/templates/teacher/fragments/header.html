@@ -1,0 +1,11 @@
+<header th:fragment="header" class="teacher-header">
+    <div class="teacher-header-inner">
+        <div>
+            <h1 th:text="${pageTitle}">Tài khoản giáo viên</h1>
+            <p>Quản lý thông tin cá nhân của bạn.</p>
+        </div>
+        <div class="teacher-header-actions">
+            <a th:href="@{/}" class="btn-outline"><i class="fas fa-house me-1"></i>Trang chủ</a>
+        </div>
+    </div>
+</header>
