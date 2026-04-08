@@ -12,7 +12,7 @@
     </a>
 
     <!-- Navigation -->
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" style="overflow: visible;">
 
         <div class="sidebar-section-label">Tổng quan</div>
         <a class="sidebar-item active" th:href="@{/admin/dashboard}">
@@ -25,27 +25,27 @@
             <i class="fa-solid fa-object-group"></i>
             <span>Môn học</span>
         </a>
-        <a href="#" class="sidebar-item">
+        <a class="sidebar-item" href="#">
             <i class="fas fa-box-open"></i>
             <span>Sản phẩm</span>
         </a>
-        <a th:href="@{/admin/courses}" class="sidebar-item">
+        <a class="sidebar-item" th:href="@{/admin/courses}">
             <i class="fas fa-graduation-cap"></i>
             <span>Khóa học</span>
         </a>
-        <a th:href="@{/admin/classes}" class="sidebar-item">
+        <a class="sidebar-item" th:href="@{/admin/classes}">
             <i class="fas fa-chalkboard-teacher"></i>
             <span>Lớp học</span>
         </a>
-        <a href="#" class="sidebar-item">
+        <a class="sidebar-item" href="#">
             <i class="fas fa-tags"></i>
             <span>Danh mục</span>
         </a>
-        <a href="#" class="sidebar-item">
+        <a class="sidebar-item" href="#">
             <i class="fas fa-percent"></i>
             <span>Khuyến mãi</span>
         </a>
-        <a href="#" class="sidebar-item">
+        <a class="sidebar-item" href="#">
             <i class="fas fa-star"></i>
             <span>Đánh giá</span>
             <span class="sidebar-badge">5</span>
@@ -73,9 +73,10 @@
 
     <!-- Footer -->
     <div class="sidebar-footer">
-        <form id="logoutFormSidebar" th:action="@{/logout}" method="post" style="display: none;">
+        <form id="logoutFormSidebar" method="post" style="display: none;" th:action="@{/logout}">
         </form>
-        <a class="sidebar-item" href="javascript:void(0)" onclick="document.getElementById('logoutFormSidebar').submit();" style="padding-left: 0; color: #ef4444;">
+        <a class="sidebar-item" href="javascript:void(0)"
+           onclick="document.getElementById('logoutFormSidebar').submit();" style="padding-left: 0; color: #ef4444;">
             <i class="fas fa-sign-out-alt"></i>
             <span>Đăng xuất</span>
         </a>
