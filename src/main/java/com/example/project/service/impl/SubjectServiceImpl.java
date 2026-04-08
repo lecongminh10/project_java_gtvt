@@ -88,6 +88,6 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
     @Override
     public List<SubjectDTO> searchSubject(String name, SubjectLevel level) {
         return subjectRepository.searchSubjects(name, level).stream()
-                .filter(s -> s.getName().equals(name) || s.getLevel() == level).map(this::toDTO).collect(Collectors.toList());
+                .filter(s -> s.getName().equalsIgnoreCase(name) || s.getLevel() == level).map(this::toDTO).collect(Collectors.toList());
     }
 }
