@@ -1,56 +1,66 @@
 <div layout:decorate="~{admin/layout/admin-layout}">
-    <div layout:fragment="content">
+<div layout:fragment="content">
 
-        <!--
-            Nếu product.id == null → action = /create  (THÊM MỚI)
-            Nếu product.id != null → action = /{id}/edit (SỬA)
-            Dùng 1 form chung cho cả 2 trường hợp!
-        -->
-        <form method="post"
-              style="max-width: 600px;"
-              th:action="${actionUrl}"
-              th:object="${subject}">
-
-            <input th:field="*{id}" type="hidden">
-
-            <div class="form-input-wrap">
-                <label class="form-label-clean">Tên môn học</label>
-                <!-- th:field="*{name}" bind input với SubjectDTO.name -->
-                <input class="form-control-clean" required th:field="*{name}" type="text">
-            </div>
-
-            <div class="form-input-wrap">
-                <label class="form-label-clean">Code</label>
-                <input class="form-control-clean" required th:field="*{code}" type="text">
-            </div>
-
-
-            <div class="form-input-wrap">
-                <label class="form-label-clean">Level</label>
-                <select class="form-control-clean" th:field="*{level}">
-                    <option value="">Default</option>
-                    <option value="TIEU_HOC">TIEU_HOC</option>
-                    <option value="THCS">THCS</option>
-                    <option value="THPT">THPT</option>
-                </select>
-            </div>
-
-
-            <div class="form-input-wrap">
-                <label class="form-label-clean">Mô tả</label>
-                <textarea class="form-control-clean" rows="4" th:field="*{description}"></textarea>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button class="btn-primary-solid" type="submit">
-                    <i class="fas fa-save"></i>
-                    <!-- Tự đổi chữ nút theo ngữ cảnh -->
-                    <span th:text="${subject.id == null} ? 'Tạo mới' : 'Lưu thay đổi'"></span>
-                </button>
-                <a class="btn-ghost" th:href="@{/admin/subjects}">Hủy</a>
-            </div>
-
-        </form>
-
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1 th:text="${pageTitle}">Môn học</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/subjects}">Môn học</a></li>
+                    <li class="breadcrumb-item active" th:text="${pageTitle}">Form</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/subjects}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
     </div>
+
+    <div class="card">
+        <div class="card-header-clean">
+            <h5 th:text="${subject.id == null} ? 'Thêm môn học' : 'Chi tiết môn học'">Thông tin môn học</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <form th:action="${actionUrl}" method="post" class="row g-3" th:object="${subject}">
+
+                <input th:field="*{id}" type="hidden">
+
+                <div class="col-md-4">
+                    <label class="form-label">Mã môn học *</label>
+                    <input type="text" name="code" class="form-control" placeholder="VD: SUB-001" th:value="${subject.code}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['code'] != null}" th:text="${errors['code']}"></div>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Tên môn học *</label>
+                    <input type="text" name="name" class="form-control" placeholder="Tên môn học" th:value="${subject.name}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Level *</label>
+                    <select name="level" class="form-select">
+                        <option value="" disabled th:selected="${subject.level == null}">Chọn Level</option>
+                        <option value="TIEU_HOC" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).TIEU_HOC}">Tiểu học</option>
+                        <option value="THCS" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).THCS}">THCS</option>
+                        <option value="THPT" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).THPT}">THPT</option>
+                    </select>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['level'] != null}" th:text="${errors['level']}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Mô tả</label>
+                    <textarea name="description" class="form-control" rows="3" th:text="${subject.description}"></textarea>
+                </div>
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a class="btn-ghost" th:href="@{/admin/subjects}">Hủy</a>
+                    <button type="submit" class="btn-primary-solid">
+                        <i class="fas fa-save"></i>
+                        <span th:text="${subject.id == null} ? 'Tạo mới' : 'Lưu thay đổi'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
 </div>
