@@ -60,4 +60,10 @@ public class SubjectAdminController {
         subjectService.update(id, subjectDTO);
         return "redirect:/admin/subjects";
     }
+
+    @PostMapping("/{id}/delete")
+    public String deleteSubject(@PathVariable Long id) {
+        subjectService.deleteById(id);
+        return "redirect:/admin/subjects";
+    }
 }

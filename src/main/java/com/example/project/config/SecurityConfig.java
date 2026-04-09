@@ -14,9 +14,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import com.example.project.security.InactiveUserLogoutFilter;
 import com.example.project.security.CustomUserDetailsService;
 import com.example.project.security.CustomAuthenticationSuccessHandler;
+import com.example.project.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +30,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -82,9 +88,15 @@ public class SecurityConfig {
                         .sessionConcurrency(concurrency -> concurrency
                                 .maximumSessions(1)
                                 .expiredUrl("/login?expired=true")))
+                .addFilterBefore(inactiveUserLogoutFilter(userRepository), UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable()); // Enable CSRF in production; Thymeleaf handles tokens
 
         return http.build();
+    }
+
+    @Bean
+    public InactiveUserLogoutFilter inactiveUserLogoutFilter(UserRepository userRepository) {
+        return new InactiveUserLogoutFilter(userRepository);
     }
 
     @Bean

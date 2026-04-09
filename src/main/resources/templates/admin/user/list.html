@@ -4,16 +4,16 @@
     <!-- Page Header -->
     <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div>
-            <h1>User Management</h1>
+            <h1>Quản lý người dùng</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
-                    <li class="breadcrumb-item active">Users</li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item active">Người dùng</li>
                 </ol>
             </nav>
         </div>
         <div class="d-flex gap-2">
-            <a th:href="@{/admin/users/new}" class="btn btn-primary"><i class="fas fa-user-plus"></i> Create User</a>
+            <a th:href="@{/admin/users/new}" class="btn-primary-solid"><i class="fas fa-user-plus"></i> Thêm người dùng</a>
         </div>
     </div>
 
@@ -28,44 +28,41 @@
     </div>
 
     <!-- Filter Bar -->
-    <div class="card mb-3">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-5">
-                    <input type="text" class="form-control" name="search" placeholder="Search username, name, email..." th:value="${search}">
-                </div>
-                <div class="col-md-3">
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <form method="get" class="d-flex align-items-center gap-2 flex-wrap admin-filter" style="flex:1;">
+                    <div class="topbar-search" style="max-width:360px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="search" placeholder="Tìm theo username, tên, email..." th:value="${search}">
+                    </div>
                     <select class="form-select" name="role">
-                        <option value="">All Roles</option>
+                        <option value="">Tất cả vai trò</option>
                         <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${selectedRole == r}"></option>
                     </select>
-                </div>
-                <div class="col-md-3">
                     <select class="form-select" name="status">
-                        <option value="">All Status</option>
+                        <option value="">Tất cả trạng thái</option>
                         <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${selectedStatus == s}"></option>
                     </select>
-                </div>
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-outline-secondary w-100"><i class="fas fa-filter"></i></button>
-                </div>
-            </form>
+                    <button type="submit" class="btn-ghost"><i class="fas fa-filter"></i> Tìm kiếm</button>
+                    <button type="button" class="btn-ghost" onclick="window.location.href='/admin/users'"><i class="fas fa-rotate-left"></i> Đặt lại</button>
+                </form>
+            </div>
         </div>
-    </div>
 
     <!-- Table -->
     <div class="card">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+            <table class="table-admin">
+                <thead>
                     <tr>
                         <th>Username</th>
-                        <th>Full Name</th>
+                        <th>Họ tên</th>
                         <th>Email</th>
-                        <th>Role</th>
-                        <th>Employee Code</th>
-                        <th>Created</th>
-                        <th>Actions</th>
+                        <th>Vai trò</th>
+                        <th>Mã nhân viên</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-end">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,26 +71,28 @@
                         <td th:text="${user.fullName}"></td>
                         <td th:text="${user.email}"></td>
                         <td>
-                            <span th:if="${user.role == 'ADMIN'}" class="badge bg-danger">ADMIN</span>
-                            <span th:if="${user.role == 'TEACHER'}" class="badge bg-info">TEACHER</span>
-                        </td>
-                        <td>
-                            <span th:if="${user.status == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
-                            <span th:if="${user.status == 'INACTIVE'}" class="badge bg-secondary">INACTIVE</span>
+                            <span th:if="${user.role == T(com.example.project.entity.UserRole).ADMIN}" class="badge-status badge-danger">Quản trị</span>
+                            <span th:if="${user.role == T(com.example.project.entity.UserRole).TEACHER}" class="badge-status badge-info">Giáo viên</span>
                         </td>
                         <td th:text="${user.employeeCode}"></td>
-                        <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}"></td>
                         <td>
-                            <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn btn-sm btn-info" title="View">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="btn btn-sm btn-warning" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </a>
+                            <span th:if="${user.status == T(com.example.project.entity.UserStatus).ACTIVE}" class="badge-status badge-success">Hoạt động</span>
+                            <span th:if="${user.status == T(com.example.project.entity.UserStatus).INACTIVE}" class="badge-status badge-pending">Ngừng</span>
+                        </td>
+                        <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}"></td>
+                        <td class="text-end">
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn-icon" title="Xem">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="btn-icon" title="Sửa">
+                                    <i class="fas fa-pencil"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${users.isEmpty()}">
-                        <td colspan="8" class="text-center text-muted py-4">No users found</td>
+                        <td colspan="8" class="text-center" style="color:#64748b; padding:1.5rem;">Chưa có người dùng.</td>
                     </tr>
                 </tbody>
             </table>
@@ -103,23 +102,12 @@
     <!-- Pagination -->
     <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
-            <li th:classappend="${page == 0} ? 'disabled'"><a class="page-link" th:href="@{/admin/users(page=${page-1})}">Previous</a></li>
+            <li th:classappend="${page == 0} ? 'disabled'"><a class="page-link" th:href="@{/admin/users(page=${page-1})}">Trước</a></li>
             <li th:each="p : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${p == page} ? 'active'">
                 <a class="page-link" th:href="@{/admin/users(page=${p})}" th:text="${p + 1}"></a>
             </li>
-            <li th:classappend="${page == totalPages - 1} ? 'disabled'"><a class="page-link" th:href="@{/admin/users(page=${page+1})}">Next</a></li>
+            <li th:classappend="${page == totalPages - 1} ? 'disabled'"><a class="page-link" th:href="@{/admin/users(page=${page+1})}">Sau</a></li>
         </ul>
     </nav>
-</div>
-</div>
-
-                    <li class="page-item disabled"><a class="page-link" href="#">‹</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#">›</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-
 </div>
 </div>

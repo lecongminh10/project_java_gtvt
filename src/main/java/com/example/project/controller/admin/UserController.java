@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -32,7 +33,8 @@ public class UserController {
             @RequestParam(defaultValue = "") String search,
             @RequestParam(required = false) UserRole role,
             @RequestParam(required = false) UserStatus status,
-            Model model) {
+            Model model,
+            Principal principal) {
 
         model.addAttribute("pageTitle", "User Management");
         model.addAttribute("page", page);
@@ -46,6 +48,12 @@ public class UserController {
         List<UserDTO> allUsers = userService.findAll();
 
         // Apply filters
+        if (principal != null && principal.getName() != null) {
+            String currentUsername = principal.getName();
+            allUsers = allUsers.stream()
+                .filter(u -> u.getUsername() != null && !u.getUsername().equalsIgnoreCase(currentUsername))
+                .toList();
+        }
         if (role != null) {
             allUsers = allUsers.stream()
                     .filter(u -> u.getRole() == role)
@@ -247,11 +255,11 @@ public class UserController {
     @PostMapping("/{id}/delete")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            userService.deleteById(id);
-            redirectAttributes.addFlashAttribute("success", "User deleted successfully!");
+            userService.deactivateUser(id);
+            redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động người dùng.");
             return "redirect:/admin/users";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error deleting user: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Không thể ngừng hoạt động người dùng: " + e.getMessage());
             return "redirect:/admin/users/" + id;
         }
     }

@@ -1,6 +1,7 @@
 package com.example.project.security;
 
 import com.example.project.entity.User;
+import com.example.project.entity.UserStatus;
 import com.example.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,10 +30,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         User foundUser = user.get();
+        boolean enabled = foundUser.getStatus() != UserStatus.INACTIVE;
         return new org.springframework.security.core.userdetails.User(
-                foundUser.getUsername(),
-                foundUser.getPassword(),
-                buildAuthorities(foundUser));
+            foundUser.getUsername(),
+            foundUser.getPassword(),
+            enabled,
+            true,
+            true,
+            true,
+            buildAuthorities(foundUser));
     }
 
     private Collection<? extends GrantedAuthority> buildAuthorities(User user) {

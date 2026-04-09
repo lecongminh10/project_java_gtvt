@@ -1,150 +1,89 @@
 <div layout:decorate="~{admin/layout/admin-layout}">
     <div layout:fragment="content">
 
-        <!-- Table + Activity -->
-        <div class="row g-3">
-
-            <!-- Subject Table -->
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header-clean">
-                        <h5><i class="fas fa-book me-2 text-primary"></i>Danh sách môn học</h5>
-                        <a class="btn-ghost" href="#" style="font-size: 0.8rem;">Xem tất cả <i
-                                class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                    <div style="padding: 1rem; border-bottom: 1px solid #f1f5f9;">
-                        <form class="d-flex gap-3" method="get">
-                            <div style="position: relative; flex: 1; max-width: 400px;">
-                                <i class="fas fa-search"
-                                   style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                                <input
-                                        name="subjectName"
-                                        placeholder="Tìm kiếm môn học..."
-                                        style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;"
-                                        th:value="${subjectName}"
-                                        type="text">
-                            </div>
-                            <select
-                                    name="subjectLevel"
-                                    style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;"
-                                    th:value="${subjectLevel}"
-                            >
-                                <option value="">Tất cả cấp học</option>
-                                <option th:each="s : ${T(com.example.project.entity.SubjectLevel).values()}"
-                                        th:selected="${subjectLevel == s}"
-                                        th:text="${s}"
-                                        th:value="${s}">
-                                </option>
-                            </select>
-                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"
-                                    type="submit"><i
-                                    class="fas fa-filter me-1"></i> Lọc
-                            </button>
-                            <button class="btn btn-primary"
-                                    onclick="resetSearchForm()"
-                                    style="padding: 0.5rem 1rem; font-size: 0.875rem;"
-                                    type="button"
-                            > Reset
-                            </button>
-                        </form>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table-admin">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Code</th>
-                                <th>Name</th>
-                                <th>Level</th>
-                                <th>Description</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody th:each="subject: ${subjects}">
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.id}"></span>
-                                <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.code}"></span>
-                                </td>
-                                <td style="font-weight: 600;" th:text="${subject.name}"></td>
-                                <td><span class="badge-status"
-                                          th:classappend="${subject.level == 'THCS' ? 'badge-info' : (subject.level == 'THPT' ? 'badge-success' : 'badge-pending')}"
-                                          th:text="${subject.level}"></span></td>
-                                <td style="color: #64748b;" th:text="${subject.description}"></td>
-                                <td>
-                                    <a th:href="@{/admin/subjects/{id}/edit(id=${subject.id})}">
-                                        <button class="btn-primary-solid">
-                                            <span>Sửa</span>
-                                        </button>
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- Page Header -->
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1>Quản lý môn học</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                        <li class="breadcrumb-item active">Môn học</li>
+                    </ol>
+                </nav>
             </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/subjects/create}" class="btn-primary-solid"><i class="fas fa-plus"></i> Thêm môn</a>
+            </div>
+        </div>
 
-            <!-- Right Panel -->
-            <div class="col-lg-4 d-flex flex-column gap-3">
+        <!-- Filter Bar -->
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <form th:action="@{/admin/subjects}" method="get" class="d-flex align-items-center gap-2" style="flex:1;">
+                    <div class="topbar-search" style="max-width:360px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="subjectName" placeholder="Tìm theo mã hoặc tên môn..." th:value="${subjectName}">
+                    </div>
+                    <select name="subjectLevel" class="filter-select" th:value="${subjectLevel}">
+                        <option value="">Tất cả cấp học</option>
+                        <option th:each="s : ${T(com.example.project.entity.SubjectLevel).values()}"
+                                th:selected="${subjectLevel == s}"
+                                th:text="${s}"
+                                th:value="${s}">
+                        </option>
+                    </select>
+                    <button class="btn-ghost" type="submit"><i class="fas fa-filter"></i> Tìm kiếm</button>
+                    <button class="btn-ghost" type="button" onclick="resetSearchForm()"><i class="fas fa-rotate-left"></i> Đặt lại</button>
+                </form>
+            </div>
+        </div>
 
-                <!-- Top Subjects -->
-                <div class="card">
-                    <div class="card-header-clean">
-                        <h5><i class="fas fa-fire me-2" style="color:#f59e0b;"></i>Môn học phổ biến</h5>
-                    </div>
-                    <div style="padding: 0.75rem 1rem;">
-                        <!-- Item -->
-                        <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="stat-card-icon icon-blue"
-                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
-                                    class="fas fa-calculator"></i></div>
-                            <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Toán học</div>
-                                <div style="font-size:0.75rem;color:#64748b;">8 khóa học</div>
-                            </div>
-                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">Hot</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="stat-card-icon icon-violet"
-                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
-                                    class="fas fa-language"></i></div>
-                            <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Tiếng Anh</div>
-                                <div style="font-size:0.75rem;color:#64748b;">6 khóa học</div>
-                            </div>
-                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">+22%</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 py-2">
-                            <div class="stat-card-icon icon-amber"
-                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
-                                    class="fas fa-flask"></i></div>
-                            <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Hóa học</div>
-                                <div style="font-size:0.75rem;color:#64748b;">5 khóa học</div>
-                            </div>
-                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">+15%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="card">
-                    <div class="card-header-clean">
-                        <h5><i class="fas fa-bolt me-2 text-primary"></i>Thao tác nhanh</h5>
-                    </div>
-                    <div style="padding: 0.75rem 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                        <a class="btn-ghost" style="justify-content:center;" th:href="@{/admin/subjects/create}"><i
-                                class="fas fa-plus"></i> Thêm
-                            MH</a>
-                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-layer-group"></i>
-                            Cấp học</a>
-                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-tags"></i> Danh
-                            mục</a>
-                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-chart-bar"></i>
-                            Báo cáo</a>
-                    </div>
-                </div>
-
+        <!-- Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table-admin">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Mã Code</th>
+                            <th>Tên</th>
+                            <th>Cấp học</th>
+                            <th>Mô tả</th>
+                            <th class="text-end">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="subject: ${subjects}">
+                            <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.id}"></span></td>
+                            <td><span style="font-weight:600; color: #2563eb;" th:text="${subject.code}"></span></td>
+                            <td th:text="${subject.name}"></td>
+                            <td>
+                                <span class="badge-status"
+                                      th:classappend="${subject.level == 'THCS' ? 'badge-info' : (subject.level == 'THPT' ? 'badge-success' : 'badge-pending')}"
+                                      th:text="${subject.level}"></span>
+                            </td>
+                            <td style="color: #64748b;" th:text="${subject.description}"></td>
+                            <td class="text-end">
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <a th:href="@{/admin/subjects/{id}/edit(id=${subject.id})}" class="btn-icon" title="Sửa">
+                                        <i class="fas fa-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/admin/subjects/{id}/delete(id=${subject.id})}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn-icon danger" title="Xóa" onclick="return confirm('Xóa môn học này?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(subjects)}">
+                            <td colspan="6" class="text-center" style="color:#64748b; padding:1.5rem;">
+                                Chưa có môn học nào.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
