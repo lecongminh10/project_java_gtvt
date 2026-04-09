@@ -38,9 +38,9 @@
                     <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Level *</label>
+                    <label class="form-label">Cấp học *</label>
                     <select name="level" class="form-select">
-                        <option value="" disabled th:selected="${subject.level == null}">Chọn Level</option>
+                        <option value="" disabled th:selected="${subject.level == null}">Chọn cấp học</option>
                         <option value="TIEU_HOC" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).TIEU_HOC}">Tiểu học</option>
                         <option value="THCS" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).THCS}">THCS</option>
                         <option value="THPT" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).THPT}">THPT</option>
