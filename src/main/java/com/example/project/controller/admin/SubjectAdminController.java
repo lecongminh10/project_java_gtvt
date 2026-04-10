@@ -8,7 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/subjects")
@@ -40,7 +42,25 @@ public class SubjectAdminController {
     }
 
     @PostMapping("/create")
-    public String createSubject(@ModelAttribute("subject") SubjectDTO subjectDTO) {
+    public String createSubject(@ModelAttribute("subject") SubjectDTO subjectDTO, Model model) {
+        Map<String, String> errors = new HashMap<>();
+        if (subjectDTO.getCode() == null || subjectDTO.getCode().trim().isEmpty()) {
+            errors.put("code", "Mã môn học không được để trống");
+        }
+        if (subjectDTO.getName() == null || subjectDTO.getName().trim().isEmpty()) {
+            errors.put("name", "Tên môn học không được để trống");
+        }
+        if (subjectDTO.getLevel() == null) {
+            errors.put("level", "Cấp học không được để trống");
+        }
+
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
+            model.addAttribute("pageTitle", "Create subject");
+            model.addAttribute("subject", subjectDTO);
+            model.addAttribute("actionUrl", "/admin/subjects/create");
+            return "admin/subject/form";
+        }
         subjectService.create(subjectDTO);
         return "redirect:/admin/subjects";
     }
@@ -56,7 +76,25 @@ public class SubjectAdminController {
     }
 
     @PostMapping("/{id}/edit")
-    public String updateSubject(@PathVariable Long id, @ModelAttribute("subject") SubjectDTO subjectDTO) {
+    public String updateSubject(@PathVariable Long id, @ModelAttribute("subject") SubjectDTO subjectDTO, Model model) {
+        Map<String, String> errors = new HashMap<>();
+        if (subjectDTO.getCode() == null || subjectDTO.getCode().trim().isEmpty()) {
+            errors.put("code", "Mã môn học không được để trống");
+        }
+        if (subjectDTO.getName() == null || subjectDTO.getName().trim().isEmpty()) {
+            errors.put("name", "Tên môn học không được để trống");
+        }
+        if (subjectDTO.getLevel() == null) {
+            errors.put("level", "Cấp học không được để trống");
+        }
+
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
+            model.addAttribute("pageTitle", "Edit subject");
+            model.addAttribute("subject", subjectDTO);
+            model.addAttribute("actionUrl", "/admin/subjects/" + id + "/edit");
+            return "admin/subject/form";
+        }
         subjectService.update(id, subjectDTO);
         return "redirect:/admin/subjects";
     }

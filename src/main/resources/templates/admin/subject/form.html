@@ -29,27 +29,27 @@
 
                 <div class="col-md-4">
                     <label class="form-label">Mã môn học *</label>
-                    <input type="text" name="code" class="form-control" placeholder="VD: SUB-001" th:value="${subject.code}">
+                    <input type="text" th:field="*{code}" class="form-control" placeholder="VD: SUB-001">
                     <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['code'] != null}" th:text="${errors['code']}"></div>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Tên môn học *</label>
-                    <input type="text" name="name" class="form-control" placeholder="Tên môn học" th:value="${subject.name}">
+                    <input type="text" th:field="*{name}" class="form-control" placeholder="Tên môn học">
                     <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Cấp học *</label>
-                    <select name="level" class="form-select">
-                        <option value="" disabled th:selected="${subject.level == null}">Chọn cấp học</option>
-                        <option value="TIEU_HOC" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).TIEU_HOC}">Tiểu học</option>
-                        <option value="THCS" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).THCS}">THCS</option>
-                        <option value="THPT" th:selected="${subject.level == T(com.example.project.entity.SubjectLevel).THPT}">THPT</option>
+                    <select th:field="*{level}" class="form-select">
+                        <option value="" disabled selected>Chọn cấp học</option>
+                        <option value="TIEU_HOC">Tiểu học</option>
+                        <option value="THCS">THCS</option>
+                        <option value="THPT">THPT</option>
                     </select>
                     <div class="text-danger" style="font-size:0.75rem;" th:if="${errors != null && errors['level'] != null}" th:text="${errors['level']}"></div>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Mô tả</label>
-                    <textarea name="description" class="form-control" rows="3" th:text="${subject.description}"></textarea>
+                    <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="col-12 d-flex justify-content-end gap-2">
                     <a class="btn-ghost" th:href="@{/admin/subjects}">Hủy</a>
