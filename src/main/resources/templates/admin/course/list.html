@@ -9,13 +9,17 @@
                 <div class="card">
                     <div class="card-header-clean">
                         <h5><i class="fas fa-graduation-cap me-2 text-primary"></i>Danh sách khóa học</h5>
-                        <a href="#" class="btn-ghost" style="font-size: 0.8rem;">Xem tất cả <i class="fas fa-arrow-right ms-1"></i></a>
+                        <a class="btn-ghost" href="#" style="font-size: 0.8rem;">Xem tất cả <i
+                                class="fas fa-arrow-right ms-1"></i></a>
                     </div>
                     <div style="padding: 1rem; border-bottom: 1px solid #f1f5f9;">
                         <div class="d-flex gap-3">
                             <div style="position: relative; flex: 1; max-width: 400px;">
-                                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                                <input type="text" placeholder="Tìm kiếm khóa học..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;">
+                                <i class="fas fa-search"
+                                   style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                                <input placeholder="Tìm kiếm khóa học..."
+                                       style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;"
+                                       type="text">
                             </div>
                             <select style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;">
                                 <option>Tất cả môn học</option>
@@ -29,7 +33,9 @@
                                 <option>Đang học</option>
                                 <option>Kết thúc</option>
                             </select>
-                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"><i class="fas fa-filter me-1"></i> Lọc</button>
+                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"><i
+                                    class="fas fa-filter me-1"></i> Lọc
+                            </button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -47,45 +53,24 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">KH001</span></td>
-                                <td style="font-weight: 600;">Lập trình Java cơ bản</td>
-                                <td style="color: #64748b;">Lập trình</td>
-                                <td>30</td>
-                                <td style="font-weight: 600;">2,500,000đ</td>
-                                <td style="color: #64748b;">8 tuần</td>
-                                <td><span class="badge-status badge-success">Mới</span></td>
-                                <td style="color: #64748b;">20/03/2026</td>
-                            </tr>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">KH002</span></td>
-                                <td style="font-weight: 600;">Lập trình Python nâng cao</td>
-                                <td style="color: #64748b;">Lập trình</td>
-                                <td>40</td>
-                                <td style="font-weight: 600;">3,500,000đ</td>
-                                <td style="color: #64748b;">10 tuần</td>
-                                <td><span class="badge-status badge-pending">Đang học</span></td>
-                                <td style="color: #64748b;">19/03/2026</td>
-                            </tr>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">KH003</span></td>
-                                <td style="font-weight: 600;">Thiết kế web với React</td>
-                                <td style="color: #64748b;">Thiết kế web</td>
-                                <td>35</td>
-                                <td style="font-weight: 600;">4,000,000đ</td>
-                                <td style="color: #64748b;">9 tuần</td>
-                                <td><span class="badge-status badge-info">Đang học</span></td>
-                                <td style="color: #64748b;">18/03/2026</td>
-                            </tr>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">KH004</span></td>
-                                <td style="font-weight: 600;">Khoa học dữ liệu với Python</td>
-                                <td style="color: #64748b;">Data Science</td>
-                                <td>50</td>
-                                <td style="font-weight: 600;">5,500,000đ</td>
-                                <td style="color: #64748b;">12 tuần</td>
-                                <td><span class="badge-status badge-success">Kết thúc</span></td>
-                                <td style="color: #64748b;">17/03/2026</td>
+                            <tr th:each="course : ${courses}">
+                                <td><span style="font-weight:600; color: #2563eb;" th:text="${course.code}"></span></td>
+                                <td style="font-weight: 600;" th:text="${course.name}"></td>
+                                <td style="color: #64748b;" th:text="${course.subjectName}"></td>
+                                <td th:text="${course.sessionsCount}"></td>
+                                <td style="font-weight: 600;" th:text="${course.fee}"></td>
+                                <td style="color: #64748b;" th:text="${course.durationWeeks + ' tuần'}"></td>
+                                <td th:switch="${course.status?.name()}">
+                                    <span class="badge-status badge-success" th:case="'MOI'">Mới</span>
+                                    <span class="badge-status badge-info" th:case="'DANG_HOC'">Đang học</span>
+                                    <span class="badge-status badge-pending" th:case="'KET_THUC'">Kết thúc</span>
+                                    <span class="badge-status badge-pending" th:case="*">Chưa xác định</span>
+                                </td>
+                                <td style="color: #64748b;"
+                                ><a class="btn-icon" th:href="@{/admin/courses/{id}/edit(id=${course.id})}"
+                                    title="Sửa">
+                                    <i class="fas fa-pencil"></i>
+                                </a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -104,15 +89,20 @@
                     <div style="padding: 0.75rem 1rem;">
                         <!-- Item -->
                         <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="stat-card-icon icon-blue" style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i class="fas fa-code"></i></div>
+                            <div class="stat-card-icon icon-blue"
+                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
+                                    class="fas fa-code"></i></div>
                             <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Lập trình Java cơ bản</div>
+                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Lập trình Java cơ bản
+                                </div>
                                 <div style="font-size:0.75rem;color:#64748b;">30 học viên</div>
                             </div>
                             <span style="font-weight:700;font-size:0.845rem;color:#10b981;">Mới</span>
                         </div>
                         <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="stat-card-icon icon-violet" style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i class="fas fa-database"></i></div>
+                            <div class="stat-card-icon icon-violet"
+                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
+                                    class="fas fa-database"></i></div>
                             <div style="flex:1;">
                                 <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Khoa học dữ liệu</div>
                                 <div style="font-size:0.75rem;color:#64748b;">45 học viên</div>
@@ -120,9 +110,12 @@
                             <span style="font-weight:700;font-size:0.845rem;color:#10b981;">Hot</span>
                         </div>
                         <div class="d-flex align-items-center gap-3 py-2">
-                            <div class="stat-card-icon icon-amber" style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i class="fas fa-paint-brush"></i></div>
+                            <div class="stat-card-icon icon-amber"
+                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
+                                    class="fas fa-paint-brush"></i></div>
                             <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Thiết kế web với React</div>
+                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Thiết kế web với React
+                                </div>
                                 <div style="font-size:0.75rem;color:#64748b;">28 học viên</div>
                             </div>
                             <span style="font-weight:700;font-size:0.845rem;color:#10b981;">+15%</span>
@@ -136,10 +129,14 @@
                         <h5><i class="fas fa-bolt me-2 text-primary"></i>Thao tác nhanh</h5>
                     </div>
                     <div style="padding: 0.75rem 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                        <a href="#" class="btn-ghost" style="justify-content:center;"><i class="fas fa-plus"></i> Thêm KH</a>
-                        <a href="#" class="btn-ghost" style="justify-content:center;"><i class="fas fa-book"></i> Môn học</a>
-                        <a href="#" class="btn-ghost" style="justify-content:center;"><i class="fas fa-tags"></i> Danh mục</a>
-                        <a href="#" class="btn-ghost" style="justify-content:center;"><i class="fas fa-chart-bar"></i> Báo cáo</a>
+                        <a class="btn-ghost" style="justify-content:center;" th:href="@{/admin/courses/create}"><i
+                                class="fas fa-plus"></i> Thêm KH</a>
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-book"></i> Môn
+                            học</a>
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-tags"></i> Danh
+                            mục</a>
+                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-chart-bar"></i>
+                            Báo cáo</a>
                     </div>
                 </div>
 
