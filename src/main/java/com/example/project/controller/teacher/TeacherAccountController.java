@@ -24,6 +24,8 @@ import java.util.Optional;
 @RequestMapping("/teacher/account")
 public class TeacherAccountController {
 
+    private static final String DEFAULT_TEACHER_PASSWORD = "12345678";
+
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,6 +41,7 @@ public class TeacherAccountController {
     @GetMapping
     public String viewAccount(@RequestParam(value = "id", required = false) Long id,
                               @RequestParam(value = "username", required = false) String username,
+                              @RequestParam(value = "forceChange", required = false) String forceChange,
                               Model model,
                               Principal principal) {
         String resolvedUsername = resolveUsername(principal, username);
@@ -54,6 +57,15 @@ public class TeacherAccountController {
         model.addAttribute("teacher", teacher);
         model.addAttribute("hasTeacher", true);
         model.addAttribute("form", TeacherAccountForm.fromTeacher(teacher));
+        if (principal != null && principal.getName() != null) {
+            userRepository.findByUsername(principal.getName()).ifPresent(user ->
+                model.addAttribute("forcePasswordChange",
+                    passwordEncoder.matches(DEFAULT_TEACHER_PASSWORD, user.getPassword()))
+            );
+        }
+        if (forceChange != null) {
+            model.addAttribute("forcePasswordChange", true);
+        }
         return "teacher/account/profile";
     }
 
@@ -118,6 +130,10 @@ public class TeacherAccountController {
         }
         if (!newPassword.equals(confirmPassword)) {
             redirectAttributes.addFlashAttribute("passwordError", "Mật khẩu xác nhận không khớp.");
+            return "redirect:/teacher/account";
+        }
+        if (DEFAULT_TEACHER_PASSWORD.equals(newPassword)) {
+            redirectAttributes.addFlashAttribute("passwordError", "Vui lòng không dùng lại mật khẩu mặc định.");
             return "redirect:/teacher/account";
         }
 

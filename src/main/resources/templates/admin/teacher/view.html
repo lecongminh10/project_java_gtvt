@@ -1,151 +1,141 @@
 <div layout:decorate="~{admin/layout/admin-layout}">
 <div layout:fragment="content">
-    <div class="container-fluid p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Teacher Details: <span th:text="${teacher.code}"></span></h1>
-            <a th:href="@{/admin/teachers}" class="btn btn-secondary">Back to List</a>
+
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1>Chi tiết giáo viên</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/teachers}">Giáo viên</a></li>
+                    <li class="breadcrumb-item active" th:text="${teacher.code}">Chi tiết</li>
+                </ol>
+            </nav>
         </div>
-        
-        <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#basicInfo" type="button">Basic Info</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#salary" type="button">Salary</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contract" type="button">Contract</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#performance" type="button">Performance</button>
-            </li>
-        </ul>
-        
-        <div class="tab-content">
-            <!-- Basic Info Tab -->
-            <div class="tab-pane fade show active" id="basicInfo" role="tabpanel">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-2"><strong>Code:</strong> <span th:text="${teacher.code}"></span></p>
-                                <p class="mb-2"><strong>Full Name:</strong> <span th:text="${teacher.name}"></span></p>
-                                <p class="mb-2"><strong>Email:</strong> <span th:text="${teacher.email}"></span></p>
-                                <p class="mb-2"><strong>Phone:</strong> <span th:text="${teacher.phone}"></span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-2"><strong>Date of Birth:</strong> <span th:text="${teacher.dateOfBirth}"></span></p>
-                                <p class="mb-2"><strong>Status:</strong> 
-                                    <span class="badge" th:text="${teacher.status}" th:classappend="${teacher.status == 'ACTIVE'} ? 'bg-success' : 'bg-danger'"></span>
-                                </p>
-                                <p class="mb-2"><strong>Created:</strong> <span th:text="${#temporals.format(teacher.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
-                                <p class="mb-0"><strong>Updated:</strong> <span th:text="${#temporals.format(teacher.updatedAt, 'dd/MM/yyyy HH:mm')}"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a th:href="@{/admin/teachers/{id}/edit(id=${teacher.id})}" class="btn btn-primary btn-sm">Edit Basic Info</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Salary Tab -->
-            <div class="tab-pane fade" id="salary" role="tabpanel">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Salary Amount:</strong></p>
-                                <h4 th:if="${teacher.salary}"><span th:text="${#numbers.formatDecimal(teacher.salary, 0, 'DEFAULT', 0, 'DEFAULT')}"></span> <span th:text="${teacher.salaryCurrency}"></span></h4>
-                                <p th:if="!${teacher.salary}" class="text-muted">Not set</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Pay Period:</strong></p>
-                                <p th:text="${teacher.salaryPayPeriod}"></p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Currency:</strong></p>
-                                <p th:text="${teacher.salaryCurrency}"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a th:href="@{/admin/teachers/{id}/salary(id=${teacher.id})}" class="btn btn-primary btn-sm">Update Salary</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Contract Tab -->
-            <div class="tab-pane fade" id="contract" role="tabpanel">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Contract Start Date:</strong></p>
-                                <p th:text="${teacher.contractStartDate}"></p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Contract End Date:</strong></p>
-                                <p th:if="${teacher.contractEndDate}" th:text="${#temporals.format(teacher.contractEndDate, 'dd/MM/yyyy')}"></p>
-                                <p th:if="!${teacher.contractEndDate}" class="text-muted">Ongoing (no end date)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Contract Type:</strong></p>
-                                <p th:text="${teacher.contractType}"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a th:href="@{/admin/teachers/{id}/contract(id=${teacher.id})}" class="btn btn-primary btn-sm">Update Contract</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Performance Tab -->
-            <div class="tab-pane fade" id="performance" role="tabpanel">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p class="mb-2"><strong>Performance Rating:</strong></p>
-                                <h4 th:if="${teacher.performanceRating}"><span th:text="${teacher.performanceRating}"></span> / 5.0</h4>
-                                <p th:if="!${teacher.performanceRating}" class="text-muted">No rating yet</p>
-                            </div>
-                            <div class="col-md-8">
-                                <p class="mb-2"><strong>Last Review Date:</strong></p>
-                                <p th:if="${teacher.lastPerformanceReviewDate}" th:text="${#temporals.format(teacher.lastPerformanceReviewDate, 'dd/MM/yyyy HH:mm')}"></p>
-                                <p th:if="!${teacher.lastPerformanceReviewDate}" class="text-muted">No reviews yet</p>
-                                <p class="mb-0 mt-3"><strong>Last Review Notes:</strong></p>
-                                <p th:text="${teacher.lastReviewerNotes}"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a th:href="@{/admin/teachers/{id}/performance-review(id=${teacher.id})}" class="btn btn-primary btn-sm">Add Performance Review</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-4">
-            <form th:action="@{/admin/teachers/{id}/status(id=${teacher.id})}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-warning btn-sm" th:text="${teacher.status == 'ACTIVE'} ? 'Deactivate' : 'Activate'"></button>
-            </form>
-            <form th:action="@{/admin/teachers/{id}/delete(id=${teacher.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
-                <button type="submit" class="btn btn-danger btn-sm">Delete Teacher</button>
-            </form>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/teachers}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
         </div>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const bootstrap = window.bootstrap;
-            if (bootstrap) {
-                const tabElements = document.querySelectorAll('button[data-bs-toggle="tab"]');
-                tabElements.forEach(tabEl => {
-                    new bootstrap.Tab(tabEl);
-                });
-            }
-        });
-    </script>
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header-clean">
+                    <h5>Thông tin cơ bản</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table-admin">
+                        <tbody>
+                            <tr>
+                                <td style="width: 200px; color: #64748b;">Mã giáo viên</td>
+                                <td><strong th:text="${teacher.code}"></strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Họ tên</td>
+                                <td th:text="${teacher.name}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Email</td>
+                                <td th:text="${teacher.email}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Số điện thoại</td>
+                                <td th:text="${teacher.phone}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Ngày sinh</td>
+                                <td th:text="${teacher.dob}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Tài khoản</td>
+                                <td th:text="${teacher.userInfo != null ? teacher.userInfo.username : '-'}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Trạng thái</td>
+                                <td>
+                                    <span th:if="${teacher.status == T(com.example.project.entity.UserStatus).ACTIVE}" class="badge-status badge-success">Hoạt động</span>
+                                    <span th:if="${teacher.status == T(com.example.project.entity.UserStatus).INACTIVE}" class="badge-status badge-pending">Ngừng</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Ngày tạo</td>
+                                <td th:text="${#temporals.format(teacher.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Cập nhật</td>
+                                <td th:text="${#temporals.format(teacher.updatedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1rem;">
+                <div class="card-header-clean">
+                    <h5>Hợp đồng & lương</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table-admin">
+                        <tbody>
+                            <tr>
+                                <td style="width: 200px; color: #64748b;">Ngày bắt đầu HĐ</td>
+                                <td th:text="${teacher.contractStartDate}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Ngày kết thúc HĐ</td>
+                                <td>
+                                    <span th:if="${teacher.contractEndDate}" th:text="${#temporals.format(teacher.contractEndDate, 'dd/MM/yyyy')}"></span>
+                                    <span th:unless="${teacher.contractEndDate}">Đang hiệu lực</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Loại hợp đồng</td>
+                                <td th:text="${teacher.contractType}"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Mức lương</td>
+                                <td>
+                                    <span th:if="${teacher.salary}" th:text="${#numbers.formatDecimal(teacher.salary, 0, 'DEFAULT', 0, 'DEFAULT')} + ' ' + ${teacher.salaryCurrency}"></span>
+                                    <span th:unless="${teacher.salary}">-</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Chu kỳ trả</td>
+                                <td th:text="${teacher.salaryPayPeriod}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header-clean">
+                    <h5>Hành động</h5>
+                </div>
+                <div class="card-body" style="padding:1rem;">
+                    <div class="d-flex flex-column gap-2">
+                        <a th:href="@{/admin/teachers/{id}/edit(id=${teacher.id})}" class="btn-primary-solid">
+                            <i class="fas fa-pencil"></i> Chỉnh sửa thông tin
+                        </a>
+                        <form th:action="@{/admin/teachers/{id}/status(id=${teacher.id})}" method="post">
+                            <input type="hidden" name="newStatus" th:value="${teacher.status == T(com.example.project.entity.UserStatus).ACTIVE ? 'INACTIVE' : 'ACTIVE'}">
+                            <button type="submit" class="btn-ghost" style="color:#b45309; border-color:#fde68a; background:#fffbeb;">
+                                <i class="fas fa-toggle-on"></i>
+                                <span th:text="${teacher.status == T(com.example.project.entity.UserStatus).ACTIVE ? 'Ngừng hoạt động' : 'Kích hoạt'}"></span>
+                            </button>
+                        </form>
+                        <form th:action="@{/admin/teachers/{id}/delete(id=${teacher.id})}" method="post" onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
+                            <button type="submit" class="btn-ghost" style="color: #dc2626; border-color: #fecaca; background: #fef2f2;">
+                                <i class="fas fa-trash"></i> Xóa giáo viên
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

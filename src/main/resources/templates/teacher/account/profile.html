@@ -25,6 +25,12 @@
             <span class="badge-admin-role"><i class="fas fa-id-badge me-1"></i><span th:text="${teacher.code}">GV001</span></span>
         </div>
 
+        <div class="px-4 pt-3" th:if="${forcePasswordChange}">
+            <div class="alert alert-warning">
+                Vui lòng đổi mật khẩu trước khi sử dụng các chức năng khác.
+            </div>
+        </div>
+
         <div class="px-4 pt-3" th:if="${successMessage}">
             <div class="alert alert-success" th:text="${successMessage}"></div>
         </div>

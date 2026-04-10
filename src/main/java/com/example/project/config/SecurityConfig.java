@@ -19,7 +19,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.example.project.security.InactiveUserLogoutFilter;
 import com.example.project.security.CustomUserDetailsService;
 import com.example.project.security.CustomAuthenticationSuccessHandler;
+import com.example.project.security.TeacherFirstLoginPasswordFilter;
 import com.example.project.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +35,7 @@ public class SecurityConfig {
 
     @Autowired
     private UserRepository userRepository;
+
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -58,7 +61,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
                     .requestMatchers("/", "/login", "/static/**", "/css/**", "/js/**").permitAll()
@@ -89,6 +92,7 @@ public class SecurityConfig {
                                 .maximumSessions(1)
                                 .expiredUrl("/login?expired=true")))
                 .addFilterBefore(inactiveUserLogoutFilter(userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(teacherFirstLoginPasswordFilter(userRepository, passwordEncoder), UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable()); // Enable CSRF in production; Thymeleaf handles tokens
 
         return http.build();
@@ -97,6 +101,12 @@ public class SecurityConfig {
     @Bean
     public InactiveUserLogoutFilter inactiveUserLogoutFilter(UserRepository userRepository) {
         return new InactiveUserLogoutFilter(userRepository);
+    }
+
+    @Bean
+    public TeacherFirstLoginPasswordFilter teacherFirstLoginPasswordFilter(UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
+        return new TeacherFirstLoginPasswordFilter(userRepository, passwordEncoder);
     }
 
     @Bean

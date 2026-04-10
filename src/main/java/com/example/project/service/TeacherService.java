@@ -17,20 +17,6 @@ public interface TeacherService extends BaseService<TeacherDTO, Long> {
      */
     List<TeacherDTO> getActiveTeachers();
 
-    /**
-     * Update teacher salary information
-     */
-    TeacherDTO updateSalary(Long teacherId, java.math.BigDecimal newSalary, String currency, String payPeriod);
-
-    /**
-     * Record a performance review
-     */
-    TeacherDTO updatePerformanceReview(Long teacherId, Double rating, String notes);
-
-    /**
-     * Update contract information
-     */
-    TeacherDTO updateContract(Long teacherId, LocalDate startDate, LocalDate endDate, String contractType);
 
     /**
      * Check if teacher's contract is expiring soon (within 30 days)

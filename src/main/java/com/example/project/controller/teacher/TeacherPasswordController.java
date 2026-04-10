@@ -99,22 +99,51 @@ public class TeacherPasswordController {
     }
 
     @GetMapping("/reset-password")
-    public String showResetForm(@RequestParam("token") String token, Model model) {
-        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
-        if (tokenOpt.isEmpty() || tokenOpt.get().isExpired() || tokenOpt.get().isUsed()) {
+    public String showResetForm(@RequestParam(value = "token", required = false) String token,
+                                Model model,
+                                java.security.Principal principal) {
+        if (token != null && !token.isBlank()) {
+            Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+            if (tokenOpt.isEmpty() || tokenOpt.get().isExpired() || tokenOpt.get().isUsed()) {
+                model.addAttribute("invalidToken", true);
+                return "teacher/reset-password";
+            }
+            model.addAttribute("token", token);
+            return "teacher/reset-password";
+        }
+
+        if (principal == null || principal.getName() == null) {
             model.addAttribute("invalidToken", true);
             return "teacher/reset-password";
         }
 
-        model.addAttribute("token", token);
+        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        if (userOpt.isEmpty()) {
+            model.addAttribute("invalidToken", true);
+            return "teacher/reset-password";
+        }
+
+        User user = userOpt.get();
+        if (user.getRole() != com.example.project.entity.UserRole.TEACHER
+                || !passwordEncoder.matches("12345678", user.getPassword())) {
+            model.addAttribute("invalidToken", true);
+            return "teacher/reset-password";
+        }
+
+        model.addAttribute("tokenless", true);
         return "teacher/reset-password";
     }
 
     @PostMapping("/reset-password")
-    public String handleReset(@RequestParam("token") String token,
+    public String handleReset(@RequestParam(value = "token", required = false) String token,
                               @RequestParam("newPassword") String newPassword,
                               @RequestParam("confirmPassword") String confirmPassword,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              java.security.Principal principal) {
+        if (token == null || token.isBlank()) {
+            return handleTeacherFirstLoginReset(newPassword, confirmPassword, redirectAttributes, principal);
+        }
+
         Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
         if (tokenOpt.isEmpty() || tokenOpt.get().isExpired() || tokenOpt.get().isUsed()) {
             redirectAttributes.addFlashAttribute("resetError", "Link khong hop le hoac da het han.");
@@ -139,6 +168,47 @@ public class TeacherPasswordController {
         tokenRepository.save(resetToken);
 
         return "redirect:/login?reset=changed";
+    }
+
+    private String handleTeacherFirstLoginReset(String newPassword,
+                                                String confirmPassword,
+                                                RedirectAttributes redirectAttributes,
+                                                java.security.Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            redirectAttributes.addFlashAttribute("resetError", "Ban can dang nhap de doi mat khau.");
+            return "redirect:/reset-password";
+        }
+
+        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        if (userOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("resetError", "Khong tim thay tai khoan dang nhap.");
+            return "redirect:/reset-password";
+        }
+
+        User user = userOpt.get();
+        if (user.getRole() != com.example.project.entity.UserRole.TEACHER
+                || !passwordEncoder.matches("12345678", user.getPassword())) {
+            redirectAttributes.addFlashAttribute("resetError", "Khong du dieu kien de doi mat khau.");
+            return "redirect:/reset-password";
+        }
+
+        if (newPassword == null || newPassword.isBlank()) {
+            redirectAttributes.addFlashAttribute("resetError", "Mat khau moi khong duoc de trong.");
+            return "redirect:/reset-password";
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("resetError", "Mat khau xac nhan khong khop.");
+            return "redirect:/reset-password";
+        }
+        if ("12345678".equals(newPassword)) {
+            redirectAttributes.addFlashAttribute("resetError", "Vui long khong dung lai mat khau mac dinh.");
+            return "redirect:/reset-password";
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        return "redirect:/teacher/account";
     }
 
     private String buildResetEmailHtml(String username, String resetUrl) {

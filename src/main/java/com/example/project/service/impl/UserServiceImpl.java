@@ -4,6 +4,7 @@ import com.example.project.dto.UserDTO;
 import com.example.project.entity.User;
 import com.example.project.entity.UserRole;
 import com.example.project.entity.UserStatus;
+import com.example.project.repository.TeacherRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,9 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -145,6 +149,10 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
         user.setStatus(UserStatus.INACTIVE);
         User saved = userRepository.save(user);
+        teacherRepository.findByUser(saved).ifPresent(teacher -> {
+            teacher.setStatus(UserStatus.INACTIVE);
+            teacherRepository.save(teacher);
+        });
         return toDTO(saved);
     }
 
@@ -154,6 +162,10 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
         user.setStatus(UserStatus.ACTIVE);
         User saved = userRepository.save(user);
+        teacherRepository.findByUser(saved).ifPresent(teacher -> {
+            teacher.setStatus(UserStatus.ACTIVE);
+            teacherRepository.save(teacher);
+        });
         return toDTO(saved);
     }
 
