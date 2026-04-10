@@ -1,45 +1,29 @@
-package com.example.project.entity;
+package com.example.project.dto;
 
-import jakarta.persistence.*;
+import com.example.project.entity.ClassStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "courses")
-public class Course {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+@Setter
+public class CourseDTO {
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String code;
-
-    @Column(nullable = false)
     private String name;
-
-    //        @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = true)
-    private Long subjectId;
-
+    private Long subjectId; // To link with Subject entity
+    private String subjectName; // For display purposes
     private Integer sessionsCount;
-
     private BigDecimal fee;
-
-    private String description;
-
     private Integer durationWeeks;
-
-    @Enumerated(EnumType.STRING)
+    private String description;
     private ClassStatus status;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Course() {
-    }
-
+    // Getters and Setters (Lombok annotations will generate these at compile time)
     public Long getId() {
         return id;
     }
@@ -72,6 +56,14 @@ public class Course {
         this.subjectId = subjectId;
     }
 
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
     public Integer getSessionsCount() {
         return sessionsCount;
     }
@@ -88,20 +80,20 @@ public class Course {
         this.fee = fee;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Integer getDurationWeeks() {
         return durationWeeks;
     }
 
     public void setDurationWeeks(Integer durationWeeks) {
         this.durationWeeks = durationWeeks;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public ClassStatus getStatus() {

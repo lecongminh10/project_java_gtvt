@@ -1,0 +1,98 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+    <div layout:fragment="content">
+
+        <!-- Page Header -->
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1 th:text="${pageTitle}">Khóa học</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/admin/courses}">Khóa học</a></li>
+                        <li class="breadcrumb-item active" th:text="${pageTitle}">Form</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn-ghost" th:href="@{/admin/courses}"><i class="fas fa-arrow-left"></i> Quay lại</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header-clean">
+                <h5 th:text="${course.id == null} ? 'Thêm khóa học' : 'Chi tiết khóa học'">Thông tin khóa học</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <form class="row g-3" method="post" th:action="${formAction}" th:object="${course}">
+
+                    <input th:field="*{id}" type="hidden">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Mã khóa học *</label>
+                        <input class="form-control" placeholder="VD: IELTS01" th:field="*{code}" type="text">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['code'] != null}" th:text="${errors['code']}"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Tên khóa học *</label>
+                        <input class="form-control" placeholder="Tên khóa học" th:field="*{name}" type="text">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Số buổi</label>
+                        <input class="form-control" min="0" placeholder="VD: 12" th:field="*{sessionsCount}"
+                               type="number">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['sessionsCount'] != null}"
+                             th:text="${errors['sessionsCount']}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Học phí</label>
+                        <input class="form-control" min="0" placeholder="VD: 1500000" step="0.01" th:field="*{fee}"
+                               type="number">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['fee'] != null}" th:text="${errors['fee']}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Thời lượng (tuần)</label>
+                        <input class="form-control" min="1" placeholder="VD: 4" th:field="*{durationWeeks}" type="number">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['durationWeeks'] != null}" th:text="${errors['durationWeeks']}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Chọn môn học</label>
+                        <select class="form-select" th:field="*{subjectId}">
+                            <option value="">Chọn môn học</option>
+                            <option th:each="s: ${subjects}"
+                                    th:value="${s.id}"
+                                    th:text="${s.name}">
+                            </option>
+                        </select>
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['subjectId'] != null}" th:text="${errors['subjectId']}"></div>
+                    </div>
+                    <div class="col-md-4" th:if="${course.id != null}">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" th:field="*{status}">
+                            <option th:each="s : ${T(com.example.project.entity.ClassStatus).values()}"
+                                    th:value="${s}" th:text="${s.label}"></option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end gap-2">
+                        <a class="btn-ghost" th:href="@{/admin/courses}">Hủy</a>
+                        <button class="btn-primary-solid" type="submit">
+                            <i class="fas fa-save"></i>
+                            <span th:text="${course.id == null} ? 'Tạo mới' : 'Lưu thay đổi'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
