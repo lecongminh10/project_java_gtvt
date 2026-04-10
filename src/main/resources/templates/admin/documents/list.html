@@ -1,0 +1,115 @@
+<div layout:decorate="~{admin/layout/admin-layout}"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div>
+            <h1 th:text="${pageTitle}">Quản lý tài liệu</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item active">Tài liệu đào tạo</li>
+                </ol>
+            </nav>
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/admin/documents/new}">
+                <i class="fas fa-plus me-1"></i> Thêm mới
+            </a>
+        </div>
+    </div>
+
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+
+    <div class="card mb-3">
+        <div class="card-header-clean">
+            <form class="d-flex flex-wrap gap-2 align-items-center" th:action="@{/admin/documents}" method="get">
+                <div style="flex: 1; min-width: 250px;">
+                    <div style="position: relative;">
+                        <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu..." style="padding-left: 2.5rem;">
+                    </div>
+                </div>
+                <select class="form-select" name="subjectId" style="width: auto; min-width: 180px;">
+                    <option value="">Tất cả môn học</option>
+                    <option th:each="subject : ${subjects}"
+                            th:value="${subject.id}"
+                            th:text="${subject.name}"
+                            th:selected="${subjectId != null and subjectId == subject.id}">
+                    </option>
+                </select>
+                <select class="form-select" name="courseId" style="width: auto; min-width: 180px;">
+                    <option value="">Tất cả khóa học</option>
+                    <option th:each="course : ${courses}"
+                            th:value="${course.id}"
+                            th:text="${course.name}"
+                            th:selected="${courseId != null and courseId == course.id}">
+                    </option>
+                </select>
+                <button class="btn btn-secondary" type="submit"><i class="fas fa-filter me-1"></i> Lọc dữ liệu</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table-admin">
+                <thead>
+                <tr>
+                    <th style="width: 60px;">STT</th>
+                    <th>Tên tài liệu</th>
+                    <th>Loại</th>
+                    <th>Môn học</th>
+                    <th>Khóa học</th>
+                    <th>Người tạo</th>
+                    <th>Ngày tạo</th>
+                    <th class="text-end" style="width: 180px;">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${documents == null or #lists.isEmpty(documents)}">
+                    <td colspan="8" class="text-center text-muted py-4">
+                        <i class="fas fa-folder-open mb-2" style="font-size: 2rem; color: #cbd5e1;"></i><br>
+                        Chưa có tài liệu nào trong hệ thống
+                    </td>
+                </tr>
+                <tr th:each="doc, iter : ${documents}">
+                    <td th:text="${iter.count}">1</td>
+                    <td style="font-weight: 500;" th:text="${doc.name}">Tài liệu</td>
+                    <td>
+                        <span class="badge-status badge-info" th:if="${doc.type.name() == 'GIAO_AN'}" th:text="'Giáo án'"></span>
+                        <span class="badge-status badge-success" th:if="${doc.type.name() == 'TAI_LIEU_THAM_KHAO'}" th:text="'Tham khảo'"></span>
+                        <span class="badge-status badge-secondary" th:if="${doc.type.name() == 'KHAC'}" th:text="'Khác'"></span>
+                    </td>
+                    <td th:text="${doc.subject != null ? doc.subject.name : '-'}">-</td>
+                    <td th:text="${doc.course != null ? doc.course.name : '-'}">-</td>
+                    <td th:text="${doc.uploadBy != null ? doc.uploadBy.fullName : '-'}">-</td>
+                    <td th:text="${doc.createdAt != null ? #temporals.format(doc.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-1 justify-content-end">
+                            <a class="btn-icon" th:href="@{/admin/documents/{id}(id=${doc.id})}" title="Xem chi tiết">
+                                <i class="fas fa-eye text-primary"></i>
+                            </a>
+                            <a class="btn-icon" th:href="@{/admin/documents/{id}/edit(id=${doc.id})}" title="Sửa tài liệu">
+                                <i class="fas fa-edit text-warning"></i>
+                            </a>
+                            <a class="btn-icon" th:href="@{/admin/documents/download/{id}(id=${doc.id})}" title="Tải xuống">
+                                <i class="fas fa-download text-success"></i>
+                            </a>
+                            <form th:action="@{/admin/documents/{id}/delete(id=${doc.id})}" method="post" class="d-inline" title="Xóa tài liệu" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài liệu này không? Hành động này không thể hoàn tác.');">
+                                <button type="submit" class="btn-icon border-0 bg-transparent">
+                                    <i class="fas fa-trash-alt text-danger"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</div>

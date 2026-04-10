@@ -1,0 +1,79 @@
+<div layout:decorate="~{admin/layout/admin-layout}"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+
+    <div class="page-header mb-4">
+        <h1>Chi tiết tài liệu</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/documents}">Tài liệu</a></li>
+                <li class="breadcrumb-item active">Chi tiết</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header-clean d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-file-alt me-2 text-primary"></i>Thông tin tài liệu</h5>
+            <div>
+                <a class="btn btn-outline-warning btn-sm" th:href="@{/admin/documents/{id}/edit(id=${document.id})}">
+                    <i class="fas fa-edit me-1"></i> Sửa
+                </a>
+                <a class="btn btn-primary btn-sm" th:href="@{/admin/documents/download/{id}(id=${document.id})}">
+                    <i class="fas fa-download me-1"></i> Tải xuống
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            
+            <div class="row mb-3 border-bottom pb-3">
+                <div class="col-md-4 text-muted fw-bold">Tên tài liệu:</div>
+                <div class="col-md-8" style="font-size: 1.1rem; font-weight: 500; color: #0f172a;" th:text="${document.name}">Tên tài liệu</div>
+            </div>
+
+            <div class="row mb-3 border-bottom pb-3">
+                <div class="col-md-4 text-muted fw-bold">Loại tài liệu:</div>
+                <div class="col-md-8">
+                    <span class="badge-status badge-info" th:if="${document.type.name() == 'GIAO_AN'}" th:text="'Giáo án'"></span>
+                    <span class="badge-status badge-success" th:if="${document.type.name() == 'TAI_LIEU_THAM_KHAO'}" th:text="'Tài liệu tham khảo'"></span>
+                    <span class="badge-status badge-secondary" th:if="${document.type.name() == 'KHAC'}" th:text="'Khác'"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3 border-bottom pb-3">
+                <div class="col-md-4 text-muted fw-bold">Môn học:</div>
+                <div class="col-md-8" th:text="${document.subject != null ? document.subject.name : 'Không phân loại'}">-</div>
+            </div>
+
+            <div class="row mb-3 border-bottom pb-3">
+                <div class="col-md-4 text-muted fw-bold">Khóa học:</div>
+                <div class="col-md-8" th:text="${document.course != null ? document.course.name : 'Không phân loại'}">-</div>
+            </div>
+
+            <div class="row mb-3 border-bottom pb-3">
+                <div class="col-md-4 text-muted fw-bold">Người tải lên:</div>
+                <div class="col-md-8" th:text="${document.uploadBy != null ? document.uploadBy.fullName + ' (' + document.uploadBy.username + ')' : 'System'}">-</div>
+            </div>
+
+            <div class="row mb-3 border-bottom pb-3">
+                <div class="col-md-4 text-muted fw-bold">Ngày tải lên:</div>
+                <div class="col-md-8" th:text="${document.createdAt != null ? #temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm:ss') : '-'}">-</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 text-muted fw-bold">Đường dẫn tệp gốc nội bộ:</div>
+                <div class="col-md-8" style="word-break: break-all;" th:text="${document.filePath != null ? document.filePath : 'Chưa có file'}">-</div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 pt-4 mt-2">
+                <a th:href="@{/admin/documents}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i> Quay lại danh sách</a>
+                <a th:href="@{/admin/documents/view/{id}(id=${document.id})}" target="_blank" class="btn btn-outline-primary"><i class="fas fa-file-pdf me-1"></i> Mở xem trực tuyến</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>
