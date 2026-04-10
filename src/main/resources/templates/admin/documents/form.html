@@ -1,0 +1,92 @@
+<div layout:decorate="~{admin/layout/admin-layout}"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+
+    <div class="page-header mb-4">
+        <h1 th:text="${pageTitle}">Thêm tài liệu</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/documents}">Tài liệu</a></li>
+                <li class="breadcrumb-item active" th:text="${pageTitle}">Thêm mới</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header-clean">
+            <h5 class="mb-0"><i class="fas fa-file-alt me-2 text-primary"></i>Thông tin tài liệu</h5>
+        </div>
+        <div class="card-body p-4">
+            <!-- Ensure enctype is multipart/form-data for file upload -->
+            <form th:action="@{${formAction}}" method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label class="form-label" for="name">Tên tài liệu <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" 
+                           th:value="${document.name}" placeholder="Nhập tên tài liệu..." required>
+                    <div class="text-danger small mt-1" th:if="${errors != null and errors.containsKey('name')}" th:text="${errors.get('name')}"></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="type">Loại tài liệu <span class="text-danger">*</span></label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option th:each="t : ${types}"
+                                    th:value="${t.name()}"
+                                    th:text="${t.name() == 'GIAO_AN' ? 'Giáo án' : (t.name() == 'TAI_LIEU_THAM_KHAO' ? 'Tài liệu tham khảo' : 'Khác')}"
+                                    th:selected="${document.type != null and document.type.name() == t.name()}">
+                            </option>
+                        </select>
+                        <div class="text-danger small mt-1" th:if="${errors != null and errors.containsKey('type')}" th:text="${errors.get('type')}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="file">File đính kèm <span class="text-danger" th:if="${document.id == null}">*</span></label>
+                        <input type="file" class="form-control" id="file" name="file" th:required="${document.id == null}">
+                        <div class="text-muted small mt-1" th:if="${document.id != null}">
+                            <i class="fas fa-info-circle me-1"></i> Bỏ trống nếu không muốn đổi file. File hiện tại: 
+                            <a th:href="@{/admin/documents/download/{id}(id=${document.id})}" th:text="'Tải xuống'">Tải xuống</a>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${errors != null and errors.containsKey('file')}" th:text="${errors.get('file')}"></div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label" for="subjectId">Môn học</label>
+                        <select class="form-select" id="subjectId" name="subjectId">
+                            <option value="">-- Chọn môn học --</option>
+                            <option th:each="subject : ${subjects}"
+                                    th:value="${subject.id}"
+                                    th:text="${subject.name}"
+                                    th:selected="${document.subject != null and document.subject.id == subject.id}">
+                            </option>
+                        </select>
+                        <div class="text-danger small mt-1" th:if="${errors != null and errors.containsKey('subjectId')}" th:text="${errors.get('subjectId')}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="courseId">Khóa học</label>
+                        <select class="form-select" id="courseId" name="courseId">
+                            <option value="">-- Chọn khóa học liên quan --</option>
+                            <option th:each="course : ${courses}"
+                                    th:value="${course.id}"
+                                    th:text="${course.name}"
+                                    th:selected="${document.course != null and document.course.id == course.id}">
+                            </option>
+                        </select>
+                        <div class="text-danger small mt-1" th:if="${errors != null and errors.containsKey('courseId')}" th:text="${errors.get('courseId')}"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                    <a th:href="@{/admin/documents}" class="btn btn-outline-secondary">Đóng</a>
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+</div>
