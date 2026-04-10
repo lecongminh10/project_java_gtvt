@@ -1,0 +1,145 @@
+<div layout:decorate="~{admin/layout/admin-layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+    <div layout:fragment="content">
+        <style>
+            .confirm-modal {
+                position: fixed;
+                inset: 0;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 1.5rem;
+                background: rgba(15, 23, 42, 0.55);
+                backdrop-filter: blur(4px);
+                z-index: 1200;
+            }
+
+            .confirm-modal.is-open {
+                display: flex;
+            }
+        </style>
+
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1>Chi tiết học viên</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/admin/students}">Học viên</a></li>
+                        <li class="breadcrumb-item active">Chi tiết</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/students}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                <a th:href="@{/admin/students/{id}/edit(id=${student.id})}" class="btn-primary-solid"><i class="fas fa-pencil"></i> Sửa</a>
+                <form th:action="@{/admin/students/{id}/delete(id=${student.id})}" method="post" style="display:inline;" onsubmit="return confirm('Xóa học viên này?')">
+                    <button type="submit" class="btn-ghost">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <h5>Thông tin học viên</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="text-muted" style="font-size:0.75rem;">Mã học viên</div>
+                        <div style="font-weight:600;" th:text="${student.code}"></div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="text-muted" style="font-size:0.75rem;">Họ tên học viên</div>
+                        <div style="font-weight:600;" th:text="${student.name}"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-muted" style="font-size:0.75rem;">Trạng thái</div>
+                        <div>
+                            <span class="badge-status"
+                                  th:classappend="${student.status == T(com.example.project.entity.StudentStatus).ACTIVE ? ' badge-success' : ' badge-pending'}"
+                                  th:text="${student.status == T(com.example.project.entity.StudentStatus).ACTIVE ? 'Đang học' : 'Tạm dừng'}"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted" style="font-size:0.75rem;">Ngày sinh</div>
+                        <div style="font-weight:600;" th:text="${student.dob != null ? #temporals.format(student.dob, 'dd/MM/yyyy') : '-'}"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="text-muted" style="font-size:0.75rem;">Lớp hiện tại</div>
+                        <div style="font-weight:600;" th:text="${currentClass != null ? currentClass.code + ' - ' + currentClass.name : 'Chưa xếp lớp'}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted" style="font-size:0.75rem;">Ngày tạo</div>
+                        <div th:text="${student.createdAt != null ? #temporals.format(student.createdAt, 'dd/MM/yyyy HH:mm') : '-'}"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="text-muted" style="font-size:0.75rem;">Cập nhật</div>
+                        <div th:text="${student.updatedAt != null ? #temporals.format(student.updatedAt, 'dd/MM/yyyy HH:mm') : '-'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <h5>Thông tin phụ huynh</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="text-muted" style="font-size:0.75rem;">Họ tên phụ huynh</div>
+                        <div style="font-weight:600;" th:text="${student.parentName != null ? student.parentName : '-'}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted" style="font-size:0.75rem;">Số điện thoại</div>
+                        <div style="font-weight:600;" th:text="${student.parentPhone != null ? student.parentPhone : '-'}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted" style="font-size:0.75rem;">Email</div>
+                        <div style="font-weight:600;" th:text="${student.parentEmail != null ? student.parentEmail : '-'}"></div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted" style="font-size:0.75rem;">Địa chỉ phụ huynh</div>
+                        <div th:text="${student.parentAddress != null ? student.parentAddress : '-'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header-clean">
+                <h5>Lịch sử xếp lớp</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <div class="table-responsive">
+                    <table class="table-admin">
+                        <thead>
+                        <tr>
+                            <th>Lớp học</th>
+                            <th>Ngày vào lớp</th>
+                            <th>Ngày rời lớp</th>
+                            <th>Vai trò</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="membership : ${memberships}">
+                            <td th:text="${membership.trainingClass != null ? membership.trainingClass.code + ' - ' + membership.trainingClass.name : '-'}"></td>
+                            <td th:text="${membership.joinedDate != null ? #temporals.format(membership.joinedDate, 'dd/MM/yyyy') : '-'}"></td>
+                            <td th:text="${membership.leaveDate != null ? #temporals.format(membership.leaveDate, 'dd/MM/yyyy') : 'Đang học'}"></td>
+                            <td th:text="${membership.roleInClass}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(memberships)}">
+                            <td colspan="4" class="text-center" style="color:#64748b; padding:1.5rem;">
+                                Học viên chưa được xếp vào lớp nào.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
