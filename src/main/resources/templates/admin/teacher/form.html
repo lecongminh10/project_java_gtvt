@@ -1,127 +1,160 @@
 <div layout:decorate="~{admin/layout/admin-layout}">
 <div layout:fragment="content">
-    <div class="container-fluid p-4">
-        <h1 class="h3 mb-4">Teacher Form</h1>
-        
-        <div th:if="${error}" class="alert alert-danger"><span th:text="${error}"></span></div>
-        
-        <form th:action="${teacher.id} ? @{/admin/teachers/{id}/edit(id=${teacher.id})} : @{/admin/teachers}" method="post" class="needs-validation">
-            <!-- Basic Information -->
-            <div class="card mb-3">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Basic Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Code</label>
-                                <input type="text" name="code" class="form-control" th:value="${teacher.code}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" name="name" class="form-control" th:value="${teacher.name}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" th:value="${teacher.email}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Phone</label>
-                                <input type="tel" name="phone" class="form-control" th:value="${teacher.phone}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Date of Birth</label>
-                                <input type="date" name="dateOfBirth" class="form-control" th:value="${teacher.dateOfBirth}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-select">
-                                    <option value="ACTIVE" th:selected="${teacher.status == 'ACTIVE' || !teacher.id}">Active</option>
-                                    <option value="INACTIVE" th:selected="${teacher.status == 'INACTIVE'}">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
+
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1 th:text="${teacher.id == null} ? 'Thêm giáo viên' : 'Chỉnh sửa giáo viên'">Giáo viên</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/teachers}">Giáo viên</a></li>
+                    <li class="breadcrumb-item active" th:text="${teacher.id == null} ? 'Thêm mới' : 'Chỉnh sửa'">Form</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/teachers}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger"><span th:text="${error}"></span></div>
+
+    <form th:action="${actionUrl}" method="post" class="needs-validation">
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <h5>Thông tin cơ bản</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Mã giáo viên *</label>
+                        <input type="text" name="code" class="form-control" th:value="${teacher.code}" required>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Họ tên *</label>
+                        <input type="text" name="name" class="form-control" th:value="${teacher.name}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-control" th:value="${teacher.email}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="tel" name="phone" class="form-control" th:value="${teacher.phone}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ngày sinh</label>
+                        <input type="date" name="dob" class="form-control" th:value="${teacher.dob}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Trạng thái</label>
+                        <select name="status" class="form-select">
+                            <option th:each="s : ${statuses}"
+                                    th:value="${s}"
+                                    th:selected="${teacher.status == s || (teacher.status == null && s.toString() == 'ACTIVE')}"
+                                    th:text="${s == T(com.example.project.entity.UserStatus).ACTIVE ? 'Hoạt động' : 'Ngừng'}"></option>
+                        </select>
                     </div>
                 </div>
             </div>
-            
-            <!-- Salary Information -->
-            <div class="card mb-3">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Salary Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Salary Amount</label>
-                                <input type="number" name="salary" step="0.01" class="form-control" th:value="${teacher.salary}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Currency</label>
-                                <select name="salaryCurrency" class="form-select">
-                                    <option value="VND" th:selected="${teacher.salaryCurrency == 'VND' || !teacher.salaryCurrency}">VND</option>
-                                    <option value="USD" th:selected="${teacher.salaryCurrency == 'USD'}">USD</option>
-                                    <option value="EUR" th:selected="${teacher.salaryCurrency == 'EUR'}">EUR</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Pay Period</label>
-                                <select name="salaryPayPeriod" class="form-select">
-                                    <option value="MONTHLY" th:selected="${teacher.salaryPayPeriod == 'MONTHLY' || !teacher.salaryPayPeriod}">Monthly</option>
-                                    <option value="HOURLY" th:selected="${teacher.salaryPayPeriod == 'HOURLY'}">Hourly</option>
-                                    <option value="CONTRACT" th:selected="${teacher.salaryPayPeriod == 'CONTRACT'}">Per Contract</option>
-                                </select>
-                            </div>
-                        </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <h5>Lương</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Mức lương</label>
+                        <input type="number" name="salary" step="0.01" class="form-control" th:value="${teacher.salary}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Đơn vị tiền</label>
+                        <select name="salaryCurrency" class="form-select">
+                            <option value="VND" th:selected="${teacher.salaryCurrency == 'VND' || teacher.salaryCurrency == null}">VND</option>
+                            <option value="USD" th:selected="${teacher.salaryCurrency == 'USD'}">USD</option>
+                            <option value="EUR" th:selected="${teacher.salaryCurrency == 'EUR'}">EUR</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Chu kỳ trả</label>
+                        <select name="salaryPayPeriod" class="form-select">
+                            <option value="MONTHLY" th:selected="${teacher.salaryPayPeriod == 'MONTHLY' || teacher.salaryPayPeriod == null}">Hàng tháng</option>
+                            <option value="HOURLY" th:selected="${teacher.salaryPayPeriod == 'HOURLY'}">Theo giờ</option>
+                            <option value="CONTRACT" th:selected="${teacher.salaryPayPeriod == 'CONTRACT'}">Theo hợp đồng</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            
-            <!-- Contract Information -->
-            <div class="card mb-3">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Contract Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Contract Start Date</label>
-                                <input type="date" name="contractStartDate" class="form-control" th:value="${teacher.contractStartDate}">
-                            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <h5>Hợp đồng</h5>
+            </div>
+            <div class="card-body" style="padding:1.25rem;">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Ngày bắt đầu</label>
+                        <input type="date" name="contractStartDate" id="contractStartDate" class="form-control" th:value="${teacher.contractStartDate}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ngày kết thúc</label>
+                        <input type="date" name="contractEndDate" id="contractEndDate" class="form-control" th:value="${teacher.contractEndDate}">
+                        <div class="form-check" style="margin-top:0.5rem;">
+                            <input class="form-check-input" type="checkbox" id="contractNoEndDate" name="contractNoEndDate"
+                                   th:checked="${teacher.contractEndDate == null}">
+                            <label class="form-check-label" for="contractNoEndDate">Vô thời hạn</label>
                         </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Contract End Date (leave blank for ongoing)</label>
-                                <input type="date" name="contractEndDate" class="form-control" th:value="${teacher.contractEndDate}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Contract Type</label>
-                                <select name="contractType" class="form-select">
-                                    <option value="FULL_TIME" th:selected="${teacher.contractType == 'FULL_TIME' || !teacher.contractType}">Full Time</option>
-                                    <option value="PART_TIME" th:selected="${teacher.contractType == 'PART_TIME'}">Part Time</option>
-                                    <option value="FREELANCE" th:selected="${teacher.contractType == 'FREELANCE'}">Freelance</option>
-                                </select>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Loại hợp đồng</label>
+                        <select name="contractType" class="form-select">
+                            <option value="FULL_TIME" th:selected="${teacher.contractType == 'FULL_TIME' || teacher.contractType == null}">Toàn thời gian</option>
+                            <option value="PART_TIME" th:selected="${teacher.contractType == 'PART_TIME'}">Bán thời gian</option>
+                            <option value="FREELANCE" th:selected="${teacher.contractType == 'FREELANCE'}">Cộng tác</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a th:href="@{/admin/teachers}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <a th:href="@{/admin/teachers}" class="btn-ghost">Hủy</a>
+            <button type="submit" class="btn-primary-solid">
+                <i class="fas fa-save"></i> Lưu
+            </button>
+        </div>
+    </form>
+
+    <script>
+        (function() {
+            const startInput = document.getElementById('contractStartDate');
+            const endInput = document.getElementById('contractEndDate');
+            const noEndCheckbox = document.getElementById('contractNoEndDate');
+
+            function syncEndState() {
+                const hasStart = !!startInput.value;
+                if (hasStart) {
+                    endInput.min = startInput.value;
+                } else {
+                    endInput.removeAttribute('min');
+                }
+
+                if (noEndCheckbox.checked) {
+                    endInput.value = '';
+                    endInput.disabled = true;
+                } else {
+                    endInput.disabled = false;
+                }
+            }
+
+            startInput.addEventListener('change', syncEndState);
+            noEndCheckbox.addEventListener('change', syncEndState);
+            syncEndState();
+        })();
+    </script>
+
     </div>
 </div>

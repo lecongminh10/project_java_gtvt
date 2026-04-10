@@ -49,3 +49,4 @@ logs/
 .env
 .env.local
 application-local.properties
+./upload/

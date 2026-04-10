@@ -3,13 +3,13 @@ package com.example.project.controller.admin;
 import com.example.project.dto.TeacherDTO;
 import com.example.project.entity.UserStatus;
 import com.example.project.service.TeacherService;
+import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,6 +19,9 @@ public class TeacherController {
 
     @Autowired
     private TeacherService teacherService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * List all teachers with filtering
@@ -32,7 +35,7 @@ public class TeacherController {
             @RequestParam(defaultValue = "false") boolean expiringContracts,
             Model model) {
 
-        model.addAttribute("pageTitle", "Teacher Management");
+        model.addAttribute("pageTitle", "Quản lý giáo viên");
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("search", search);
@@ -79,7 +82,7 @@ public class TeacherController {
     @GetMapping("/{id}")
     public String viewTeacher(@PathVariable Long id, Model model) {
         TeacherDTO teacher = teacherService.getById(id);
-        model.addAttribute("pageTitle", "Teacher Details - " + teacher.getName());
+        model.addAttribute("pageTitle", "Chi tiết giáo viên - " + teacher.getName());
         model.addAttribute("teacher", teacher);
         model.addAttribute("statuses", UserStatus.values());
         return "admin/teacher/view";
@@ -90,10 +93,11 @@ public class TeacherController {
      */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("pageTitle", "Create New Teacher");
+        model.addAttribute("pageTitle", "Thêm giáo viên");
         model.addAttribute("teacher", new TeacherDTO());
         model.addAttribute("statuses", UserStatus.values());
         model.addAttribute("contractTypes", new String[] { "FULL_TIME", "PART_TIME", "FREELANCE" });
+        model.addAttribute("actionUrl", "/admin/teachers");
         return "admin/teacher/form";
     }
 
@@ -102,11 +106,17 @@ public class TeacherController {
      */
     @PostMapping
     public String createTeacher(@ModelAttribute TeacherDTO teacher,
+            @RequestParam(required = false) Boolean contractNoEndDate,
             RedirectAttributes redirectAttributes) {
         try {
             // Check if code already exists
             if (teacherService.teacherCodeExists(teacher.getCode())) {
-                redirectAttributes.addFlashAttribute("error", "Teacher code already exists!");
+                redirectAttributes.addFlashAttribute("error", "Mã giáo viên đã tồn tại!");
+                return "redirect:/admin/teachers/new";
+            }
+
+            if (teacher.getEmail() == null || teacher.getEmail().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Vui lòng nhập email để tạo tài khoản giáo viên.");
                 return "redirect:/admin/teachers/new";
             }
 
@@ -115,11 +125,21 @@ public class TeacherController {
                 teacher.setStatus(UserStatus.ACTIVE);
             }
 
+            if (Boolean.TRUE.equals(contractNoEndDate)) {
+                teacher.setContractEndDate(null);
+            }
+
+            if (teacher.getContractStartDate() != null && teacher.getContractEndDate() != null
+                    && teacher.getContractEndDate().isBefore(teacher.getContractStartDate())) {
+                redirectAttributes.addFlashAttribute("error", "Ngày kết thúc không được bé hơn ngày bắt đầu.");
+                return "redirect:/admin/teachers/new";
+            }
+
             TeacherDTO created = teacherService.create(teacher);
-            redirectAttributes.addFlashAttribute("success", "Teacher created successfully!");
+            redirectAttributes.addFlashAttribute("success", "Đã tạo giáo viên và tài khoản đăng nhập.");
             return "redirect:/admin/teachers/" + created.getId();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error creating teacher: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi tạo giáo viên: " + e.getMessage());
             return "redirect:/admin/teachers/new";
         }
     }
@@ -130,10 +150,11 @@ public class TeacherController {
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         TeacherDTO teacher = teacherService.getById(id);
-        model.addAttribute("pageTitle", "Edit Teacher - " + teacher.getName());
+        model.addAttribute("pageTitle", "Chỉnh sửa giáo viên - " + teacher.getName());
         model.addAttribute("teacher", teacher);
         model.addAttribute("statuses", UserStatus.values());
         model.addAttribute("contractTypes", new String[] { "FULL_TIME", "PART_TIME", "FREELANCE" });
+        model.addAttribute("actionUrl", "/admin/teachers/" + id + "/edit");
         return "admin/teacher/form";
     }
 
@@ -143,112 +164,24 @@ public class TeacherController {
     @PostMapping("/{id}/edit")
     public String updateTeacher(@PathVariable Long id,
             @ModelAttribute TeacherDTO teacher,
+            @RequestParam(required = false) Boolean contractNoEndDate,
             RedirectAttributes redirectAttributes) {
         try {
             teacher.setId(id);
-            TeacherDTO updated = teacherService.update(id, teacher);
-            redirectAttributes.addFlashAttribute("success", "Teacher updated successfully!");
-            return "redirect:/admin/teachers/" + id;
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating teacher: " + e.getMessage());
-            return "redirect:/admin/teachers/" + id + "/edit";
-        }
-    }
-
-    /**
-     * Show salary management page
-     */
-    @GetMapping("/{id}/salary")
-    public String showSalaryManagement(@PathVariable Long id, Model model) {
-        TeacherDTO teacher = teacherService.getById(id);
-        model.addAttribute("pageTitle", "Manage Salary - " + teacher.getName());
-        model.addAttribute("teacher", teacher);
-        model.addAttribute("payPeriods", new String[] { "MONTHLY", "HOURLY", "CONTRACT" });
-        model.addAttribute("currencies", new String[] { "VND", "USD", "EUR" });
-        return "admin/teacher/salary";
-    }
-
-    /**
-     * Update salary information
-     */
-    @PostMapping("/{id}/salary")
-    public String updateSalary(@PathVariable Long id,
-            @RequestParam BigDecimal salary,
-            @RequestParam String currency,
-            @RequestParam String payPeriod,
-            RedirectAttributes redirectAttributes) {
-        try {
-            teacherService.updateSalary(id, salary, currency, payPeriod);
-            redirectAttributes.addFlashAttribute("success", "Salary updated successfully!");
-            return "redirect:/admin/teachers/" + id;
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating salary: " + e.getMessage());
-            return "redirect:/admin/teachers/" + id + "/salary";
-        }
-    }
-
-    /**
-     * Show contract management page
-     */
-    @GetMapping("/{id}/contract")
-    public String showContractManagement(@PathVariable Long id, Model model) {
-        TeacherDTO teacher = teacherService.getById(id);
-        model.addAttribute("pageTitle", "Manage Contract - " + teacher.getName());
-        model.addAttribute("teacher", teacher);
-        model.addAttribute("contractTypes", new String[] { "FULL_TIME", "PART_TIME", "FREELANCE" });
-        return "admin/teacher/contract";
-    }
-
-    /**
-     * Update contract information
-     */
-    @PostMapping("/{id}/contract")
-    public String updateContract(@PathVariable Long id,
-            @RequestParam LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam String contractType,
-            RedirectAttributes redirectAttributes) {
-        try {
-            teacherService.updateContract(id, startDate, endDate, contractType);
-            redirectAttributes.addFlashAttribute("success", "Contract updated successfully!");
-            return "redirect:/admin/teachers/" + id;
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating contract: " + e.getMessage());
-            return "redirect:/admin/teachers/" + id + "/contract";
-        }
-    }
-
-    /**
-     * Show performance review page
-     */
-    @GetMapping("/{id}/performance-review")
-    public String showPerformanceReview(@PathVariable Long id, Model model) {
-        TeacherDTO teacher = teacherService.getById(id);
-        model.addAttribute("pageTitle", "Performance Review - " + teacher.getName());
-        model.addAttribute("teacher", teacher);
-        return "admin/teacher/performance-review";
-    }
-
-    /**
-     * Record performance review
-     */
-    @PostMapping("/{id}/performance-review")
-    public String recordPerformanceReview(@PathVariable Long id,
-            @RequestParam Double rating,
-            @RequestParam String notes,
-            RedirectAttributes redirectAttributes) {
-        try {
-            if (rating < 1.0 || rating > 5.0) {
-                redirectAttributes.addFlashAttribute("error", "Rating must be between 1.0 and 5.0");
-                return "redirect:/admin/teachers/" + id + "/performance-review";
+            if (Boolean.TRUE.equals(contractNoEndDate)) {
+                teacher.setContractEndDate(null);
             }
-
-            teacherService.updatePerformanceReview(id, rating, notes);
-            redirectAttributes.addFlashAttribute("success", "Performance review recorded successfully!");
+            if (teacher.getContractStartDate() != null && teacher.getContractEndDate() != null
+                    && teacher.getContractEndDate().isBefore(teacher.getContractStartDate())) {
+                redirectAttributes.addFlashAttribute("error", "Ngày kết thúc không được bé hơn ngày bắt đầu.");
+                return "redirect:/admin/teachers/" + id + "/edit";
+            }
+            TeacherDTO updated = teacherService.update(id, teacher);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật giáo viên thành công!");
             return "redirect:/admin/teachers/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error recording review: " + e.getMessage());
-            return "redirect:/admin/teachers/" + id + "/performance-review";
+            redirectAttributes.addFlashAttribute("error", "Lỗi cập nhật giáo viên: " + e.getMessage());
+            return "redirect:/admin/teachers/" + id + "/edit";
         }
     }
 
@@ -261,12 +194,15 @@ public class TeacherController {
             RedirectAttributes redirectAttributes) {
         try {
             TeacherDTO teacher = teacherService.getById(id);
+            if (newStatus == UserStatus.ACTIVE && teacher.getUserInfo() != null) {
+                userService.activateUser(teacher.getUserInfo().getId());
+            }
             teacher.setStatus(newStatus);
             teacherService.update(id, teacher);
-            redirectAttributes.addFlashAttribute("success", "Teacher status updated successfully!");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái giáo viên thành công!");
             return "redirect:/admin/teachers/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating status: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi cập nhật trạng thái: " + e.getMessage());
             return "redirect:/admin/teachers/" + id;
         }
     }
@@ -277,11 +213,16 @@ public class TeacherController {
     @PostMapping("/{id}/delete")
     public String deleteTeacher(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            teacherService.deleteById(id);
-            redirectAttributes.addFlashAttribute("success", "Teacher deleted successfully!");
+            TeacherDTO teacher = teacherService.getById(id);
+            teacher.setStatus(UserStatus.INACTIVE);
+            teacherService.update(id, teacher);
+            if (teacher.getUserInfo() != null) {
+                userService.deactivateUser(teacher.getUserInfo().getId());
+            }
+            redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động giáo viên.");
             return "redirect:/admin/teachers";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error deleting teacher: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi ngừng hoạt động giáo viên: " + e.getMessage());
             return "redirect:/admin/teachers/" + id;
         }
     }
@@ -294,7 +235,7 @@ public class TeacherController {
         LocalDate futureDate = LocalDate.now().plusDays(30);
         List<TeacherDTO> teachers = teacherService.getTeachersWithExpiringContracts(futureDate);
 
-        model.addAttribute("pageTitle", "Teachers with Expiring Contracts");
+        model.addAttribute("pageTitle", "Hợp đồng sắp hết hạn");
         model.addAttribute("teachers", teachers);
         model.addAttribute("expiryDate", futureDate);
 
