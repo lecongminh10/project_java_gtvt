@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -88,7 +89,8 @@ public class ClassAdminController {
                               @RequestParam(required = false) String room,
                               @RequestParam(required = false) String description,
                               @RequestParam(required = false) ClassStatus status,
-                      @RequestParam(required = false) List<Long> studentIds) {
+                      @RequestParam(required = false) List<Long> studentIds,
+                      RedirectAttributes redirectAttributes) {
         // Validate form data and keep user input on errors.
         ValidationResult result = buildClassFromForm(new TrainingClass(), code, name, courseId, teacherId,
                 startDate, endDate, totalSessions, room, description, status);
@@ -109,6 +111,7 @@ public class ClassAdminController {
         if (!selectedIds.isEmpty()) {
             attachStudents(saved, selectedIds, new HashSet<>());
         }
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã thêm lớp học thành công.");
         return "redirect:/admin/classes";
     }
 
@@ -145,7 +148,8 @@ public class ClassAdminController {
                               @RequestParam(required = false) String room,
                               @RequestParam(required = false) String description,
                               @RequestParam(required = false) ClassStatus status,
-                              @RequestParam(required = false) List<Long> studentIds) {
+                              @RequestParam(required = false) List<Long> studentIds,
+                              RedirectAttributes redirectAttributes) {
         // Validate updates and block edits when class finished.
         TrainingClass existing = classRepository.findById(id).orElseThrow();
         if (existing.getStatus() == ClassStatus.KET_THUC) {
@@ -170,17 +174,20 @@ public class ClassAdminController {
             Set<Long> existingIds = extractStudentIds(existing);
             attachStudents(result.trainingClass, selectedIds, existingIds);
         }
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã cập nhật lớp học thành công.");
         return "redirect:/admin/classes";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteClass(@PathVariable Long id) {
+    public String deleteClass(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         // Disallow delete when class is finished.
         TrainingClass trainingClass = classRepository.findById(id).orElseThrow();
-        if (trainingClass.getStatus() == ClassStatus.KET_THUC) {
+        if (trainingClass.getStatus() == ClassStatus.DANG_HOC) {
+            redirectAttributes.addFlashAttribute("toastError", "Không thể xóa lớp khi đang học.");
             return "redirect:/admin/classes";
         }
         classRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã xóa lớp học thành công.");
         return "redirect:/admin/classes";
     }
 
@@ -306,7 +313,7 @@ public class ClassAdminController {
         // Provide transfer form data and reference lists.
         model.addAttribute("sourceClass", source);
         model.addAttribute("draft", draft);
-        model.addAttribute("courses", courseRepository.findAll(Sort.by("name")));
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse(Sort.by("name")));
         model.addAttribute("teachers", teacherRepository.findAll(Sort.by("name")));
         model.addAttribute("errors", errors);
     }
@@ -316,7 +323,7 @@ public class ClassAdminController {
                                    Set<Long> selectedStudentIds) {
         // Rehydrate class form with reference data and selections.
         model.addAttribute("clazz", trainingClass);
-        model.addAttribute("courses", courseRepository.findAll(Sort.by("name")));
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse(Sort.by("name")));
         model.addAttribute("teachers", teacherRepository.findAll(Sort.by("name")));
         model.addAttribute("statuses", ClassStatus.values());
         model.addAttribute("students", studentRepository.findAll(Sort.by("name")));
@@ -355,7 +362,7 @@ public class ClassAdminController {
             errors.put("courseId", "Vui lòng chọn khóa học.");
         } else {
             course = courseRepository.findById(courseId).orElse(null);
-            if (course == null) {
+            if (course == null || course.isDeleted()) {
                 errors.put("courseId", "Khóa học không tồn tại.");
             }
         }

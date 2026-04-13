@@ -20,7 +20,8 @@
         </div>
         <div class="card-body p-4">
             <!-- Ensure enctype is multipart/form-data for file upload -->
-            <form th:action="@{${formAction}}" method="post" enctype="multipart/form-data">
+            <form th:action="@{${formAction}}" method="post" enctype="multipart/form-data" data-confirm="true"
+                th:attr="data-confirm-message=${document.id == null ? 'Bạn chắc chắn muốn thêm tài liệu này?' : 'Bạn chắc chắn muốn cập nhật tài liệu này?'}">
 
                 <div class="mb-3">
                     <label class="form-label" for="name">Tên tài liệu <span class="text-danger">*</span></label>
@@ -80,8 +81,8 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                    <a th:href="@{/admin/documents}" class="btn btn-outline-secondary">Đóng</a>
-                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                    <a th:href="@{/admin/documents}" class="btn btn-outline-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
 
             </form>

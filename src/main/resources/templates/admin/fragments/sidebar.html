@@ -26,17 +26,25 @@
             <i class="fa-solid fa-object-group"></i>
             <span>Quản lý môn học</span>
         </a>
+        <a class="sidebar-item" th:href="@{/admin/documents}">
+            <i class="fas fa-file-alt"></i>
+            <span>Quản lý tài liệu</span>
+        </a>
         <a class="sidebar-item" th:href="@{/admin/classes}">
             <i class="fas fa-chalkboard-teacher"></i>
-            <span>Lop hoc</span>
+            <span>Quản lý lớp học</span>
+        </a>
+        <a class="sidebar-item" th:href="@{/admin/teachers}">
+            <i class="fas fa-user-tie"></i>
+            <span>Quản lý giáo viên</span>
         </a>
         <a class="sidebar-item" th:href="@{/admin/students}">
             <i class="fas fa-user-graduate"></i>
-            <span>Hoc vien</span>
+            <span>Quản lý học viên</span>
         </a>
         <a class="sidebar-item" th:href="@{/admin/users}">
             <i class="fas fa-users"></i>
-            <span>Nguoi dung</span>
+            <span>Quản lý người dùng</span>
         </a>
 
     </nav>
@@ -47,7 +55,7 @@
         <a class="sidebar-item" href="javascript:void(0)"
            onclick="document.getElementById('logoutFormSidebar').submit();" style="padding-left: 0; color: #ef4444;">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Dang xuat</span>
+            <span>Đăng xuất</span>
         </a>
     </div>
 

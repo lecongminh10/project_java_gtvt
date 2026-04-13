@@ -3,6 +3,8 @@ package com.example.project.service.impl;
 import com.example.project.dto.SubjectDTO;
 import com.example.project.entity.Subject;
 import com.example.project.entity.SubjectLevel;
+import com.example.project.repository.CourseRepository;
+import com.example.project.repository.DocumentRepository;
 import com.example.project.repository.SubjectRepository;
 import com.example.project.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,15 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
 
     @Autowired
     private final SubjectRepository subjectRepository;
+    private final CourseRepository courseRepository;
+    private final DocumentRepository documentRepository;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository,
+                              CourseRepository courseRepository,
+                              DocumentRepository documentRepository) {
         this.subjectRepository = subjectRepository;
+        this.courseRepository = courseRepository;
+        this.documentRepository = documentRepository;
     }
 
     @Override
@@ -89,5 +97,26 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
     public List<SubjectDTO> searchSubject(String name, SubjectLevel level) {
         return subjectRepository.searchSubjects(name, level).stream()
                 .filter(s -> s.getName().equalsIgnoreCase(name) || s.getLevel() == level).map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        if (!subjectRepository.existsById(id)) {
+            throw new RuntimeException("Subject not found with id: " + id);
+        }
+        long courseCount = courseRepository.countBySubjectIdAndDeletedFalse(id);
+        long documentCount = documentRepository.countBySubject_Id(id);
+        if (courseCount > 0 || documentCount > 0) {
+            StringBuilder message = new StringBuilder("Không thể xóa môn học vì đang được sử dụng");
+            if (courseCount > 0 && documentCount > 0) {
+                message.append(" bởi khóa học và tài liệu.");
+            } else if (courseCount > 0) {
+                message.append(" bởi khóa học.");
+            } else {
+                message.append(" bởi tài liệu.");
+            }
+            throw new IllegalStateException(message.toString());
+        }
+        subjectRepository.deleteById(id);
     }
 }

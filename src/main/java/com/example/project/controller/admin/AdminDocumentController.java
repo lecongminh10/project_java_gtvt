@@ -71,7 +71,7 @@ public class AdminDocumentController {
         model.addAttribute("subjectId", subjectId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("subjects", subjectRepository.findAll());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse());
         return "admin/documents/list";
     }
 
@@ -79,7 +79,7 @@ public class AdminDocumentController {
     public String showCreateForm(Model model) {
         model.addAttribute("document", new Document());
         model.addAttribute("subjects", subjectRepository.findAll());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse());
         model.addAttribute("types", DocumentType.values());
         model.addAttribute("formAction", "/admin/documents");
         model.addAttribute("pageTitle", "Thêm tài liệu");
@@ -94,7 +94,8 @@ public class AdminDocumentController {
             @RequestParam(required = false) Long subjectId,
             @RequestParam(required = false) Long courseId,
             @RequestParam("file") MultipartFile file,
-            Authentication authentication
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
     ) {
         ValidationResult result = buildDocumentFromForm(new Document(), name, type, subjectId, courseId, file, true);
         if (result.hasErrors()) {
@@ -117,6 +118,7 @@ public class AdminDocumentController {
         result.document.setUpdatedAt(LocalDateTime.now());
 
         documentRepository.save(result.document);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã thêm tài liệu thành công.");
         return "redirect:/admin/documents";
     }
 
@@ -133,7 +135,7 @@ public class AdminDocumentController {
         Document document = documentRepository.findById(id).orElseThrow();
         model.addAttribute("document", document);
         model.addAttribute("subjects", subjectRepository.findAll());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse());
         model.addAttribute("types", DocumentType.values());
         model.addAttribute("formAction", "/admin/documents/" + id);
         model.addAttribute("pageTitle", "Cập nhật tài liệu");
@@ -148,7 +150,8 @@ public class AdminDocumentController {
             @RequestParam DocumentType type,
             @RequestParam(required = false) Long subjectId,
             @RequestParam(required = false) Long courseId,
-            @RequestParam(value = "file", required = false) MultipartFile file
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            RedirectAttributes redirectAttributes
     ) {
         Document document = documentRepository.findById(id).orElseThrow();
         boolean mustHaveFile = (document.getFilePath() == null || document.getFilePath().isBlank());
@@ -179,11 +182,12 @@ public class AdminDocumentController {
         }
         result.document.setUpdatedAt(LocalDateTime.now());
         documentRepository.save(result.document);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã cập nhật tài liệu thành công.");
         return "redirect:/admin/documents";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteDocument(@PathVariable Long id) {
+    public String deleteDocument(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Optional<Document> docOpt = documentRepository.findById(id);
         if (docOpt.isPresent()) {
             Document document = docOpt.get();
@@ -191,6 +195,7 @@ public class AdminDocumentController {
                 deleteFile(document.getFilePath());
             }
             documentRepository.deleteById(id);
+            redirectAttributes.addFlashAttribute("toastSuccess", "Đã xóa tài liệu thành công.");
         }
         return "redirect:/admin/documents";
     }
@@ -258,7 +263,7 @@ public class AdminDocumentController {
         Course course = null;
         if (courseId != null) {
             course = courseRepository.findById(courseId).orElse(null);
-            if (course == null) {
+            if (course == null || course.isDeleted()) {
                 errors.put("courseId", "Khóa học không tồn tại.");
             }
         }
@@ -278,7 +283,7 @@ public class AdminDocumentController {
     private void populateFormModel(Model model, Document document, String formAction, String pageTitle, Map<String, String> errors) {
         model.addAttribute("document", document);
         model.addAttribute("subjects", subjectRepository.findAll());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse());
         model.addAttribute("types", DocumentType.values());
         model.addAttribute("formAction", formAction);
         model.addAttribute("pageTitle", pageTitle);

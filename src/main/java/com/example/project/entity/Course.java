@@ -34,6 +34,9 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private ClassStatus status;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -110,6 +113,14 @@ public class Course {
 
     public void setStatus(ClassStatus status) {
         this.status = status;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public LocalDateTime getCreatedAt() {

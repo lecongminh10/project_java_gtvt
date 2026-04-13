@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="card-body p-4">
-            
+
             <div class="row mb-3 border-bottom pb-3">
                 <div class="col-md-4 text-muted fw-bold">Tên tài liệu:</div>
                 <div class="col-md-8" style="font-size: 1.1rem; font-weight: 500; color: #0f172a;" th:text="${document.name}">Tên tài liệu</div>
@@ -68,7 +68,6 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2 pt-4 mt-2">
-                <a th:href="@{/admin/documents}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i> Quay lại danh sách</a>
                 <a th:href="@{/admin/documents/view/{id}(id=${document.id})}" target="_blank" class="btn btn-outline-primary"><i class="fas fa-file-pdf me-1"></i> Mở xem trực tuyến</a>
             </div>
 

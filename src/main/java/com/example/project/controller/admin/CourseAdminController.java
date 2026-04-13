@@ -4,13 +4,16 @@ import com.example.project.dto.CourseDTO;
 import com.example.project.entity.ClassStatus;
 import com.example.project.entity.Course;
 import com.example.project.repository.SubjectRepository;
+import com.example.project.repository.TrainingClassRepository;
 import com.example.project.service.CourseService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +24,14 @@ public class CourseAdminController {
 
     private final CourseService courseService;
     private final SubjectRepository subjectRepository;
+    private final TrainingClassRepository trainingClassRepository;
 
-    public CourseAdminController(CourseService courseService, SubjectRepository subjectRepository) {
+    public CourseAdminController(CourseService courseService,
+                                 SubjectRepository subjectRepository,
+                                 TrainingClassRepository trainingClassRepository) {
         this.courseService = courseService;
         this.subjectRepository = subjectRepository;
+        this.trainingClassRepository = trainingClassRepository;
     }
 
 
@@ -57,7 +64,8 @@ public class CourseAdminController {
     }
 
     @PostMapping("/create")
-    public String createCourse(@ModelAttribute("course") CourseDTO courseDTO, Model model) {
+    public String createCourse(@ModelAttribute("course") CourseDTO courseDTO, Model model,
+                               RedirectAttributes redirectAttributes) {
         Map<String, String> errors = new HashMap<>();
         if (courseDTO.getCode() == null || courseDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã khóa học không được để trống");
@@ -83,6 +91,7 @@ public class CourseAdminController {
             return "admin/course/form";
         }
         courseService.create(courseDTO);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã thêm khóa học thành công.");
         return "redirect:/admin/courses";
     }
 
@@ -98,7 +107,8 @@ public class CourseAdminController {
     }
 
     @PostMapping("/{id}/edit")
-    public String updateCourse(@PathVariable Long id, @ModelAttribute("course") CourseDTO courseDTO, Model model) {
+    public String updateCourse(@PathVariable Long id, @ModelAttribute("course") CourseDTO courseDTO, Model model,
+                               RedirectAttributes redirectAttributes) {
         Map<String, String> errors = new HashMap<>();
         if (courseDTO.getCode() == null || courseDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã khóa học không được để trống");
@@ -124,12 +134,28 @@ public class CourseAdminController {
             return "admin/course/form";
         }
         courseService.update(id, courseDTO);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã cập nhật khóa học thành công.");
         return "redirect:/admin/courses";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteCourse(@PathVariable Long id) {
-        courseService.deleteById(id);
+    public String deleteCourse(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        CourseDTO course = courseService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
+        if (course.getStatus() != ClassStatus.KET_THUC) {
+            redirectAttributes.addFlashAttribute("toastError", "Chỉ được xóa khóa học khi trạng thái là Kết thúc.");
+            return "redirect:/admin/courses";
+        }
+        List<com.example.project.entity.TrainingClass> classes = trainingClassRepository.findByCourse_Id(id);
+        for (com.example.project.entity.TrainingClass clazz : classes) {
+            if (clazz.getStatus() != ClassStatus.KET_THUC) {
+                clazz.setStatus(ClassStatus.KET_THUC);
+                clazz.setUpdatedAt(LocalDateTime.now());
+            }
+        }
+        trainingClassRepository.saveAll(classes);
+        courseService.markDeleted(id);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã xóa mềm khóa học và ẩn khỏi danh sách.");
         return "redirect:/admin/courses";
     }
 }

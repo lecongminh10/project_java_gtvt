@@ -221,27 +221,27 @@
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'sent'" class="alert alert-warning" role="alert">
             <i class="fas fa-check-circle me-2"></i>
-            Da gui email reset mat khau. Vui long kiem tra hop thu.
+            Đã gửi email reset mật khẩu. Vui lòng kiểm tra hộp thư.
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'changed'" class="alert alert-warning" role="alert">
             <i class="fas fa-check-circle me-2"></i>
-            Mat khau da duoc cap nhat. Hay dang nhap lai.
+            Mật khẩu đã được cập nhật. Hãy đăng nhập lại.
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'sent-retry'" class="alert alert-warning" role="alert">
             <i class="fas fa-clock me-2"></i>
-            Da gui email reset truoc do. Vui long thu lai sau it phut.
+            Đã gửi email reset trước đó. Vui lòng thử lại sau ít phút.
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'notfound'" class="alert alert-danger" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i>
-            Khong tim thay tai khoan hoat dong.
+            Không tìm thấy tài khoản hoạt động.
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'invalid'" class="alert alert-warning" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i>
-            Vui long nhap email de reset mat khau.
+            Vui lòng nhập email để reset mật khẩu.
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'error'" class="alert alert-danger" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i>
-            Gui email that bai. Hay thu lai sau.
+            Gửi email thất bại. Hãy thử lại sau.
         </div>
 
         <!-- Logo -->
@@ -277,7 +277,7 @@
                     <label class="form-check-label" for="remember">Remember me</label>
                 </div>
                 <a href="#" class="forgot-link" onclick="document.getElementById('accountReset').classList.toggle('d-none'); return false;">
-                    Quen mat khau?
+                    Quên mật khẩu?
                 </a>
             </div>
 
@@ -289,14 +289,14 @@
 
         <form id="accountReset" class="mt-4 d-none" th:action="@{/forgot-password}" method="post">
             <div class="form-group">
-                <label for="resetEmail" class="form-label">Email tai khoan</label>
+                <label for="resetEmail" class="form-label">Email tài khoản</label>
                 <div class="input-wrapper">
                     <i class="fas fa-envelope input-icon"></i>
                     <input type="email" class="form-control" id="resetEmail" name="email" placeholder="name@domain.com" required>
                 </div>
             </div>
             <button type="submit" class="btn-login" style="background-color: #0f172a;">
-                Gui link reset
+                Gửi link reset
                 <i class="fas fa-paper-plane"></i>
             </button>
         </form>

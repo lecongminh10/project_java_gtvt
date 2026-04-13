@@ -31,6 +31,52 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
     private PasswordEncoder passwordEncoder;
 
     @Override
+    public UserDTO create(UserDTO dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Thiếu dữ liệu người dùng");
+        }
+        if (dto.getUsername() == null || dto.getUsername().isBlank()) {
+            throw new IllegalArgumentException("Tên đăng nhập là bắt buộc");
+        }
+        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Mật khẩu không được để trống");
+        }
+
+        if (dto.getStatus() == null) {
+            dto.setStatus(UserStatus.ACTIVE);
+        }
+        if (dto.getRole() == null) {
+            dto.setRole(UserRole.TEACHER);
+        }
+
+        if (dto.getRole() == UserRole.TEACHER) {
+            String employeeCode = dto.getEmployeeCode();
+            if (employeeCode == null || employeeCode.isBlank()) {
+                throw new IllegalArgumentException("Mã nhân viên là bắt buộc cho giáo viên");
+            }
+            if (teacherRepository.existsByCode(employeeCode.trim())) {
+                throw new IllegalArgumentException("Mã nhân viên đã tồn tại: " + employeeCode);
+            }
+        }
+
+        User entity = toEntity(dto);
+        User savedUser = userRepository.save(entity);
+
+        if (savedUser.getRole() == UserRole.TEACHER) {
+            Teacher teacher = new Teacher();
+            teacher.setCode(savedUser.getEmployeeCode());
+            teacher.setName(savedUser.getFullName() != null ? savedUser.getFullName() : savedUser.getUsername());
+            teacher.setEmail(savedUser.getEmail());
+            teacher.setPhone(savedUser.getPhone());
+            teacher.setStatus(savedUser.getStatus());
+            teacher.setUser(savedUser);
+            teacherRepository.save(teacher);
+        }
+
+        return toDTO(savedUser);
+    }
+
+    @Override
     protected JpaRepository<User, Long> getRepository() {
         return userRepository;
     }
@@ -62,6 +108,9 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
         User entity = new User();
         entity.setId(dto.getId());
         entity.setUsername(dto.getUsername());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            entity.setPassword(dto.getPassword());
+        }
         entity.setFullName(dto.getFullName());
         entity.setEmail(dto.getEmail());
         entity.setPhone(dto.getPhone());

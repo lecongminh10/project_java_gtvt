@@ -5,7 +5,8 @@
 
         <div th:if="${error}" class="alert alert-danger"><span th:text="${error}"></span></div>
 
-        <form th:action="${user.id} ? @{/admin/users/{id}/edit(id=${user.id})} : @{/admin/users}" method="post" class="needs-validation">
+          <form th:action="${user.id} ? @{/admin/users/{id}/edit(id=${user.id})} : @{/admin/users}" method="post" class="needs-validation" data-confirm="true"
+              th:attr="data-confirm-message=${user.id == null ? 'Bạn chắc chắn muốn thêm người dùng này?' : 'Bạn chắc chắn muốn cập nhật người dùng này?'}">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -13,6 +14,10 @@
                             <div class="mb-3">
                                 <label class="form-label">Tên đăng nhập</label>
                                 <input type="text" name="username" class="form-control" th:value="${user.username}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mã nhân viên</label>
+                                <input type="text" name="employeeCode" class="form-control" th:value="${user.employeeCode}" placeholder="Bắt buộc khi vai trò là giáo viên">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Họ tên</label>
@@ -43,7 +48,7 @@
                             </div>
                         </div>
                     </div>
-                    <div th:if="!${user.id}">
+                    <div th:if="${user.id == null}">
                         <div class="mb-3">
                             <label class="form-label">Mật khẩu</label>
                             <input type="password" name="password" class="form-control" required>

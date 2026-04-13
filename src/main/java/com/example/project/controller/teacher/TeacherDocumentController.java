@@ -52,13 +52,13 @@ public class TeacherDocumentController {
         String keywordValue = (keyword != null && !keyword.isBlank()) ? keyword.trim() : null;
         List<Document> documents = documentRepository.search(keywordValue, subjectId, courseId);
 
-        model.addAttribute("pageTitle", "Tai lieu dao tao");
+        model.addAttribute("pageTitle", "Tài liệu đào tạo");
         model.addAttribute("documents", documents);
         model.addAttribute("keyword", keyword);
         model.addAttribute("subjectId", subjectId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("subjects", subjectRepository.findAll());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("courses", courseRepository.findAllByDeletedFalse());
         return "teacher/documents/list";
     }
 
@@ -66,11 +66,11 @@ public class TeacherDocumentController {
     public String viewDocument(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Document> docOpt = documentRepository.findById(id);
         if (docOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("docError", "Khong tim thay tai lieu.");
+            redirectAttributes.addFlashAttribute("docError", "Không tìm thấy tài liệu.");
             return "redirect:/teacher/documents";
         }
 
-        model.addAttribute("pageTitle", "Chi tiet tai lieu");
+        model.addAttribute("pageTitle", "Chi tiết tài liệu");
         model.addAttribute("document", docOpt.get());
         return "teacher/documents/detail";
     }

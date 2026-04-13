@@ -1,4 +1,4 @@
-<div layout:decorate="~{admin/layout/admin-layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:decorate="~{admin/layout/admin-layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
         <style>
             /* Filter Styles */
@@ -57,8 +57,111 @@
             }
 
             /* Custom Modal refinement */
+            .confirm-modal {
+                position: fixed;
+                inset: 0;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 1.5rem;
+                background: rgba(15, 23, 42, 0.55);
+                backdrop-filter: blur(4px);
+                z-index: 1200;
+            }
+
+            .confirm-modal.is-open {
+                display: flex;
+            }
+
+            .confirm-modal-card {
+                width: min(100%, 440px);
+                background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+                border: 1px solid rgba(148, 163, 184, 0.28);
+                border-radius: 20px;
+                box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+                overflow: hidden;
+            }
+
+            .confirm-modal-top {
+                padding: 1.25rem 1.25rem 0.75rem;
+                display: flex;
+                align-items: center;
+                gap: 0.9rem;
+            }
+
+            .confirm-modal-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 16px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, #fef2f2, #fee2e2);
+                color: #ef4444;
+                font-size: 1.2rem;
+                flex-shrink: 0;
+            }
+
+            .confirm-modal-title {
+                margin: 0;
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #0f172a;
+            }
+
+            .confirm-modal-text {
+                margin: 0.3rem 0 0;
+                color: #64748b;
+                font-size: 0.88rem;
+                line-height: 1.6;
+            }
+
+            .confirm-modal-body {
+                padding: 0 1.25rem 1.25rem;
+            }
+
+            .confirm-modal-name {
+                margin-top: 0.9rem;
+                padding: 0.85rem 1rem;
+                border-radius: 14px;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                color: #0f172a;
+                font-weight: 600;
+            }
+
+            .confirm-modal-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                padding: 0 1.25rem 1.25rem;
+            }
+
             .confirm-modal-card {
                 animation: modalScaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            .btn-danger-solid {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 0.45rem 1rem;
+                background: #ef4444;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 0.845rem;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+                transition: background 0.15s, transform 0.1s;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .btn-danger-solid:hover {
+                background: #dc2626;
+                color: white;
+                transform: translateY(-1px);
             }
 
             @keyframes modalScaleUp {
