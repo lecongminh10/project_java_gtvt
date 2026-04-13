@@ -1,6 +1,5 @@
 <aside id="sidebar-wrapper" th:fragment="sidebar">
 
-    <!-- Brand -->
     <a class="sidebar-brand" th:href="@{/admin/dashboard}">
         <div class="sidebar-brand-icon">
             <i class="fas fa-bolt"></i>
@@ -11,10 +10,9 @@
         </div>
     </a>
 
-    <!-- Navigation -->
     <nav class="sidebar-nav" style="overflow: visible;">
 
-        <div class="sidebar-section-label">Tổng quan</div>
+        <div class="sidebar-section-label">Tong quan</div>
         <a class="sidebar-item active" th:href="@{/admin/dashboard}">
             <i class="fas fa-chart-pie"></i>
             <span>Dashboard</span>
@@ -30,24 +28,26 @@
         </a>
         <a class="sidebar-item" th:href="@{/admin/classes}">
             <i class="fas fa-chalkboard-teacher"></i>
-            <span>Lớp học</span>
+            <span>Lop hoc</span>
         </a>
-
+        <a class="sidebar-item" th:href="@{/admin/students}">
+            <i class="fas fa-user-graduate"></i>
+            <span>Hoc vien</span>
+        </a>
         <a class="sidebar-item" th:href="@{/admin/users}">
             <i class="fas fa-users"></i>
-            <span>Người dùng</span>
+            <span>Nguoi dung</span>
         </a>
 
     </nav>
 
-    <!-- Footer -->
     <div class="sidebar-footer">
         <form id="logoutFormSidebar" method="post" style="display: none;" th:action="@{/logout}">
         </form>
         <a class="sidebar-item" href="javascript:void(0)"
            onclick="document.getElementById('logoutFormSidebar').submit();" style="padding-left: 0; color: #ef4444;">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Đăng xuất</span>
+            <span>Dang xuat</span>
         </a>
     </div>
 

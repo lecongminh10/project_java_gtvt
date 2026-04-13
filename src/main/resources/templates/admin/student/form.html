@@ -1,0 +1,89 @@
+<div layout:decorate="~{admin/layout/admin-layout}">
+<div layout:fragment="content">
+
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1 th:text="${pageTitle}">Học viên</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/students}">Học viên</a></li>
+                    <li class="breadcrumb-item active" th:text="${pageTitle}">Form</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/students}" class="btn-ghost"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header-clean">
+            <h5>Thông tin học viên</h5>
+        </div>
+        <div class="card-body" style="padding:1.25rem;">
+            <form th:action="${formAction}" method="post" class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">Họ tên học viên *</label>
+                    <input type="text" name="name" class="form-control" th:value="${student.name}" placeholder="Nhập họ tên học viên">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['name'] != null}" th:text="${errors['name']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ngày sinh</label>
+                    <input type="date" name="dob" class="form-control" th:value="${student.dob}">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['dob'] != null}" th:text="${errors['dob']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Lớp học</label>
+                    <select name="classId" class="form-select">
+                        <option value="" th:selected="${selectedClassId == null}">Chưa xếp lớp</option>
+                        <option th:each="clazz : ${classes}"
+                                th:value="${clazz.id}"
+                                th:text="${clazz.code + ' - ' + clazz.name}"
+                                th:selected="${selectedClassId != null and selectedClassId == clazz.id}"></option>
+                    </select>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['classId'] != null}" th:text="${errors['classId']}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Trạng thái</label>
+                    <select name="status" class="form-select">
+                        <option th:each="statusValue : ${statuses}"
+                                th:value="${statusValue}"
+                                th:text="${statusValue == T(com.example.project.entity.StudentStatus).ACTIVE ? 'Đang học' : 'Tạm dừng'}"
+                                th:selected="${student.status != null and statusValue == student.status}"></option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <hr>
+                    <h6 class="mb-0">Thông tin phụ huynh</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Họ tên phụ huynh</label>
+                    <input type="text" name="parentName" class="form-control" th:value="${student.parentName}" placeholder="Nhập họ tên phụ huynh">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" name="parentPhone" class="form-control" th:value="${student.parentPhone}" placeholder="Nhập số điện thoại">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="parentEmail" class="form-control" th:value="${student.parentEmail}" placeholder="Nhập email">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['parentEmail'] != null}" th:text="${errors['parentEmail']}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Địa chỉ phụ huynh</label>
+                    <textarea name="parentAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ phụ huynh" th:text="${student.parentAddress}"></textarea>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a th:href="@{/admin/students}" class="btn-ghost">Hủy</a>
+                    <button type="submit" class="btn-primary-solid">Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</div>
