@@ -1,61 +1,6 @@
 <div layout:decorate="~{admin/layout/admin-layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
         <style>
-            /* Filter Styles */
-            .filter-card {
-                background: white;
-                border-radius: 12px;
-                border: 1px solid var(--border);
-                box-shadow: var(--shadow-sm);
-                margin-bottom: 1.5rem;
-                overflow: hidden;
-            }
-
-            .filter-header {
-                padding: 0.85rem 1.25rem;
-                background: #f8fafc;
-                border-bottom: 1px solid var(--border);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                cursor: pointer;
-            }
-
-            .filter-body {
-                padding: 1.25rem;
-            }
-
-            .filter-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 1.25rem;
-            }
-
-            .filter-group label {
-                display: block;
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: var(--text-muted);
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 0.5rem;
-            }
-
-            .filter-control {
-                width: 100%;
-                padding: 0.5rem 0.75rem;
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                font-size: 0.855rem;
-                outline: none;
-                transition: all 0.15s;
-            }
-
-            .filter-control:focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            }
-
             /* Custom Modal refinement */
             .confirm-modal {
                 position: fixed;
@@ -193,51 +138,27 @@
             </div>
         </div>
 
-        <!-- Multi-field Filter -->
-        <div class="filter-card">
-            <div class="filter-header" onclick="toggleFilter()">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="fas fa-sliders-h text-primary"></i>
-                    <h5 class="mb-0" style="font-size: 0.9rem; font-weight: 700;">Bộ lọc tìm kiếm</h5>
-                </div>
-                <i class="fas fa-chevron-down text-muted" id="filterChevron"></i>
-            </div>
-            <div class="filter-body" id="filterBody">
-                <form th:action="@{/admin/students}" method="get">
-                    <div class="filter-grid">
-                        <div class="filter-group">
-                            <label>Họ tên học viên</label>
-                            <input type="text" name="name" class="filter-control" placeholder="Nhập tên..."
-                                th:value="${filterName}">
-                        </div>
-                        <div class="filter-group">
-                            <label>Mã học viên</label>
-                            <input type="text" name="code" class="filter-control" placeholder="Ví dụ: HV0001"
-                                th:value="${filterCode}">
-                        </div>
-                        <div class="filter-group">
-                            <label>Lớp học</label>
-                            <select name="classId" class="filter-control">
-                                <option value="">Tất cả các lớp</option>
-                                <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.name}"
-                                    th:selected="${cls.id == filterClassId}"></option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Trạng thái</label>
-                            <select name="status" class="filter-control">
-                                <option value="">Tất cả</option>
-                                <option th:each="s : ${statuses}" th:value="${s}"
-                                    th:text="${s == T(com.example.project.entity.StudentStatus).ACTIVE ? 'Đang học' : 'Tạm dừng'}"
-                                    th:selected="${s == filterStatus}"></option>
-                            </select>
-                        </div>
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <form th:action="@{/admin/students}" method="get" class="d-flex align-items-center gap-2 flex-wrap admin-filter" style="flex:1;">
+                    <div class="topbar-search" style="max-width:320px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="name" placeholder="Tìm theo tên học viên..." th:value="${filterName}">
                     </div>
-                    <div class="d-flex justify-content-end gap-2 mt-4">
-                        <a th:href="@{/admin/students}" class="btn-ghost">Đặt lại</a>
-                        <button type="submit" class="btn-primary-solid"><i class="fas fa-search"></i> Tìm kiếm
-                            ngay</button>
-                    </div>
+                    <input type="text" name="code" class="form-control" placeholder="Mã học viên" style="max-width:200px;" th:value="${filterCode}">
+                    <select name="classId" class="form-select" style="min-width:200px;">
+                        <option value="">Tất cả các lớp</option>
+                        <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.name}"
+                            th:selected="${cls.id == filterClassId}"></option>
+                    </select>
+                    <select name="status" class="form-select" style="min-width:160px;">
+                        <option value="">Tất cả trạng thái</option>
+                        <option th:each="s : ${statuses}" th:value="${s}"
+                            th:text="${s == T(com.example.project.entity.StudentStatus).ACTIVE ? 'Đang học' : 'Tạm dừng'}"
+                            th:selected="${s == filterStatus}"></option>
+                    </select>
+                    <button type="submit" class="btn-ghost"><i class="fas fa-filter"></i> Tìm kiếm</button>
+                    <button type="button" class="btn-ghost" onclick="window.location.href='/admin/students'"><i class="fas fa-rotate-left"></i> Đặt lại</button>
                 </form>
             </div>
         </div>
@@ -329,19 +250,6 @@
         </div>
 
         <script>
-            // Filter Toggle
-            function toggleFilter() {
-                const body = document.getElementById('filterBody');
-                const chevron = document.getElementById('filterChevron');
-                if (body.style.display === 'none') {
-                    body.style.display = 'block';
-                    chevron.style.transform = 'rotate(0deg)';
-                } else {
-                    body.style.display = 'none';
-                    chevron.style.transform = 'rotate(-90deg)';
-                }
-            }
-
             // Deletion logic
             const modal = document.getElementById('deleteConfirmModal');
             const deleteForm = document.getElementById('deleteForm');

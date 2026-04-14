@@ -5,6 +5,7 @@ import com.example.project.entity.ClassStudent;
 import com.example.project.entity.ClassStudentId;
 import com.example.project.entity.Course;
 import com.example.project.entity.Student;
+import com.example.project.entity.StudentStatus;
 import com.example.project.entity.Teacher;
 import com.example.project.entity.TrainingClass;
 import com.example.project.repository.ClassStudentRepository;
@@ -119,7 +120,9 @@ public class ClassAdminController {
     public String viewClass(@PathVariable Long id, Model model) {
         // Show read-only class detail.
         TrainingClass trainingClass = classRepository.findById(id).orElseThrow();
+        List<ClassStudent> classStudents = classStudentRepository.findActiveMembersByClassId(id);
         model.addAttribute("clazz", trainingClass);
+        model.addAttribute("classStudents", classStudents);
         model.addAttribute("pageTitle", "Chi tiết lớp học");
         return "admin/class/detail";
     }
@@ -326,7 +329,7 @@ public class ClassAdminController {
         model.addAttribute("courses", courseRepository.findAllByDeletedFalse(Sort.by("name")));
         model.addAttribute("teachers", teacherRepository.findAll(Sort.by("name")));
         model.addAttribute("statuses", ClassStatus.values());
-        model.addAttribute("students", studentRepository.findAll(Sort.by("name")));
+        model.addAttribute("students", studentRepository.findByStatusOrderByNameAsc(StudentStatus.ACTIVE));
         model.addAttribute("formAction", formAction);
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("errors", errors);

@@ -1,6 +1,7 @@
 package com.example.project.service.impl;
 
 import com.example.project.dto.UserDTO;
+import com.example.project.entity.Teacher;
 import com.example.project.entity.User;
 import com.example.project.entity.UserRole;
 import com.example.project.entity.UserStatus;

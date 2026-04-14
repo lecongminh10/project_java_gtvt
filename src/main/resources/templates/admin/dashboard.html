@@ -21,59 +21,50 @@
         </div>
     </div>
 
-    <!-- Stat Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-6 col-sm-6">
             <div class="stat-card">
-                <div class="stat-card-icon icon-blue"><i class="fas fa-users"></i></div>
+                <div class="stat-card-icon icon-violet"><i class="fas fa-user-graduate"></i></div>
                 <div class="stat-card-body">
-                    <div class="stat-card-label">Tổng học sinh</div>
-                    <div class="stat-card-value">245</div>
-                    <div class="stat-card-sub"><span class="text-success">↑ 12.5%</span> so với tháng trước</div>
+                    <div class="stat-card-label">Tổng học viên</div>
+                    <div class="stat-card-value" id="studentCount" th:text="${studentCount}">0</div>
                 </div>
             </div>
         </div>
-        <div class="col-xl col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-card-icon icon-green"><i class="fas fa-chalkboard"></i></div>
+                <div class="stat-card-body">
+                    <div class="stat-card-label">Tổng lớp học</div>
+                    <div class="stat-card-value" id="classCount" th:text="${classCount}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-card-icon icon-blue"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="stat-card-body">
+                    <div class="stat-card-label">Tổng giáo viên</div>
+                    <div class="stat-card-value" id="teacherCount" th:text="${teacherCount}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-sm-6">
             <div class="stat-card">
                 <div class="stat-card-icon icon-amber"><i class="fas fa-book-open"></i></div>
                 <div class="stat-card-body">
-                    <div class="stat-card-label">Khóa học</div>
-                    <div class="stat-card-value">18</div>
-                    <div class="stat-card-sub"><span class="text-success">↑ 2 khóa mới</span> tháng này</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl col-md-4 col-sm-6">
-            <div class="stat-card">
-                <div class="stat-card-icon icon-violet"><i class="fas fa-chalkboard-user"></i></div>
-                <div class="stat-card-body">
-                    <div class="stat-card-label">Giáo viên</div>
-                    <div class="stat-card-value">32</div>
-                    <div class="stat-card-sub"><span class="text-success">↑ 3.1%</span> tháng này</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl col-md-4 col-sm-6">
-            <div class="stat-card">
-                <div class="stat-card-icon icon-green"><i class="fas fa-list-check"></i></div>
-                <div class="stat-card-body">
-                    <div class="stat-card-label">Lớp học hoạt động</div>
-                    <div class="stat-card-value">14</div>
-                    <div class="stat-card-sub"><span class="text-danger">↓ 1 lớp</span> đã kết thúc</div>
+                    <div class="stat-card-label">Tổng khóa học</div>
+                    <div class="stat-card-value" id="courseCount" th:text="${courseCount}">0</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content Grid -->
     <div class="row g-3">
-
-        <!-- Lớp học gần đây -->
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header-clean">
                     <h5><i class="fas fa-calendar-check me-2 text-primary"></i>Lớp học sắp tới</h5>
-                    <a href="#" class="btn-ghost" style="font-size: 0.8rem;">Xem tất cả <i class="fas fa-arrow-right ms-1"></i></a>
                 </div>
                 <div class="table-responsive">
                     <table class="table-admin">
@@ -82,35 +73,26 @@
                                 <th>Tên lớp</th>
                                 <th>Khóa học</th>
                                 <th>Giáo viên</th>
-                                <th>Học sinh</th>
                                 <th>Trạng thái</th>
-                                <th>Ngày khai giảng</th>
+                                <th>Ngày tạo</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">IELTS A1</span></td>
-                                <td>IELTS Foundation</td>
-                                <td>Nguyễn Thị Hoa</td>
-                                <td>24</td>
-                                <td><span class="badge-status badge-success">Đang học</span></td>
-                                <td style="color: #64748b;">15/03/2026</td>
+                        <tbody id="upcomingClassesBody">
+                            <tr th:each="clazz : ${latestClasses}">
+                                <td><span style="font-weight:600; color:#2563eb;" th:text="${clazz.name}"></span></td>
+                                <td th:text="${clazz.courseName}"></td>
+                                <td th:text="${clazz.teacherName}"></td>
+                                <td>
+                                    <span class="badge-status" th:classappend="${' ' + clazz.statusClass}">
+                                        <span th:text="${clazz.statusLabel}"></span>
+                                    </span>
+                                </td>
+                                <td style="color:#64748b;" th:text="${clazz.createdAt}"></td>
                             </tr>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">Tiếng Anh B2</span></td>
-                                <td>General English</td>
-                                <td>Trần Văn Minh</td>
-                                <td>18</td>
-                                <td><span class="badge-status badge-success">Đang học</span></td>
-                                <td style="color: #64748b;">01/03/2026</td>
-                            </tr>
-                            <tr>
-                                <td><span style="font-weight:600; color: #2563eb;">TOEFL C1</span></td>
-                                <td>TOEFL Advanced</td>
-                                <td>Lê Quang Anh</td>
-                                <td>12</td>
-                                <td><span class="badge-status badge-info">Sắp khai giảng</span></td>
-                                <td style="color: #64748b;">20/04/2026</td>
+                            <tr th:if="${latestClasses == null or #lists.isEmpty(latestClasses)}">
+                                <td colspan="5" class="text-center" style="color:#64748b; padding:1.25rem;">
+                                    Chưa có lớp học mới.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -118,79 +100,122 @@
             </div>
         </div>
 
-        <!-- Right Panel -->
         <div class="col-lg-4 d-flex flex-column gap-3">
-
-            <!-- Hoạt động gần đây -->
             <div class="card">
                 <div class="card-header-clean">
                     <h5><i class="fas fa-bell me-2" style="color:#f59e0b;"></i>Hoạt động</h5>
                 </div>
-                <div style="padding: 0.75rem 1rem;">
-                    <div class="d-flex align-items-start gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                        <div class="stat-card-icon icon-blue" style="width:36px;height:36px;border-radius:50%;font-size:0.85rem;flex-shrink:0;"><i class="fas fa-user-plus"></i></div>
+                <div id="activityList" style="padding:0.75rem 1rem;">
+                    <div th:each="activity, iter : ${activities}" class="d-flex align-items-start gap-3 py-2"
+                         th:style="${iter.index + 1 < #lists.size(activities)} ? 'border-bottom:1px solid #f1f5f9;' : ''">
+                        <div class="stat-card-icon icon-blue" style="width:36px;height:36px;border-radius:50%;font-size:0.85rem;flex-shrink:0;">
+                            <i th:class="${activity.iconClass}"></i>
+                        </div>
                         <div style="flex:1;">
-                            <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Học sinh mới đăng ký</div>
-                            <div style="font-size:0.75rem;color:#64748b;">Nguyễn Văn A vừa đăng ký IELTS</div>
-                            <div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;">5 phút trước</div>
+                            <div style="font-size:0.845rem;font-weight:600;color:#0f172a;" th:text="${activity.title}"></div>
+                            <div style="font-size:0.75rem;color:#64748b;" th:text="${activity.detail}"></div>
+                            <div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;"
+                                 th:text="${activity.timestamp != null ? #temporals.format(activity.timestamp, 'dd/MM/yyyy HH:mm') : ''}"></div>
                         </div>
                     </div>
-                    <div class="d-flex align-items-start gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                        <div class="stat-card-icon icon-green" style="width:36px;height:36px;border-radius:50%;font-size:0.85rem;flex-shrink:0;"><i class="fas fa-check-circle"></i></div>
-                        <div style="flex:1;">
-                            <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Lớp IELTS A1 khai giảng</div>
-                            <div style="font-size:0.75rem;color:#64748b;">24 học sinh đã có mặt</div>
-                            <div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;">1 giờ trước</div>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-start gap-3 py-2">
-                        <div class="stat-card-icon icon-amber" style="width:36px;height:36px;border-radius:50%;font-size:0.85rem;flex-shrink:0;"><i class="fas fa-star"></i></div>
-                        <div style="flex:1;">
-                            <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Giáo viên mới: Lê Quang Anh</div>
-                            <div style="font-size:0.75rem;color:#64748b;">Chuyên giảng TOEFL Advanced</div>
-                            <div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;">3 giờ trước</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Thống kê nhanh -->
-            <div class="card">
-                <div class="card-header-clean">
-                    <h5><i class="fas fa-chart-pie me-2 text-primary"></i>Tỷ lệ hoàn thành</h5>
-                </div>
-                <div style="padding: 1rem;">
-                    <div style="margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem;">
-                            <span>IELTS</span>
-                            <span style="font-weight: 600; color: #2563eb;">85%</span>
-                        </div>
-                        <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
-                            <div style="height: 100%; width: 85%; background: linear-gradient(90deg, #2563eb, #7c3aed); border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem;">
-                            <span>TOEFL</span>
-                            <span style="font-weight: 600; color: #10b981;">72%</span>
-                        </div>
-                        <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
-                            <div style="height: 100%; width: 72%; background: linear-gradient(90deg, #10b981, #06b6d4); border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem;">
-                            <span>General English</span>
-                            <span style="font-weight: 600; color: #f59e0b;">68%</span>
-                        </div>
-                        <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
-                            <div style="height: 100%; width: 68%; background: linear-gradient(90deg, #f59e0b, #ef4444); border-radius: 4px;"></div>
-                        </div>
+                    <div th:if="${activities == null or #lists.isEmpty(activities)}" class="text-center" style="color:#64748b; padding:1rem 0;">
+                        Chưa có hoạt động gần đây.
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        (function() {
+            const classesBody = document.getElementById('upcomingClassesBody');
+            const activityList = document.getElementById('activityList');
+            const studentCount = document.getElementById('studentCount');
+            const classCount = document.getElementById('classCount');
+            const teacherCount = document.getElementById('teacherCount');
+            const courseCount = document.getElementById('courseCount');
+
+            function escapeHtml(value) {
+                if (value === null || value === undefined) {
+                    return '';
+                }
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function renderClasses(items) {
+                if (!classesBody) {
+                    return;
+                }
+                if (!items || items.length === 0) {
+                    classesBody.innerHTML = '<tr><td colspan="5" class="text-center" style="color:#64748b; padding:1.25rem;">Chưa có lớp học mới.</td></tr>';
+                    return;
+                }
+                classesBody.innerHTML = items.map(item => {
+                    const statusClass = item.statusClass ? ' ' + item.statusClass : '';
+                    return '<tr>'
+                        + '<td><span style="font-weight:600; color:#2563eb;">' + escapeHtml(item.name) + '</span></td>'
+                        + '<td>' + escapeHtml(item.courseName) + '</td>'
+                        + '<td>' + escapeHtml(item.teacherName) + '</td>'
+                        + '<td><span class="badge-status' + escapeHtml(statusClass) + '"><span>' + escapeHtml(item.statusLabel) + '</span></span></td>'
+                        + '<td style="color:#64748b;">' + escapeHtml(item.createdAt) + '</td>'
+                        + '</tr>';
+                }).join('');
+            }
+
+            function renderActivities(items) {
+                if (!activityList) {
+                    return;
+                }
+                if (!items || items.length === 0) {
+                    activityList.innerHTML = '<div class="text-center" style="color:#64748b; padding:1rem 0;">Chưa có hoạt động gần đây.</div>';
+                    return;
+                }
+                activityList.innerHTML = items.map((item, index) => {
+                    const border = index + 1 < items.length ? 'border-bottom:1px solid #f1f5f9;' : '';
+                    const iconClass = item.iconClass ? item.iconClass : 'fas fa-bolt';
+                    return '<div class="d-flex align-items-start gap-3 py-2" style="' + border + '">'
+                        + '<div class="stat-card-icon icon-blue" style="width:36px;height:36px;border-radius:50%;font-size:0.85rem;flex-shrink:0;">'
+                        + '<i class="' + escapeHtml(iconClass) + '"></i>'
+                        + '</div>'
+                        + '<div style="flex:1;">'
+                        + '<div style="font-size:0.845rem;font-weight:600;color:#0f172a;">' + escapeHtml(item.title) + '</div>'
+                        + '<div style="font-size:0.75rem;color:#64748b;">' + escapeHtml(item.detail) + '</div>'
+                        + '<div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;">' + escapeHtml(item.timestamp) + '</div>'
+                        + '</div>'
+                        + '</div>';
+                }).join('');
+            }
+
+            function refreshDashboard() {
+                fetch('/admin/dashboard/data')
+                    .then(response => response.ok ? response.json() : null)
+                    .then(data => {
+                        if (!data) {
+                            return;
+                        }
+                        renderClasses(data.latestClasses || []);
+                        renderActivities(data.activities || []);
+                        if (data.counts) {
+                            if (studentCount) studentCount.textContent = data.counts.studentCount ?? '0';
+                            if (classCount) classCount.textContent = data.counts.classCount ?? '0';
+                            if (teacherCount) teacherCount.textContent = data.counts.teacherCount ?? '0';
+                            if (courseCount) courseCount.textContent = data.counts.courseCount ?? '0';
+                        }
+                    })
+                    .catch(() => {
+                        // Silently ignore fetch errors for periodic refresh.
+                    });
+            }
+
+            refreshDashboard();
+            setInterval(refreshDashboard, 5000);
+        })();
+    </script>
 
 </div>
 </body>
