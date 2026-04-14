@@ -5,48 +5,46 @@
 
     <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div>
-            <h1>Chi tiet tai lieu</h1>
+            <h1>Chi tiết tài liệu</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{/teacher/documents}">Tai lieu dao tao</a></li>
-                    <li class="breadcrumb-item active">Chi tiet</li>
+                    <li class="breadcrumb-item"><a th:href="@{/teacher/documents}">Tài liệu đào tạo</a></li>
+                    <li class="breadcrumb-item active">Chi tiết</li>
                 </ol>
             </nav>
         </div>
-        <a class="btn-ghost" th:href="@{/teacher/documents}">
-            <i class="fas fa-arrow-left me-1"></i>Quay lai
-        </a>
+
     </div>
 
     <div class="card">
         <div class="card-body">
             <dl class="row mb-0">
-                <dt class="col-sm-3">Ten tai lieu</dt>
-                <dd class="col-sm-9" th:text="${document.name}">Tai lieu</dd>
+                <dt class="col-sm-3">Tên tài liệu</dt>
+                <dd class="col-sm-9" th:text="${document.name}">Tài liệu</dd>
 
-                <dt class="col-sm-3">Loai</dt>
+                <dt class="col-sm-3">Loại</dt>
                 <dd class="col-sm-9" th:text="${document.type}">GIAO_AN</dd>
 
-                <dt class="col-sm-3">Mon hoc</dt>
+                <dt class="col-sm-3">Môn học</dt>
                 <dd class="col-sm-9" th:text="${document.subject != null ? document.subject.name : '-'}">-</dd>
 
-                <dt class="col-sm-3">Khoa hoc</dt>
+                <dt class="col-sm-3">Khóa học</dt>
                 <dd class="col-sm-9" th:text="${document.course != null ? document.course.name : '-'}">-</dd>
 
-                <dt class="col-sm-3">Nguoi tai len</dt>
+                <dt class="col-sm-3">Người tải lên</dt>
                 <dd class="col-sm-9" th:text="${document.uploadBy != null ? document.uploadBy.fullName : '-'}">-</dd>
 
-                <dt class="col-sm-3">Ngay tao</dt>
+                <dt class="col-sm-3">Ngày tạo</dt>
                 <dd class="col-sm-9" th:text="${document.createdAt != null ? #temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">-</dd>
             </dl>
 
             <div class="mt-4 d-flex gap-2">
                 <a class="btn-ghost" th:href="@{/teacher/documents/view/{id}(id=${document.id})}" target="_blank">
-                    <i class="fas fa-file-lines me-1"></i>Xem tai lieu
+                    <i class="fas fa-file-lines me-1"></i>Xem tài liệu
                 </a>
                 <a class="btn-primary-solid" th:href="@{/teacher/documents/download/{id}(id=${document.id})}">
-                    <i class="fas fa-download me-1"></i>Tai xuong
+                    <i class="fas fa-download me-1"></i>Tải xuống
                 </a>
             </div>
         </div>

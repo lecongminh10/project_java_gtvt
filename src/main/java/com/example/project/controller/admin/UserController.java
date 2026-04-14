@@ -120,7 +120,18 @@ public class UserController {
         try {
             // Check if username already exists
             if (userService.usernameExists(user.getUsername())) {
-                redirectAttributes.addFlashAttribute("error", "Username already exists!");
+                redirectAttributes.addFlashAttribute("toastError", "Username already exists!");
+                return "redirect:/admin/users/new";
+            }
+
+            if (user.getPassword() == null || user.getPassword().isBlank()) {
+                redirectAttributes.addFlashAttribute("toastError", "Mật khẩu không được để trống.");
+                return "redirect:/admin/users/new";
+            }
+
+            if (user.getRole() == UserRole.TEACHER
+                    && (user.getEmployeeCode() == null || user.getEmployeeCode().isBlank())) {
+                redirectAttributes.addFlashAttribute("toastError", "Mã nhân viên là bắt buộc cho giáo viên.");
                 return "redirect:/admin/users/new";
             }
 
@@ -133,10 +144,10 @@ public class UserController {
             }
 
             UserDTO created = userService.create(user);
-            redirectAttributes.addFlashAttribute("success", "User created successfully!");
+            redirectAttributes.addFlashAttribute("toastSuccess", "User created successfully!");
             return "redirect:/admin/users/" + created.getId();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error creating user: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Error creating user: " + e.getMessage());
             return "redirect:/admin/users/new";
         }
     }
@@ -164,10 +175,10 @@ public class UserController {
         try {
             user.setId(id);
             UserDTO updated = userService.update(id, user);
-            redirectAttributes.addFlashAttribute("success", "User updated successfully!");
+            redirectAttributes.addFlashAttribute("toastSuccess", "Cập nhật người dùng thành công!");
             return "redirect:/admin/users/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating user: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Error updating user: " + e.getMessage());
             return "redirect:/admin/users/" + id + "/edit";
         }
     }
@@ -181,10 +192,10 @@ public class UserController {
             RedirectAttributes redirectAttributes) {
         try {
             userService.updateUserRole(id, newRole);
-            redirectAttributes.addFlashAttribute("success", "User role updated successfully!");
+            redirectAttributes.addFlashAttribute("toastSuccess", "User role updated successfully!");
             return "redirect:/admin/users/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating role: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Error updating role: " + e.getMessage());
             return "redirect:/admin/users/" + id;
         }
     }
@@ -202,10 +213,10 @@ public class UserController {
             } else {
                 userService.deactivateUser(id);
             }
-            redirectAttributes.addFlashAttribute("success", "User status updated successfully!");
+            redirectAttributes.addFlashAttribute("toastSuccess", "User status updated successfully!");
             return "redirect:/admin/users/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating status: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Error updating status: " + e.getMessage());
             return "redirect:/admin/users/" + id;
         }
     }
@@ -231,20 +242,20 @@ public class UserController {
             RedirectAttributes redirectAttributes) {
         try {
             if (!newPassword.equals(confirmPassword)) {
-                redirectAttributes.addFlashAttribute("error", "Passwords do not match!");
+                redirectAttributes.addFlashAttribute("toastError", "Passwords do not match!");
                 return "redirect:/admin/users/" + id + "/reset-password";
             }
 
             if (newPassword.length() < 6) {
-                redirectAttributes.addFlashAttribute("error", "Password must be at least 6 characters!");
+                redirectAttributes.addFlashAttribute("toastError", "Password must be at least 6 characters!");
                 return "redirect:/admin/users/" + id + "/reset-password";
             }
 
             userService.resetUserPassword(id, newPassword);
-            redirectAttributes.addFlashAttribute("success", "Password reset successfully!");
+            redirectAttributes.addFlashAttribute("toastSuccess", "Password reset successfully!");
             return "redirect:/admin/users/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error resetting password: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Error resetting password: " + e.getMessage());
             return "redirect:/admin/users/" + id + "/reset-password";
         }
     }
@@ -256,10 +267,10 @@ public class UserController {
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             userService.deactivateUser(id);
-            redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động người dùng.");
+            redirectAttributes.addFlashAttribute("toastSuccess", "Đã ngừng hoạt động người dùng.");
             return "redirect:/admin/users";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Không thể ngừng hoạt động người dùng: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Không thể ngừng hoạt động người dùng: " + e.getMessage());
             return "redirect:/admin/users/" + id;
         }
     }

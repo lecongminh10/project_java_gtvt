@@ -1,147 +1,105 @@
 <div layout:decorate="~{admin/layout/admin-layout}">
     <div layout:fragment="content">
 
-        <!-- Table + Activity -->
-        <div class="row g-3">
-
-            <!-- Recent Orders Table -->
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header-clean">
-                        <h5><i class="fas fa-graduation-cap me-2 text-primary"></i>Danh sách khóa học</h5>
-                        <a class="btn-ghost" href="#" style="font-size: 0.8rem;">Xem tất cả <i
-                                class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                    <div style="padding: 1rem; border-bottom: 1px solid #f1f5f9;">
-                        <div class="d-flex gap-3">
-                            <div style="position: relative; flex: 1; max-width: 400px;">
-                                <i class="fas fa-search"
-                                   style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                                <input placeholder="Tìm kiếm khóa học..."
-                                       style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem;"
-                                       type="text">
-                            </div>
-                            <select style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;">
-                                <option>Tất cả môn học</option>
-                                <option>Lập trình</option>
-                                <option>Thiết kế web</option>
-                                <option>Data Science</option>
-                            </select>
-                            <select style="padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; color: #64748b;">
-                                <option>Tất cả trạng thái</option>
-                                <option>Mới</option>
-                                <option>Đang học</option>
-                                <option>Kết thúc</option>
-                            </select>
-                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;"><i
-                                    class="fas fa-filter me-1"></i> Lọc
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table-admin">
-                            <thead>
-                            <tr>
-                                <th>Mã khóa học</th>
-                                <th>Tên khóa học</th>
-                                <th>Môn học</th>
-                                <th>Số buổi</th>
-                                <th>Học phí</th>
-                                <th>Thời gian</th>
-                                <th>Trạng thái</th>
-                                <th>Ngày tạo</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="course : ${courses}">
-                                <td><span style="font-weight:600; color: #2563eb;" th:text="${course.code}"></span></td>
-                                <td style="font-weight: 600;" th:text="${course.name}"></td>
-                                <td style="color: #64748b;" th:text="${course.subjectName}"></td>
-                                <td th:text="${course.sessionsCount}"></td>
-                                <td style="font-weight: 600;" th:text="${course.fee}"></td>
-                                <td style="color: #64748b;" th:text="${course.durationWeeks + ' tuần'}"></td>
-                                <td th:switch="${course.status?.name()}">
-                                    <span class="badge-status badge-success" th:case="'MOI'">Mới</span>
-                                    <span class="badge-status badge-info" th:case="'DANG_HOC'">Đang học</span>
-                                    <span class="badge-status badge-pending" th:case="'KET_THUC'">Kết thúc</span>
-                                    <span class="badge-status badge-pending" th:case="*">Chưa xác định</span>
-                                </td>
-                                <td style="color: #64748b;"
-                                ><a class="btn-icon" th:href="@{/admin/courses/{id}/edit(id=${course.id})}"
-                                    title="Sửa">
-                                    <i class="fas fa-pencil"></i>
-                                </a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- Page Header -->
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1>Quản lý khóa học</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                        <li class="breadcrumb-item active">Khóa học</li>
+                    </ol>
+                </nav>
             </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/courses/create}" class="btn-primary-solid"><i class="fas fa-plus"></i> Thêm khóa học</a>
+            </div>
+        </div>
 
-            <!-- Right Panel -->
-            <div class="col-lg-4 d-flex flex-column gap-3">
-
-                <!-- Top Selling -->
-                <div class="card">
-                    <div class="card-header-clean">
-                        <h5><i class="fas fa-fire me-2" style="color:#f59e0b;"></i>Khóa học nổi bật</h5>
+        <!-- Filter Bar -->
+        <div class="card mb-3">
+            <div class="card-header-clean">
+                <form th:action="@{/admin/courses}" method="get" class="d-flex align-items-center gap-2" style="flex:1;">
+                    <div class="topbar-search" style="max-width:360px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="courseName" placeholder="Tìm theo mã hoặc tên khóa học..." th:value="${courseName}">
                     </div>
-                    <div style="padding: 0.75rem 1rem;">
-                        <!-- Item -->
-                        <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="stat-card-icon icon-blue"
-                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
-                                    class="fas fa-code"></i></div>
-                            <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Lập trình Java cơ bản
-                                </div>
-                                <div style="font-size:0.75rem;color:#64748b;">30 học viên</div>
+                    <select name="status" class="filter-select" th:value="${courseStatus}">
+                        <option value="">Tất cả trạng thái</option>
+                        <option th:each="s : ${T(com.example.project.entity.ClassStatus).values()}"
+                                th:selected="${courseStatus == s}"
+                                th:text="${s.label}"
+                                th:value="${s}">
+                        </option>
+                    </select>
+                    <button class="btn-ghost" type="submit"><i class="fas fa-filter"></i> Tìm kiếm</button>
+                    <button class="btn-ghost" type="button" onclick="resetSearchForm()"><i class="fas fa-rotate-left"></i> Đặt lại</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table-admin">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mã khóa học</th>
+                        <th>Tên khóa học</th>
+                        <th>Môn học</th>
+                        <th>Số buổi</th>
+                        <th>Học phí</th>
+                        <th>Thời lượng</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="course : ${courses}">
+                        <td><span style="font-weight:600; color: #2563eb;" th:text="${course.id}"></span></td>
+                        <td><span style="font-weight:600; color: #2563eb;" th:text="${course.code}"></span></td>
+                        <td th:text="${course.name}"></td>
+                        <td style="color: #64748b;" th:text="${course.subjectName}"></td>
+                        <td th:text="${course.sessionsCount}"></td>
+                        <td style="font-weight: 600;" th:text="${course.fee}"></td>
+                        <td style="color: #64748b;" th:text="${course.durationWeeks + ' tuần'}"></td>
+                        <td>
+                            <span class="badge-status"
+                                  th:classappend="${course.status?.name() == 'MOI' ? 'badge-success' : (course.status?.name() == 'DANG_HOC' ? 'badge-info' : 'badge-pending')}"
+                                  th:text="${course.status != null ? course.status.label : 'Chưa xác định'}"></span>
+                        </td>
+                        <td class="text-end">
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a class="btn-icon" th:href="@{/admin/courses/{id}/edit(id=${course.id})}" title="Sửa">
+                                    <i class="fas fa-pencil"></i>
+                                </a>
+                                                                <form th:if="${course.status?.name() == 'KET_THUC'}" data-confirm="true"
+                                                                            data-confirm-message="Bạn chắc chắn muốn xóa khóa học này?"
+                                                                            th:action="@{/admin/courses/{id}/delete(id=${course.id})}" method="post" style="display:inline;">
+                                                                        <button type="submit" class="btn-icon danger" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">Mới</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 py-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="stat-card-icon icon-violet"
-                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
-                                    class="fas fa-database"></i></div>
-                            <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Khoa học dữ liệu</div>
-                                <div style="font-size:0.75rem;color:#64748b;">45 học viên</div>
-                            </div>
-                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">Hot</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 py-2">
-                            <div class="stat-card-icon icon-amber"
-                                 style="width:36px;height:36px;border-radius:8px;font-size:0.85rem;flex-shrink:0;"><i
-                                    class="fas fa-paint-brush"></i></div>
-                            <div style="flex:1;">
-                                <div style="font-size:0.845rem;font-weight:600;color:#0f172a;">Thiết kế web với React
-                                </div>
-                                <div style="font-size:0.75rem;color:#64748b;">28 học viên</div>
-                            </div>
-                            <span style="font-weight:700;font-size:0.845rem;color:#10b981;">+15%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="card">
-                    <div class="card-header-clean">
-                        <h5><i class="fas fa-bolt me-2 text-primary"></i>Thao tác nhanh</h5>
-                    </div>
-                    <div style="padding: 0.75rem 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                        <a class="btn-ghost" style="justify-content:center;" th:href="@{/admin/courses/create}"><i
-                                class="fas fa-plus"></i> Thêm KH</a>
-                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-book"></i> Môn
-                            học</a>
-                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-tags"></i> Danh
-                            mục</a>
-                        <a class="btn-ghost" href="#" style="justify-content:center;"><i class="fas fa-chart-bar"></i>
-                            Báo cáo</a>
-                    </div>
-                </div>
-
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(courses)}">
+                        <td colspan="9" class="text-center" style="color:#64748b; padding:1.5rem;">
+                            Chưa có khóa học nào.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </div>
 </div>
+
+<script th:inline="javascript">
+    function resetSearchForm() {
+        window.location.href = "/admin/courses";
+    }
+</script>

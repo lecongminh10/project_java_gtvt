@@ -13,9 +13,6 @@
                     </ol>
                 </nav>
             </div>
-            <div class="d-flex gap-2">
-                <a class="btn-ghost" th:href="@{/admin/courses}"><i class="fas fa-arrow-left"></i> Quay lại</a>
-            </div>
         </div>
 
         <div class="card">
@@ -23,7 +20,8 @@
                 <h5 th:text="${course.id == null} ? 'Thêm khóa học' : 'Chi tiết khóa học'">Thông tin khóa học</h5>
             </div>
             <div class="card-body" style="padding:1.25rem;">
-                <form class="row g-3" method="post" th:action="${formAction}" th:object="${course}">
+                    <form class="row g-3" method="post" th:action="${formAction}" th:object="${course}" data-confirm="true"
+                        th:attr="data-confirm-message=${course.id == null ? 'Bạn chắc chắn muốn thêm khóa học này?' : 'Bạn chắc chắn muốn cập nhật khóa học này?'}">
 
                     <input th:field="*{id}" type="hidden">
 
@@ -62,13 +60,14 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Chọn môn học</label>
-                        <select class="form-select" th:field="*{subjectId}">
+                        <select class="form-select" th:field="*{subjectId}" th:disabled="${course.id != null}">
                             <option value="">Chọn môn học</option>
                             <option th:each="s: ${subjects}"
                                     th:value="${s.id}"
                                     th:text="${s.name}">
                             </option>
                         </select>
+                        <input type="hidden" name="subjectId" th:if="${course.id != null}" th:value="${course.subjectId}">
                         <div class="text-danger" style="font-size:0.75rem;"
                              th:if="${errors != null && errors['subjectId'] != null}" th:text="${errors['subjectId']}"></div>
                     </div>
@@ -87,7 +86,7 @@
                         <a class="btn-ghost" th:href="@{/admin/courses}">Hủy</a>
                         <button class="btn-primary-solid" type="submit">
                             <i class="fas fa-save"></i>
-                            <span th:text="${course.id == null} ? 'Tạo mới' : 'Lưu thay đổi'"></span>
+                            <span>Lưu</span>
                         </button>
                     </div>
                 </form>

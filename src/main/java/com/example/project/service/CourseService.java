@@ -11,6 +11,8 @@ public interface CourseService extends BaseService<CourseDTO, Long> {
 
     CourseDTO update(Long id, CourseDTO courseDTO);
 
+    void markDeleted(Long id);
+
     Optional<CourseDTO> findById(Long id);
 
     List<CourseDTO> searchCourses(String courseName, ClassStatus status);

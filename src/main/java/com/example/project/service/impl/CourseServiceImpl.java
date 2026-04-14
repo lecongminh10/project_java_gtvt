@@ -69,6 +69,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
         course.setDurationWeeks(dto.getDurationWeeks());
         course.setDescription(dto.getDescription());
         course.setStatus(dto.getStatus() != null ? dto.getStatus() : ClassStatus.MOI);
+        course.setDeleted(false);
 
         if (dto.getId() == null) {
             course.setCreatedAt(LocalDateTime.now());
@@ -85,6 +86,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
         if (course.getStatus() == null) {
             course.setStatus(ClassStatus.MOI);
         }
+        course.setDeleted(false);
         if (course.getCreatedAt() == null) {
             course.setCreatedAt(LocalDateTime.now());
         }
@@ -98,7 +100,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
                 .orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
 
         existing.setName(courseDTO.getName());
-        existing.setSubjectId(courseDTO.getSubjectId());
+        // Keep subjectId unchanged after creation.
         existing.setSessionsCount(courseDTO.getSessionsCount());
         existing.setFee(courseDTO.getFee());
         existing.setDurationWeeks(courseDTO.getDurationWeeks());
@@ -112,13 +114,23 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
     }
 
     @Override
+    public void markDeleted(Long id) {
+        Course existing = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
+        existing.setDeleted(true);
+        existing.setStatus(ClassStatus.KET_THUC);
+        existing.setUpdatedAt(LocalDateTime.now());
+        courseRepository.save(existing);
+    }
+
+    @Override
     public CourseDTO save(CourseDTO dto) {
         return null;
     }
 
     @Override
     public List<CourseDTO> findAll() {
-        return courseRepository.findAll().stream()
+        return courseRepository.findAllByDeletedFalse().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -130,7 +142,11 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
 
     @Override
     public List<CourseDTO> searchCourses(String name, ClassStatus status) {
-        return courseRepository.searchCourses(name, status).stream().filter(s -> s.getName().equalsIgnoreCase(name) || s.getStatus() == status).map(this::toDTO).collect(Collectors.toList());
+        return courseRepository.searchCourses(name, status).stream()
+            .filter(s -> (name != null && s.getName() != null && s.getName().equalsIgnoreCase(name))
+                || (status != null && s.getStatus() == status))
+            .map(this::toDTO)
+            .collect(Collectors.toList());
 
     }
 

@@ -12,6 +12,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
         List<Document> findByNameContainingIgnoreCaseOrderByCreatedAtDesc(String name);
 
+    long countBySubject_Id(Long subjectId);
+
         @Query("""
                         select d from Document d
                         where (:keyword is null or lower(d.name) like lower(concat('%', :keyword, '%')))

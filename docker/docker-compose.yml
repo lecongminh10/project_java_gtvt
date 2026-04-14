@@ -26,7 +26,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: 12345678
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_THYMELEAF_PREFIX: file:/app/src/main/resources/templates/
       SPRING_WEB_RESOURCES_STATIC_LOCATIONS: file:/app/src/main/resources/static/
       SPRING_DEVTOOLS_RESTART_TRIGGER_FILE: /app/.reloadtrigger

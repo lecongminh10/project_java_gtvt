@@ -88,7 +88,7 @@ public class TeacherPasswordController {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
             helper.setTo(user.getEmail());
             helper.setFrom(mailFrom);
-            helper.setSubject("Reset mat khau tai khoan");
+            helper.setSubject("Reset mật khẩu tài khoản");
             helper.setText(buildResetEmailHtml(user.getUsername(), resetUrl), true);
             mailSender.send(mimeMessage);
         } catch (MessagingException ex) {
@@ -146,16 +146,16 @@ public class TeacherPasswordController {
 
         Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
         if (tokenOpt.isEmpty() || tokenOpt.get().isExpired() || tokenOpt.get().isUsed()) {
-            redirectAttributes.addFlashAttribute("resetError", "Link khong hop le hoac da het han.");
+            redirectAttributes.addFlashAttribute("resetError", "Link không hợp lệ hoặc đã hết hạn.");
             return "redirect:/reset-password?token=" + token;
         }
 
         if (newPassword == null || newPassword.isBlank()) {
-            redirectAttributes.addFlashAttribute("resetError", "Mat khau moi khong duoc de trong.");
+            redirectAttributes.addFlashAttribute("resetError", "Mật khẩu mới không được để trống.");
             return "redirect:/reset-password?token=" + token;
         }
         if (!newPassword.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("resetError", "Mat khau xac nhan khong khop.");
+            redirectAttributes.addFlashAttribute("resetError", "Mật khẩu xác nhận không khớp.");
             return "redirect:/reset-password?token=" + token;
         }
 
@@ -175,33 +175,33 @@ public class TeacherPasswordController {
                                                 RedirectAttributes redirectAttributes,
                                                 java.security.Principal principal) {
         if (principal == null || principal.getName() == null) {
-            redirectAttributes.addFlashAttribute("resetError", "Ban can dang nhap de doi mat khau.");
+            redirectAttributes.addFlashAttribute("resetError", "Bạn cần đăng nhập để đổi mật khẩu.");
             return "redirect:/reset-password";
         }
 
         Optional<User> userOpt = userRepository.findByUsername(principal.getName());
         if (userOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("resetError", "Khong tim thay tai khoan dang nhap.");
+            redirectAttributes.addFlashAttribute("resetError", "Không tìm thấy tài khoản đăng nhập.");
             return "redirect:/reset-password";
         }
 
         User user = userOpt.get();
         if (user.getRole() != com.example.project.entity.UserRole.TEACHER
                 || !passwordEncoder.matches("12345678", user.getPassword())) {
-            redirectAttributes.addFlashAttribute("resetError", "Khong du dieu kien de doi mat khau.");
+            redirectAttributes.addFlashAttribute("resetError", "Không đủ điều kiện để đổi mật khẩu.");
             return "redirect:/reset-password";
         }
 
         if (newPassword == null || newPassword.isBlank()) {
-            redirectAttributes.addFlashAttribute("resetError", "Mat khau moi khong duoc de trong.");
+            redirectAttributes.addFlashAttribute("resetError", "Mật khẩu mới không được để trống.");
             return "redirect:/reset-password";
         }
         if (!newPassword.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("resetError", "Mat khau xac nhan khong khop.");
+            redirectAttributes.addFlashAttribute("resetError", "Mật khẩu xác nhận không khớp.");
             return "redirect:/reset-password";
         }
         if ("12345678".equals(newPassword)) {
-            redirectAttributes.addFlashAttribute("resetError", "Vui long khong dung lai mat khau mac dinh.");
+            redirectAttributes.addFlashAttribute("resetError", "Vui lòng không dùng lại mật khẩu mặc định.");
             return "redirect:/reset-password";
         }
 
@@ -215,18 +215,18 @@ public class TeacherPasswordController {
         return String.format("""
                 <div style=\"font-family: 'Inter', Arial, sans-serif; background:#f8fafc; padding:32px;\">
                     <div style=\"max-width:560px; margin:0 auto; background:#ffffff; border-radius:16px; padding:28px; box-shadow:0 10px 30px rgba(15,23,42,0.08);\">
-                        <div style=\"font-size:18px; font-weight:700; color:#0f172a; margin-bottom:8px;\">Yeu cau reset mat khau</div>
-                        <div style=\"font-size:14px; color:#475569; margin-bottom:16px;\">Chao %s,</div>
+                        <div style=\"font-size:18px; font-weight:700; color:#0f172a; margin-bottom:8px;\">Yêu cầu reset mật khẩu</div>
+                        <div style=\"font-size:14px; color:#475569; margin-bottom:16px;\">Chào %s,</div>
                         <div style=\"font-size:14px; color:#475569; margin-bottom:20px;\">
-                            Chung toi nhan duoc yeu cau doi mat khau. Hay nhan vao nut ben duoi de tao mat khau moi.
-                            Link se het han sau 15 phut.
+                            Chúng tôi nhận được yêu cầu đổi mật khẩu. Hãy nhấn vào nút bên dưới để tạo mật khẩu mới.
+                            Link sẽ hết hạn sau 15 phút.
                         </div>
-                        <a href=\"%s\" style=\"display:inline-block; padding:12px 20px; background:#2563eb; color:#ffffff; text-decoration:none; border-radius:10px; font-weight:600;\">Reset mat khau</a>
+                        <a href=\"%s\" style=\"display:inline-block; padding:12px 20px; background:#2563eb; color:#ffffff; text-decoration:none; border-radius:10px; font-weight:600;\">Reset mật khẩu</a>
                         <div style=\"font-size:12px; color:#94a3b8; margin-top:20px;\">
-                            Neu ban khong yeu cau reset, vui long bo qua email nay.
+                            Nếu bạn không yêu cầu reset, vui lòng bỏ qua email này.
                         </div>
                         <div style=\"font-size:12px; color:#94a3b8; margin-top:12px;\">
-                            Hoac mo link nay: <a href=\"%s\" style=\"color:#2563eb;\">%s</a>
+                            Hoặc mở link này: <a href=\"%s\" style=\"color:#2563eb;\">%s</a>
                         </div>
                     </div>
                 </div>

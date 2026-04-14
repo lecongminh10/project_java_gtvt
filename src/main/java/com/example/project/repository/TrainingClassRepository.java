@@ -1,6 +1,7 @@
 package com.example.project.repository;
 
 import com.example.project.entity.TrainingClass;
+import com.example.project.entity.ClassStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,6 +9,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TrainingClassRepository extends JpaRepository<TrainingClass, Long> {
+
+    boolean existsByCourse_IdAndStatusNot(Long courseId, ClassStatus status);
+
+    List<TrainingClass> findByCourse_Id(Long courseId);
 
     @Query("select c from TrainingClass c " +
            "join c.course cr " +

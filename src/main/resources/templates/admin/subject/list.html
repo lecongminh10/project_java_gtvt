@@ -69,8 +69,9 @@
                                     <a th:href="@{/admin/subjects/{id}/edit(id=${subject.id})}" class="btn-icon" title="Sửa">
                                         <i class="fas fa-pencil"></i>
                                     </a>
-                                    <form th:action="@{/admin/subjects/{id}/delete(id=${subject.id})}" method="post" style="display:inline;">
-                                        <button type="submit" class="btn-icon danger" title="Xóa" onclick="return confirm('Xóa môn học này?')">
+                                    <form th:action="@{/admin/subjects/{id}/delete(id=${subject.id})}" method="post" style="display:inline;"
+                                          data-confirm="true" data-confirm-message="Bạn chắc chắn muốn xóa môn học này?">
+                                        <button type="submit" class="btn-icon danger" title="Xóa">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,8 @@ public class SubjectAdminController {
     }
 
     @PostMapping("/create")
-    public String createSubject(@ModelAttribute("subject") SubjectDTO subjectDTO, Model model) {
+    public String createSubject(@ModelAttribute("subject") SubjectDTO subjectDTO, Model model,
+                                RedirectAttributes redirectAttributes) {
         Map<String, String> errors = new HashMap<>();
         if (subjectDTO.getCode() == null || subjectDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã môn học không được để trống");
@@ -62,6 +64,7 @@ public class SubjectAdminController {
             return "admin/subject/form";
         }
         subjectService.create(subjectDTO);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã thêm môn học thành công.");
         return "redirect:/admin/subjects";
     }
 
@@ -76,7 +79,8 @@ public class SubjectAdminController {
     }
 
     @PostMapping("/{id}/edit")
-    public String updateSubject(@PathVariable Long id, @ModelAttribute("subject") SubjectDTO subjectDTO, Model model) {
+    public String updateSubject(@PathVariable Long id, @ModelAttribute("subject") SubjectDTO subjectDTO, Model model,
+                                RedirectAttributes redirectAttributes) {
         Map<String, String> errors = new HashMap<>();
         if (subjectDTO.getCode() == null || subjectDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã môn học không được để trống");
@@ -96,12 +100,18 @@ public class SubjectAdminController {
             return "admin/subject/form";
         }
         subjectService.update(id, subjectDTO);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã cập nhật môn học thành công.");
         return "redirect:/admin/subjects";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteSubject(@PathVariable Long id) {
-        subjectService.deleteById(id);
+    public String deleteSubject(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            subjectService.deleteById(id);
+            redirectAttributes.addFlashAttribute("toastSuccess", "Đã xóa môn học thành công.");
+        } catch (IllegalStateException ex) {
+            redirectAttributes.addFlashAttribute("toastError", ex.getMessage());
+        }
         return "redirect:/admin/subjects";
     }
 }

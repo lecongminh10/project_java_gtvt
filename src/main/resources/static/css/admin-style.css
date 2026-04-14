@@ -398,6 +398,7 @@ body {
     font-size: 0.855rem;
     vertical-align: middle;
 }
+
 .table-admin tbody tr:last-child td { border-bottom: none; }
 .table-admin tbody tr:hover td { background: #fafbff; }
 

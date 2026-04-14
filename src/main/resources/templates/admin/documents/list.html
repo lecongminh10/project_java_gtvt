@@ -3,7 +3,7 @@
      xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
 
-    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div>
             <h1 th:text="${pageTitle}">Quản lý tài liệu</h1>
             <nav aria-label="breadcrumb">
@@ -13,26 +13,19 @@
                 </ol>
             </nav>
         </div>
-        <div>
-            <a class="btn btn-primary" th:href="@{/admin/documents/new}">
-                <i class="fas fa-plus me-1"></i> Thêm mới
-            </a>
+        <div class="d-flex gap-2">
+            <a class="btn-primary-solid" th:href="@{/admin/documents/new}"><i class="fas fa-plus"></i> Thêm mới</a>
         </div>
     </div>
 
-    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
-
     <div class="card mb-3">
         <div class="card-header-clean">
-            <form class="d-flex flex-wrap gap-2 align-items-center" th:action="@{/admin/documents}" method="get">
-                <div style="flex: 1; min-width: 250px;">
-                    <div style="position: relative;">
-                        <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu..." style="padding-left: 2.5rem;">
-                    </div>
+            <form class="d-flex align-items-center gap-2 flex-wrap admin-filter" th:action="@{/admin/documents}" method="get" style="flex:1;">
+                <div class="topbar-search" style="max-width:360px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu...">
                 </div>
-                <select class="form-select" name="subjectId" style="width: auto; min-width: 180px;">
+                <select class="form-select" name="subjectId">
                     <option value="">Tất cả môn học</option>
                     <option th:each="subject : ${subjects}"
                             th:value="${subject.id}"
@@ -40,7 +33,7 @@
                             th:selected="${subjectId != null and subjectId == subject.id}">
                     </option>
                 </select>
-                <select class="form-select" name="courseId" style="width: auto; min-width: 180px;">
+                <select class="form-select" name="courseId">
                     <option value="">Tất cả khóa học</option>
                     <option th:each="course : ${courses}"
                             th:value="${course.id}"
@@ -48,7 +41,8 @@
                             th:selected="${courseId != null and courseId == course.id}">
                     </option>
                 </select>
-                <button class="btn btn-secondary" type="submit"><i class="fas fa-filter me-1"></i> Lọc dữ liệu</button>
+                <button class="btn-ghost" type="submit"><i class="fas fa-filter"></i> Tìm kiếm</button>
+                <button class="btn-ghost" type="button" onclick="window.location.href='/admin/documents'"><i class="fas fa-rotate-left"></i> Đặt lại</button>
             </form>
         </div>
     </div>
@@ -98,7 +92,8 @@
                             <a class="btn-icon" th:href="@{/admin/documents/download/{id}(id=${doc.id})}" title="Tải xuống">
                                 <i class="fas fa-download text-success"></i>
                             </a>
-                            <form th:action="@{/admin/documents/{id}/delete(id=${doc.id})}" method="post" class="d-inline" title="Xóa tài liệu" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài liệu này không? Hành động này không thể hoàn tác.');">
+                            <form th:action="@{/admin/documents/{id}/delete(id=${doc.id})}" method="post" class="d-inline" title="Xóa tài liệu"
+                                  data-confirm="true" data-confirm-message="Bạn chắc chắn muốn xóa tài liệu này?">
                                 <button type="submit" class="btn-icon border-0 bg-transparent">
                                     <i class="fas fa-trash-alt text-danger"></i>
                                 </button>
