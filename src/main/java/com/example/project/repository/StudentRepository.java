@@ -11,6 +11,10 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByCode(String code);
 
+        List<Student> findByStatusOrderByNameAsc(com.example.project.entity.StudentStatus status);
+
+        List<Student> findTop3ByOrderByCreatedAtDesc();
+
     @Query("""
             select s from Student s
             where (:name is null or lower(s.name) like lower(concat('%', :name, '%')))

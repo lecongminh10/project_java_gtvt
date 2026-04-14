@@ -17,4 +17,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findAllByDeletedFalse(Sort sort);
 
     long countBySubjectIdAndDeletedFalse(Long subjectId);
+
+    long countByDeletedFalse();
 }

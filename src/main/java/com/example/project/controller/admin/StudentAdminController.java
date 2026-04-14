@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -102,7 +103,8 @@ public class StudentAdminController {
                                 @RequestParam(required = false) String parentEmail,
                                 @RequestParam(required = false) String parentAddress,
                                 @RequestParam(required = false) Long classId,
-                                @RequestParam(required = false) StudentStatus status) {
+                                @RequestParam(required = false) StudentStatus status,
+                                RedirectAttributes redirectAttributes) {
         ValidationResult result = buildStudentFromForm(new Student(), name, dob, parentName, parentPhone,
                 parentEmail, parentAddress, classId, status);
 
@@ -116,6 +118,7 @@ public class StudentAdminController {
         result.student.setUpdatedAt(LocalDateTime.now());
         Student saved = studentRepository.save(result.student);
         syncClassAssignment(saved, classId);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã thêm học viên thành công.");
         return "redirect:/admin/students";
     }
 
@@ -148,7 +151,8 @@ public class StudentAdminController {
                                 @RequestParam(required = false) String parentEmail,
                                 @RequestParam(required = false) String parentAddress,
                                 @RequestParam(required = false) Long classId,
-                                @RequestParam(required = false) StudentStatus status) {
+                                @RequestParam(required = false) StudentStatus status,
+                                RedirectAttributes redirectAttributes) {
         Student existing = studentRepository.findById(id).orElseThrow();
         ValidationResult result = buildStudentFromForm(existing, name, dob, parentName, parentPhone,
                 parentEmail, parentAddress, classId, status);
@@ -161,13 +165,15 @@ public class StudentAdminController {
         result.student.setUpdatedAt(LocalDateTime.now());
         Student saved = studentRepository.save(result.student);
         syncClassAssignment(saved, classId);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã cập nhật học viên thành công.");
         return "redirect:/admin/students/" + id;
     }
 
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.GET, RequestMethod.POST})
-    public String deleteStudent(@PathVariable Long id) {
+    public String deleteStudent(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         classStudentRepository.deleteByStudentId(id);
         studentRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã xóa học viên thành công.");
         return "redirect:/admin/students";
     }
 

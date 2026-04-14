@@ -31,6 +31,15 @@ public interface ClassStudentRepository extends JpaRepository<ClassStudent, Clas
             """)
     List<ClassStudent> findActiveMembershipsByStudentIds(@Param("studentIds") Collection<Long> studentIds);
 
+                @Query("""
+                                                select cs from ClassStudent cs
+                                                join fetch cs.student st
+                                                where cs.trainingClass.id = :classId
+                                                        and cs.leaveDate is null
+                                                order by st.name asc
+                                                """)
+                List<ClassStudent> findActiveMembersByClassId(@Param("classId") Long classId);
+
     @Modifying
     @Transactional
     @Query("delete from ClassStudent cs where cs.student.id = :studentId")

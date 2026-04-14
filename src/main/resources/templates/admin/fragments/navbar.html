@@ -11,27 +11,23 @@
     <div class="topbar-actions">
 
         <!-- User Dropdown -->
-        <div class="dropdown">
+        <div class="dropdown" th:with="username=${#authentication?.name}, avatarName=${#strings.replace(username != null ? username : 'Admin', ' ', '+')}">
             <button class="topbar-user" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff&bold=true&size=60" alt="Admin">
+            <img th:src="'https://ui-avatars.com/api/?name=' + ${avatarName} + '&background=2563eb&color=fff&bold=true&size=60'" alt="User">
                 <div class="topbar-user-info">
-                    <strong>Administrator</strong>
-                    <small>Super Admin</small>
+                    <strong th:text="${username != null ? username : 'Administrator'}">Administrator</strong>
+                    <small th:text="${#authentication?.authorities != null ? #strings.listJoin(#authentication.authorities, ', ') : 'Admin'}">Admin</small>
                 </div>
-                <!-- <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem; color: #94a3b8;"></i> -->
+                <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem; color: #94a3b8;"></i>
             </button>
-            <!-- <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Hồ sơ</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                <li><div class="dropdown-divider"></div></li>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li>
-                    <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;">
-                    </form>
+                    <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;"></form>
                     <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();">
                         <i class="fas fa-sign-out-alt"></i> Đăng xuất
                     </a>
                 </li>
-            </ul> -->
+            </ul>
         </div>
     </div>
 </header>

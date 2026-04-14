@@ -19,8 +19,11 @@
 
     <div class="card mb-3">
         <div class="card-header-clean">
-            <form class="d-flex flex-wrap gap-2" th:action="@{/teacher/documents}" method="get">
-                <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu...">
+            <form class="d-flex align-items-center gap-2 flex-wrap admin-filter" th:action="@{/teacher/documents}" method="get" style="flex:1;">
+                <div class="topbar-search" style="max-width:360px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu...">
+                </div>
                 <select class="form-select" name="subjectId">
                     <option value="">Tất cả môn học</option>
                     <option th:each="subject : ${subjects}"
@@ -37,7 +40,8 @@
                             th:selected="${courseId != null and courseId == course.id}">
                     </option>
                 </select>
-                <button class="btn btn-primary" type="submit"><i class="fas fa-search me-1"></i>Tìm kiếm</button>
+                <button class="btn-ghost" type="submit"><i class="fas fa-filter"></i> Tìm kiếm</button>
+                <button class="btn-ghost" type="button" onclick="window.location.href='/teacher/documents'"><i class="fas fa-rotate-left"></i> Đặt lại</button>
             </form>
         </div>
     </div>
