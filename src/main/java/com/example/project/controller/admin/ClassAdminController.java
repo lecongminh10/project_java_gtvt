@@ -213,6 +213,7 @@ public class ClassAdminController {
     @PostMapping("/{id}/transfer")
     public String submitTransfer(@PathVariable Long id,
                                  Model model,
+                                 RedirectAttributes redirectAttributes,
                                  @RequestParam(required = false) String code,
                                  @RequestParam(required = false) String name,
                                  @RequestParam(required = false) Long courseId,
@@ -235,6 +236,11 @@ public class ClassAdminController {
 
         if (normalizedCode.isEmpty()) {
             errors.put("code", "Mã lớp bắt buộc.");
+        }
+        if (!normalizedCode.isEmpty()) {
+            if (classRepository.existsByCode(normalizedCode)) {
+                errors.put("code", "Mã lớp đã tồn tại.");
+            }
         }
         if (normalizedName.isEmpty()) {
             errors.put("name", "Tên lớp bắt buộc.");
@@ -296,6 +302,7 @@ public class ClassAdminController {
         // Touch source class to reflect transfer operation.
         source.setUpdatedAt(LocalDateTime.now());
         classRepository.save(source);
+        redirectAttributes.addFlashAttribute("toastSuccess", "Đã chuyển lớp và tạo lớp mới.");
         return "redirect:/admin/classes";
     }
 
@@ -355,6 +362,15 @@ public class ClassAdminController {
 
         if (normalizedCode.isEmpty()) {
             errors.put("code", "Mã lớp bắt buộc.");
+        }
+        if (!normalizedCode.isEmpty()) {
+            Long currentId = trainingClass.getId();
+            boolean duplicate = currentId == null
+                    ? classRepository.existsByCode(normalizedCode)
+                    : classRepository.existsByCodeAndIdNot(normalizedCode, currentId);
+            if (duplicate) {
+                errors.put("code", "Mã lớp đã tồn tại.");
+            }
         }
         if (normalizedName.isEmpty()) {
             errors.put("name", "Tên lớp bắt buộc.");

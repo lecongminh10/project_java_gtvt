@@ -9,18 +9,26 @@ import com.example.project.repository.TeacherRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
 public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> implements UserService {
+
+    private static final String DEFAULT_TEMP_PASSWORD = "12345678";
 
     @Autowired
     private UserRepository userRepository;
@@ -31,6 +39,12 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.from:no-reply@gtvt.edu.vn}")
+    private String mailFrom;
+
     @Override
     public UserDTO create(UserDTO dto) {
         if (dto == null) {
@@ -39,9 +53,9 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
         if (dto.getUsername() == null || dto.getUsername().isBlank()) {
             throw new IllegalArgumentException("Tên đăng nhập là bắt buộc");
         }
-        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Mật khẩu không được để trống");
-        }
+        String employeeCode = normalizeEmployeeCode(dto);
+        dto.setPassword(DEFAULT_TEMP_PASSWORD);
+        String rawPassword = DEFAULT_TEMP_PASSWORD;
 
         if (dto.getStatus() == null) {
             dto.setStatus(UserStatus.ACTIVE);
@@ -50,14 +64,8 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
             dto.setRole(UserRole.TEACHER);
         }
 
-        if (dto.getRole() == UserRole.TEACHER) {
-            String employeeCode = dto.getEmployeeCode();
-            if (employeeCode == null || employeeCode.isBlank()) {
-                throw new IllegalArgumentException("Mã nhân viên là bắt buộc cho giáo viên");
-            }
-            if (teacherRepository.existsByCode(employeeCode.trim())) {
-                throw new IllegalArgumentException("Mã nhân viên đã tồn tại: " + employeeCode);
-            }
+        if (dto.getRole() == UserRole.TEACHER && teacherRepository.existsByCode(employeeCode)) {
+            throw new IllegalArgumentException("Mã nhân viên đã tồn tại: " + employeeCode);
         }
 
         User entity = toEntity(dto);
@@ -74,7 +82,67 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
             teacherRepository.save(teacher);
         }
 
+        sendUserAccountEmail(savedUser.getEmail(), savedUser.getUsername(), rawPassword, savedUser.getEmployeeCode());
+
         return toDTO(savedUser);
+    }
+
+    private String generateUniqueEmployeeCode() {
+        for (int attempt = 0; attempt < 10; attempt++) {
+            int value = ThreadLocalRandom.current().nextInt(100000, 1000000);
+            String code = String.valueOf(value);
+            if (!teacherRepository.existsByCode(code)) {
+                return code;
+            }
+        }
+        String fallback = String.valueOf(System.currentTimeMillis());
+        while (teacherRepository.existsByCode(fallback)) {
+            fallback = String.valueOf(System.nanoTime());
+        }
+        return fallback;
+    }
+
+    private String normalizeEmployeeCode(UserDTO dto) {
+        String employeeCode = dto.getEmployeeCode();
+        if (employeeCode == null || employeeCode.isBlank()) {
+            throw new IllegalArgumentException("Mã nhân viên là bắt buộc");
+        }
+        employeeCode = employeeCode.trim();
+        dto.setEmployeeCode(employeeCode);
+        return employeeCode;
+    }
+
+    private void sendUserAccountEmail(String email, String username, String password, String employeeCode) {
+        if (email == null || email.isBlank()) {
+            return;
+        }
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+            helper.setTo(email);
+            helper.setFrom(mailFrom);
+            helper.setSubject("Thong bao tao tai khoan");
+            helper.setText(buildUserAccountEmailHtml(username, password, employeeCode), true);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException ex) {
+            throw new IllegalStateException("Khong gui duoc email tao tai khoan", ex);
+        }
+    }
+
+    private String buildUserAccountEmailHtml(String username, String password, String employeeCode) {
+        String safeEmployeeCode = (employeeCode == null || employeeCode.isBlank()) ? "-" : employeeCode;
+        return String.format("""
+                <div style=\"font-family: 'Inter', Arial, sans-serif; background:#f8fafc; padding:32px;\">
+                    <div style=\"max-width:560px; margin:0 auto; background:#ffffff; border-radius:16px; padding:28px; box-shadow:0 10px 30px rgba(15,23,42,0.08);\">
+                        <div style=\"font-size:18px; font-weight:700; color:#0f172a; margin-bottom:8px;\">Tai khoan da duoc tao</div>
+                        <div style=\"font-size:14px; color:#475569; margin-bottom:16px;\">Thong tin dang nhap cua ban:</div>
+                        <div style=\"font-size:14px; color:#0f172a; margin-bottom:8px;\"><strong>Tai khoan:</strong> %s</div>
+                        <div style=\"font-size:14px; color:#0f172a; margin-bottom:8px;\"><strong>Ma nhan vien:</strong> %s</div>
+                        <div style=\"font-size:14px; color:#0f172a; margin-bottom:20px;\"><strong>Mat khau:</strong> %s</div>
+                        <div style=\"font-size:12px; color:#94a3b8;\">Vui long dang nhap va doi mat khau ngay sau khi dang nhap.</div>
+                    </div>
+                </div>
+                """, username, safeEmployeeCode, password);
     }
 
     @Override
@@ -146,10 +214,23 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
             existingEntity.setStatus(dto.getStatus());
         }
         if (dto.getEmployeeCode() != null) {
-            existingEntity.setEmployeeCode(dto.getEmployeeCode());
+            String employeeCode = dto.getEmployeeCode().trim();
+            if (employeeCode.isBlank()) {
+                throw new IllegalArgumentException("Mã nhân viên là bắt buộc");
+            }
+            existingEntity.setEmployeeCode(employeeCode);
         }
         // createdAt and password are NOT updated during merge
         return existingEntity;
+    }
+
+    @Override
+    public UserDTO update(Long id, UserDTO dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Thiếu dữ liệu người dùng");
+        }
+        normalizeEmployeeCode(dto);
+        return super.update(id, dto);
     }
 
     @Override

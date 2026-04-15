@@ -219,10 +219,10 @@ public class TeacherController {
             if (teacher.getUserInfo() != null) {
                 userService.deactivateUser(teacher.getUserInfo().getId());
             }
-            redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động giáo viên.");
+            redirectAttributes.addFlashAttribute("toastSuccess", "Đã ngừng hoạt động giáo viên.");
             return "redirect:/admin/teachers";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Lỗi ngừng hoạt động giáo viên: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("toastError", "Lỗi ngừng hoạt động giáo viên: " + e.getMessage());
             return "redirect:/admin/teachers/" + id;
         }
     }
