@@ -35,6 +35,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String redirectUrl = "/";
 
+        if (shouldForcePasswordChange(authentication.getName())) {
+            response.sendRedirect("/reset-password");
+            return;
+        }
+
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();
 
@@ -50,18 +55,27 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.sendRedirect(redirectUrl);
     }
 
+    private boolean shouldForcePasswordChange(String username) {
+        if (username == null || username.isBlank()) {
+            return false;
+        }
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        return userOpt.isPresent()
+                && passwordEncoder.matches(DEFAULT_TEACHER_PASSWORD, userOpt.get().getPassword());
+    }
+
     private String resolveTeacherRedirect(String username) {
         if (username == null || username.isBlank()) {
-            return "/teacher/account";
+            return "/teacher/dashboard";
         }
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isEmpty()) {
-            return "/teacher/account";
+            return "/teacher/dashboard";
         }
         User user = userOpt.get();
         if (passwordEncoder.matches(DEFAULT_TEACHER_PASSWORD, user.getPassword())) {
             return "/reset-password";
         }
-        return "/teacher/account";
+        return "/teacher/dashboard";
     }
 }

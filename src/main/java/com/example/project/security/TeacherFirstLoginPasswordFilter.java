@@ -33,9 +33,7 @@ public class TeacherFirstLoginPasswordFilter extends OncePerRequestFilter {
         if (authentication != null
                 && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
-            boolean isTeacher = authentication.getAuthorities().stream()
-                    .anyMatch(authority -> "ROLE_TEACHER".equals(authority.getAuthority()));
-            if (isTeacher && shouldCheck(request)) {
+                if (shouldCheck(request)) {
                 String username = authentication.getName();
                 Optional<User> userOpt = userRepository.findByUsername(username);
                 if (userOpt.isPresent()
@@ -50,9 +48,6 @@ public class TeacherFirstLoginPasswordFilter extends OncePerRequestFilter {
 
     private boolean shouldCheck(HttpServletRequest request) {
         String path = request.getRequestURI();
-        if (!path.startsWith("/teacher")) {
-            return false;
-        }
-        return true;
+        return path.startsWith("/teacher") || path.startsWith("/admin");
     }
 }

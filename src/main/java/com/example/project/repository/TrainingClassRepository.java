@@ -10,6 +10,10 @@ import java.util.List;
 
 public interface TrainingClassRepository extends JpaRepository<TrainingClass, Long> {
 
+    boolean existsByCode(String code);
+
+    boolean existsByCodeAndIdNot(String code, Long id);
+
     boolean existsByCourse_IdAndStatusNot(Long courseId, ClassStatus status);
 
     List<TrainingClass> findByCourse_Id(Long courseId);

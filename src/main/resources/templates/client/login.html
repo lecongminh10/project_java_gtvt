@@ -209,7 +209,7 @@
         <!-- Error Messages -->
         <div th:if="${param.error}" class="alert alert-danger" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i>
-            Login failed! Invalid credentials.
+            Đặng nhập thất bại, vui lòng kiểm lại tài khoản và mật khẩu.
         </div>
         <div th:if="${param.inactive}" class="alert alert-warning" role="alert">
             <i class="fas fa-user-slash me-2"></i>
@@ -217,7 +217,7 @@
         </div>
         <div th:if="${param.expired}" class="alert alert-warning" role="alert">
             <i class="fas fa-clock me-2"></i>
-            Session expired! Please login again.
+            Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.
         </div>
         <div th:if="${param.reset != null} and ${param.reset[0]} == 'sent'" class="alert alert-warning" role="alert">
             <i class="fas fa-check-circle me-2"></i>

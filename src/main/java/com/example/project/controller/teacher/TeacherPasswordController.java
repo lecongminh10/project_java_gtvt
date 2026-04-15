@@ -124,8 +124,7 @@ public class TeacherPasswordController {
         }
 
         User user = userOpt.get();
-        if (user.getRole() != com.example.project.entity.UserRole.TEACHER
-                || !passwordEncoder.matches("12345678", user.getPassword())) {
+        if (!passwordEncoder.matches("12345678", user.getPassword())) {
             model.addAttribute("invalidToken", true);
             return "teacher/reset-password";
         }
@@ -186,9 +185,8 @@ public class TeacherPasswordController {
         }
 
         User user = userOpt.get();
-        if (user.getRole() != com.example.project.entity.UserRole.TEACHER
-                || !passwordEncoder.matches("12345678", user.getPassword())) {
-            redirectAttributes.addFlashAttribute("resetError", "Không đủ điều kiện để đổi mật khẩu.");
+        if (!passwordEncoder.matches("12345678", user.getPassword())) {
+            redirectAttributes.addFlashAttribute("resetError", "Khong du dieu kien de doi mat khau.");
             return "redirect:/reset-password";
         }
 
@@ -208,7 +206,10 @@ public class TeacherPasswordController {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        return "redirect:/teacher/account";
+        if (user.getRole() == com.example.project.entity.UserRole.ADMIN) {
+            return "redirect:/admin/dashboard";
+        }
+        return "redirect:/teacher/dashboard";
     }
 
     private String buildResetEmailHtml(String username, String resetUrl) {

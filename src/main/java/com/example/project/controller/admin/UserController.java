@@ -124,14 +124,8 @@ public class UserController {
                 return "redirect:/admin/users/new";
             }
 
-            if (user.getPassword() == null || user.getPassword().isBlank()) {
-                redirectAttributes.addFlashAttribute("toastError", "Mật khẩu không được để trống.");
-                return "redirect:/admin/users/new";
-            }
-
-            if (user.getRole() == UserRole.TEACHER
-                    && (user.getEmployeeCode() == null || user.getEmployeeCode().isBlank())) {
-                redirectAttributes.addFlashAttribute("toastError", "Mã nhân viên là bắt buộc cho giáo viên.");
+            if (user.getEmail() == null || user.getEmail().isBlank()) {
+                redirectAttributes.addFlashAttribute("toastError", "Email là bắt buộc để gửi thông tin tài khoản.");
                 return "redirect:/admin/users/new";
             }
 
