@@ -49,39 +49,50 @@ public class StudentAdminController {
                                @RequestParam(required = false) String code,
                                @RequestParam(required = false) StudentStatus status,
                                @RequestParam(required = false) Long classId,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size,
                                Model model) {
-        List<Student> students;
-        
+        List<Student> allStudents;
+
         // Use multi-field filter if any filter is present, otherwise use standard search or find all
-        boolean hasFilters = (name != null && !name.trim().isEmpty()) || 
-                             (code != null && !code.trim().isEmpty()) || 
-                             status != null || 
+        boolean hasFilters = (name != null && !name.trim().isEmpty()) ||
+                             (code != null && !code.trim().isEmpty()) ||
+                             status != null ||
                              classId != null;
-                             
+
         if (hasFilters) {
-            students = studentRepository.filterStudents(
+            allStudents = studentRepository.filterStudents(
                     (name != null && !name.trim().isEmpty()) ? name.trim() : null,
                     (code != null && !code.trim().isEmpty()) ? code.trim() : null,
                     status,
                     classId
             );
         } else if (q != null && !q.trim().isEmpty()) {
-            students = studentRepository.search(q.trim());
+            allStudents = studentRepository.search(q.trim());
         } else {
-            students = studentRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            allStudents = studentRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         }
 
-        model.addAttribute("students", students);
+        // Simple pagination
+        int start = page * size;
+        int end = Math.min(start + size, allStudents.size());
+        List<Student> pageContent = allStudents.subList(start, end);
+
+        model.addAttribute("students", pageContent);
         model.addAttribute("keyword", q);
         model.addAttribute("filterName", name);
         model.addAttribute("filterCode", code);
         model.addAttribute("filterStatus", status);
         model.addAttribute("filterClassId", classId);
-        
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalElements", allStudents.size());
+        model.addAttribute("totalPages", (allStudents.size() + size - 1) / size);
+
         model.addAttribute("classes", classRepository.findAll(Sort.by(Sort.Direction.ASC, "name")));
         model.addAttribute("statuses", StudentStatus.values());
-        
-        model.addAttribute("currentClasses", buildCurrentClassMap(students));
+
+        model.addAttribute("currentClasses", buildCurrentClassMap(pageContent));
         model.addAttribute("pageTitle", "Quản lý học viên");
         return "admin/student/list";
     }

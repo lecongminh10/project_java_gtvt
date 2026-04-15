@@ -12,10 +12,12 @@ DROP TABLE IF EXISTS students;
 DROP TABLE IF EXISTS teachers;
 DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS subjects;
+DROP TABLE IF EXISTS password_reset_tokens;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
   id bigint NOT NULL AUTO_INCREMENT,
+  created_at datetime(6) DEFAULT NULL,
   email varchar(255) DEFAULT NULL,
   employee_code varchar(255) DEFAULT NULL,
   full_name varchar(255) DEFAULT NULL,
@@ -23,9 +25,23 @@ CREATE TABLE users (
   phone varchar(255) DEFAULT NULL,
   role enum('ADMIN','TEACHER') DEFAULT NULL,
   status enum('ACTIVE','INACTIVE') DEFAULT NULL,
+  updated_at datetime(6) DEFAULT NULL,
   username varchar(255) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK_r43af9ap4edm43mmtq01oddj6 (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE password_reset_tokens (
+  id bigint NOT NULL AUTO_INCREMENT,
+  token varchar(255) NOT NULL,
+  created_at datetime(6) NOT NULL,
+  expires_at datetime(6) NOT NULL,
+  used_at datetime(6) DEFAULT NULL,
+  user_id bigint NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY UK_password_reset_token (token),
+  KEY FK_password_reset_user (user_id),
+  CONSTRAINT FK_password_reset_user FOREIGN KEY (user_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE subjects (
@@ -43,6 +59,7 @@ CREATE TABLE courses (
   code varchar(255) NOT NULL,
   created_at datetime(6) DEFAULT NULL,
   description varchar(255) DEFAULT NULL,
+  deleted bit(1) NOT NULL DEFAULT b'0',
   duration_weeks int DEFAULT NULL,
   fee decimal(38,2) DEFAULT NULL,
   name varchar(255) NOT NULL,
@@ -60,6 +77,15 @@ CREATE TABLE teachers (
   id bigint NOT NULL AUTO_INCREMENT,
   code varchar(255) NOT NULL,
   created_at datetime(6) DEFAULT NULL,
+  salary decimal(10,2) DEFAULT NULL,
+  salary_currency varchar(255) DEFAULT NULL,
+  salary_pay_period varchar(255) DEFAULT NULL,
+  contract_start_date date DEFAULT NULL,
+  contract_end_date date DEFAULT NULL,
+  contract_type varchar(255) DEFAULT NULL,
+  performance_rating double DEFAULT NULL,
+  last_performance_review_date datetime(6) DEFAULT NULL,
+  last_reviewer_notes text DEFAULT NULL,
   dob date DEFAULT NULL,
   email varchar(255) DEFAULT NULL,
   name varchar(255) NOT NULL,
@@ -164,17 +190,17 @@ CREATE TABLE class_students (
   CONSTRAINT FKjuh9br5vimkw71ko8qyswp3ci FOREIGN KEY (class_id) REFERENCES classes (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO users (id, email, employee_code, full_name, password, phone, role, status, username) VALUES
-(1, 'admin@gtvt.edu.vn', 'EMP-001', 'Admin Master', '123456', '0900000001', 'ADMIN', 'ACTIVE', 'admin'),
-(2, 'teacher1@gtvt.edu.vn', 'EMP-002', 'Teacher One', '123456', '0900000002', 'TEACHER', 'ACTIVE', 'teacher1'),
-(3, 'teacher2@gtvt.edu.vn', 'EMP-003', 'Teacher Two', '123456', '0900000003', 'TEACHER', 'ACTIVE', 'teacher2'),
-(4, 'teacher3@gtvt.edu.vn', 'EMP-004', 'Teacher Three', '123456', '0900000004', 'TEACHER', 'ACTIVE', 'teacher3'),
-(5, 'teacher4@gtvt.edu.vn', 'EMP-005', 'Teacher Four', '123456', '0900000005', 'TEACHER', 'ACTIVE', 'teacher4'),
-(6, 'teacher5@gtvt.edu.vn', 'EMP-006', 'Teacher Five', '123456', '0900000006', 'TEACHER', 'ACTIVE', 'teacher5'),
-(7, 'staff1@gtvt.edu.vn', 'EMP-007', 'Staff One', '123456', '0900000007', 'ADMIN', 'ACTIVE', 'staff1'),
-(8, 'staff2@gtvt.edu.vn', 'EMP-008', 'Staff Two', '123456', '0900000008', 'ADMIN', 'ACTIVE', 'staff2'),
-(9, 'inactive1@gtvt.edu.vn', 'EMP-009', 'Inactive User', '123456', '0900000009', 'TEACHER', 'INACTIVE', 'inactive1'),
-(10, 'inactive2@gtvt.edu.vn', 'EMP-010', 'Inactive Admin', '123456', '0900000010', 'ADMIN', 'INACTIVE', 'inactive2');
+INSERT INTO users (id, created_at, email, employee_code, full_name, password, phone, role, status, updated_at, username) VALUES
+(1, NOW(), 'admin@gtvt.edu.vn', 'EMP-001', 'Admin Master', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000001', 'ADMIN', 'ACTIVE', NOW(), 'admin'),
+(2, NOW(), 'teacher1@gtvt.edu.vn', 'EMP-002', 'Teacher One', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000002', 'TEACHER', 'ACTIVE', NOW(), 'teacher1'),
+(3, NOW(), 'teacher2@gtvt.edu.vn', 'EMP-003', 'Teacher Two', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000003', 'TEACHER', 'ACTIVE', NOW(), 'teacher2'),
+(4, NOW(), 'teacher3@gtvt.edu.vn', 'EMP-004', 'Teacher Three', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000004', 'TEACHER', 'ACTIVE', NOW(), 'teacher3'),
+(5, NOW(), 'teacher4@gtvt.edu.vn', 'EMP-005', 'Teacher Four', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000005', 'TEACHER', 'ACTIVE', NOW(), 'teacher4'),
+(6, NOW(), 'teacher5@gtvt.edu.vn', 'EMP-006', 'Teacher Five', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000006', 'TEACHER', 'ACTIVE', NOW(), 'teacher5'),
+(7, NOW(), 'staff1@gtvt.edu.vn', 'EMP-007', 'Staff One', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000007', 'ADMIN', 'ACTIVE', NOW(), 'staff1'),
+(8, NOW(), 'staff2@gtvt.edu.vn', 'EMP-008', 'Staff Two', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000008', 'ADMIN', 'ACTIVE', NOW(), 'staff2'),
+(9, NOW(), 'inactive1@gtvt.edu.vn', 'EMP-009', 'Inactive User', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000009', 'TEACHER', 'INACTIVE', NOW(), 'inactive1'),
+(10, NOW(), 'inactive2@gtvt.edu.vn', 'EMP-010', 'Inactive Admin', '$2b$12$cKRk7PLiYghAMpUHz5ZfYOAgQgP4hZHLDu7C2nXj9DNaFXHfyizPC', '0900000010', 'ADMIN', 'INACTIVE', NOW(), 'inactive2');
 
 INSERT INTO subjects (id, code, name, level, description) VALUES
 (1, 'MATH01', 'Mathematics', 'THCS', 'Core math subject'),
