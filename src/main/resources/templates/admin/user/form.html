@@ -17,7 +17,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Mã nhân viên</label>
-                                <input type="text" name="employeeCode" class="form-control" th:value="${user.employeeCode}" placeholder="Bắt buộc khi vai trò là giáo viên">
+                                <input type="text" name="employeeCode" class="form-control" th:value="${user.employeeCode}" placeholder="">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Họ tên</label>
@@ -36,7 +36,6 @@
                             <div class="mb-3">
                                 <label class="form-label">Vai trò</label>
                                 <select name="role" class="form-select" required>
-                                    <option value="">Chọn vai trò</option>
                                     <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${user.role == r}"></option>
                                 </select>
                             </div>

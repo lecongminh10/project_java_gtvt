@@ -55,16 +55,29 @@ public class ClassAdminController {
     }
 
     @GetMapping
-    public String listClasses(@RequestParam(required = false) String q, Model model) {
+    public String listClasses(@RequestParam(required = false) String q,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size,
+                              Model model) {
         // Search by keyword when provided; otherwise list newest classes.
-        List<TrainingClass> classes;
+        List<TrainingClass> allClasses;
         if (q != null && !q.trim().isEmpty()) {
-            classes = classRepository.search(q.trim());
+            allClasses = classRepository.search(q.trim());
         } else {
-            classes = classRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            allClasses = classRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         }
-        model.addAttribute("classes", classes);
+
+        // Simple pagination
+        int start = page * size;
+        int end = Math.min(start + size, allClasses.size());
+        List<TrainingClass> pageContent = allClasses.subList(start, end);
+
+        model.addAttribute("classes", pageContent);
         model.addAttribute("keyword", q);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalElements", allClasses.size());
+        model.addAttribute("totalPages", (allClasses.size() + size - 1) / size);
         model.addAttribute("pageTitle", "Quản lý lớp học");
         return "admin/class/list";
     }

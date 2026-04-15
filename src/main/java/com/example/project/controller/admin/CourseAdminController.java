@@ -39,16 +39,27 @@ public class CourseAdminController {
     public String listCourses(
             @RequestParam(required = false) String courseName,
             @RequestParam(required = false) ClassStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model
     ) {
-        List<CourseDTO> courses = ((courseName != null && !courseName.isEmpty()) || status != null)
+        List<CourseDTO> allCourses = ((courseName != null && !courseName.isEmpty()) || status != null)
                 ? courseService.searchCourses(courseName, status)
                 : courseService.findAll();
-        ;
+
+        // Simple pagination
+        int start = page * size;
+        int end = Math.min(start + size, allCourses.size());
+        List<CourseDTO> pageContent = allCourses.subList(start, end);
+
         model.addAttribute("pageTitle", "Quản lý khóa học");
         model.addAttribute("courseName", courseName);
         model.addAttribute("courseStatus", status);
-        model.addAttribute("courses", courses);
+        model.addAttribute("courses", pageContent);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalElements", allCourses.size());
+        model.addAttribute("totalPages", (allCourses.size() + size - 1) / size);
         return "admin/course/list";
     }
 

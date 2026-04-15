@@ -221,6 +221,21 @@
             </div>
         </div>
 
+        <!-- Pagination -->
+        <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li th:classappend="${page == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/students(page=${page-1},size=${size},q=${keyword},name=${filterName},code=${filterCode},status=${filterStatus},classId=${filterClassId})}">Trước</a>
+                </li>
+                <li th:each="p : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${p == page} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/students(page=${p},size=${size},q=${keyword},name=${filterName},code=${filterCode},status=${filterStatus},classId=${filterClassId})}" th:text="${p + 1}"></a>
+                </li>
+                <li th:classappend="${page == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/students(page=${page+1},size=${size},q=${keyword},name=${filterName},code=${filterCode},status=${filterStatus},classId=${filterClassId})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+
         <!-- Beautiful Confirmation Modal -->
         <div class="confirm-modal" id="deleteConfirmModal">
             <div class="confirm-modal-card">

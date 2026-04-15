@@ -61,15 +61,26 @@ public class AdminDocumentController {
     public String listDocuments(@RequestParam(value = "keyword", required = false) String keyword,
                                 @RequestParam(value = "subjectId", required = false) Long subjectId,
                                 @RequestParam(value = "courseId", required = false) Long courseId,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
                                 Model model) {
         String keywordValue = (keyword != null && !keyword.isBlank()) ? keyword.trim() : null;
-        List<Document> documents = documentRepository.search(keywordValue, subjectId, courseId);
+        List<Document> allDocuments = documentRepository.search(keywordValue, subjectId, courseId);
+
+        // Simple pagination
+        int start = page * size;
+        int end = Math.min(start + size, allDocuments.size());
+        List<Document> pageContent = allDocuments.subList(start, end);
 
         model.addAttribute("pageTitle", "Quản lý tài liệu");
-        model.addAttribute("documents", documents);
+        model.addAttribute("documents", pageContent);
         model.addAttribute("keyword", keyword);
         model.addAttribute("subjectId", subjectId);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalElements", allDocuments.size());
+        model.addAttribute("totalPages", (allDocuments.size() + size - 1) / size);
         model.addAttribute("subjects", subjectRepository.findAll());
         model.addAttribute("courses", courseRepository.findAllByDeletedFalse());
         return "admin/documents/list";
