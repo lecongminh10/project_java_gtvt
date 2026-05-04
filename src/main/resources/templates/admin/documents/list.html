@@ -23,7 +23,7 @@
             <form class="d-flex align-items-center gap-2 flex-wrap admin-filter" th:action="@{/admin/documents}" method="get" style="flex:1;">
                 <div class="topbar-search" style="max-width:360px;">
                     <i class="fas fa-search"></i>
-                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu...">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên tài liệu, mã/ tên môn, mã/ tên khóa...">
                 </div>
                 <select class="form-select" name="subjectId">
                     <option value="">Tất cả môn học</option>

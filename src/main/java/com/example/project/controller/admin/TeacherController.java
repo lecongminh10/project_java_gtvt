@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -62,6 +63,12 @@ public class TeacherController {
                             t.getEmail().toLowerCase().contains(search.toLowerCase()))
                     .toList();
         }
+
+        allTeachers = allTeachers.stream()
+            .sorted(Comparator.comparing(TeacherDTO::getCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(TeacherDTO::getId, Comparator.nullsLast(Comparator.reverseOrder())))
+            .toList();
 
         // Simple pagination
         int start = page * size;
