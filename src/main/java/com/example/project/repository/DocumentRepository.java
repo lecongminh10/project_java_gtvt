@@ -16,7 +16,13 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
         @Query("""
                         select d from Document d
-                        where (:keyword is null or lower(d.name) like lower(concat('%', :keyword, '%')))
+                        where (:keyword is null
+                               or lower(d.name) like lower(concat('%', :keyword, '%'))
+                               or (d.subject is not null and (lower(d.subject.code) like lower(concat('%', :keyword, '%'))
+                                   or lower(d.subject.name) like lower(concat('%', :keyword, '%'))))
+                               or (d.course is not null and (lower(d.course.code) like lower(concat('%', :keyword, '%'))
+                                   or lower(d.course.name) like lower(concat('%', :keyword, '%'))))
+                            )
                             and (:subjectId is null or d.subject.id = :subjectId)
                             and (:courseId is null or d.course.id = :courseId)
                         order by d.createdAt desc

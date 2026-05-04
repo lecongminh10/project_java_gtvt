@@ -64,7 +64,7 @@ public class ClassAdminController {
         if (q != null && !q.trim().isEmpty()) {
             allClasses = classRepository.search(q.trim());
         } else {
-            allClasses = classRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            allClasses = classRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt", "id"));
         }
 
         // Simple pagination

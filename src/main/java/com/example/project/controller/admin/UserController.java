@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -68,9 +69,16 @@ public class UserController {
             allUsers = allUsers.stream()
                     .filter(u -> u.getUsername().toLowerCase().contains(search.toLowerCase()) ||
                             u.getFullName().toLowerCase().contains(search.toLowerCase()) ||
-                            u.getEmail().toLowerCase().contains(search.toLowerCase()))
+                    u.getEmail().toLowerCase().contains(search.toLowerCase()) ||
+                    (u.getEmployeeCode() != null && u.getEmployeeCode().toLowerCase().contains(search.toLowerCase())))
                     .toList();
         }
+
+        allUsers = allUsers.stream()
+            .sorted(Comparator.comparing(UserDTO::getCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(UserDTO::getId, Comparator.nullsLast(Comparator.reverseOrder())))
+            .toList();
 
         // Simple pagination
         int start = page * size;

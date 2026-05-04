@@ -130,7 +130,12 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
 
     @Override
     public List<CourseDTO> findAll() {
-        return courseRepository.findAllByDeletedFalse().stream()
+        return courseRepository.findAllByDeletedFalse(
+                org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Direction.DESC,
+                    "createdAt",
+                    "id"))
+            .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -142,12 +147,10 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
 
     @Override
     public List<CourseDTO> searchCourses(String name, ClassStatus status) {
-        return courseRepository.searchCourses(name, status).stream()
-            .filter(s -> (name != null && s.getName() != null && s.getName().equalsIgnoreCase(name))
-                || (status != null && s.getStatus() == status))
-            .map(this::toDTO)
-            .collect(Collectors.toList());
-
+        String keyword = (name != null && !name.trim().isEmpty()) ? name.trim() : null;
+        return courseRepository.searchCourses(keyword, status).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
 }

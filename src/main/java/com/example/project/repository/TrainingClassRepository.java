@@ -24,7 +24,8 @@ public interface TrainingClassRepository extends JpaRepository<TrainingClass, Lo
            "where lower(c.code) like lower(concat('%', :q, '%')) " +
            "or lower(c.name) like lower(concat('%', :q, '%')) " +
            "or lower(cr.name) like lower(concat('%', :q, '%')) " +
-           "or (t is not null and lower(t.name) like lower(concat('%', :q, '%'))) ")
+            "or (t is not null and lower(t.name) like lower(concat('%', :q, '%'))) " +
+            "order by c.createdAt desc, c.id desc")
     List<TrainingClass> search(@Param("q") String keyword);
 
     List<TrainingClass> findTop3ByOrderByCreatedAtDesc();

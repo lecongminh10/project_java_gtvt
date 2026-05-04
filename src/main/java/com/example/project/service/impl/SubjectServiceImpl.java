@@ -83,7 +83,10 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
 
     @Override
     public List<SubjectDTO> findAll() {
-        return subjectRepository.findAll().stream()
+        return subjectRepository.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC,
+                "id"))
+            .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -95,8 +98,10 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
 
     @Override
     public List<SubjectDTO> searchSubject(String name, SubjectLevel level) {
-        return subjectRepository.searchSubjects(name, level).stream()
-                .filter(s -> s.getName().equalsIgnoreCase(name) || s.getLevel() == level).map(this::toDTO).collect(Collectors.toList());
+        String keyword = (name != null && !name.trim().isEmpty()) ? name.trim() : null;
+        return subjectRepository.searchSubjects(keyword, level).stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
     }
 
     @Override

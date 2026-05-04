@@ -26,7 +26,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                       and cs.trainingClass.id = :classId
                       and cs.leaveDate is null
               ))
-            order by s.id desc
+            order by s.createdAt desc, s.id desc
             """)
     List<Student> filterStudents(@Param("name") String name,
                                 @Param("code") String code,
@@ -49,7 +49,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                       and (lower(c.code) like lower(concat('%', :q, '%'))
                            or lower(c.name) like lower(concat('%', :q, '%')))
                )
-            order by s.id desc
+            order by s.createdAt desc, s.id desc
             """)
     List<Student> search(@Param("q") String keyword);
 
