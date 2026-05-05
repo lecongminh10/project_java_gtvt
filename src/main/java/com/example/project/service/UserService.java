@@ -49,6 +49,10 @@ public interface UserService extends BaseService<UserDTO, Long> {
      */
     boolean usernameExists(String username);
 
+    boolean emailExists(String email);
+
+    boolean emailExists(String email, Long excludeId);
+
     /**
      * Find user by username
      */

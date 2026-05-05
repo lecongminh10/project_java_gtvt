@@ -80,6 +80,8 @@ public class CourseAdminController {
         Map<String, String> errors = new HashMap<>();
         if (courseDTO.getCode() == null || courseDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã khóa học không được để trống");
+        } else if (courseService.codeExists(courseDTO.getCode())) {
+            errors.put("code", "Mã khóa học đã tồn tại");
         }
         if (courseDTO.getName() == null || courseDTO.getName().trim().isEmpty()) {
             errors.put("name", "Tên khóa học không được để trống");
@@ -123,6 +125,8 @@ public class CourseAdminController {
         Map<String, String> errors = new HashMap<>();
         if (courseDTO.getCode() == null || courseDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã khóa học không được để trống");
+        } else if (courseService.codeExists(courseDTO.getCode(), id)) {
+            errors.put("code", "Mã khóa học đã tồn tại");
         }
         if (courseDTO.getName() == null || courseDTO.getName().trim().isEmpty()) {
             errors.put("name", "Tên khóa học không được để trống");

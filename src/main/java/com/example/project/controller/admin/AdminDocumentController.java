@@ -65,7 +65,9 @@ public class AdminDocumentController {
                                 @RequestParam(defaultValue = "10") int size,
                                 Model model) {
         String keywordValue = (keyword != null && !keyword.isBlank()) ? keyword.trim() : null;
-        List<Document> allDocuments = documentRepository.search(keywordValue, subjectId, courseId);
+        Long normalizedSubjectId = (subjectId != null && subjectId > 0) ? subjectId : null;
+        Long normalizedCourseId = (courseId != null && courseId > 0) ? courseId : null;
+        List<Document> allDocuments = documentRepository.search(keywordValue, normalizedSubjectId, normalizedCourseId);
 
         // Simple pagination
         int start = page * size;
@@ -75,8 +77,8 @@ public class AdminDocumentController {
         model.addAttribute("pageTitle", "Quản lý tài liệu");
         model.addAttribute("documents", pageContent);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("subjectId", subjectId);
-        model.addAttribute("courseId", courseId);
+        model.addAttribute("subjectId", normalizedSubjectId);
+        model.addAttribute("courseId", normalizedCourseId);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("totalElements", allDocuments.size());
@@ -174,13 +176,13 @@ public class AdminDocumentController {
         }
 
         if (file != null && !file.isEmpty()) {
+            String oldFilePath = document.getFilePath();
             try {
-                // Remove old file
-                if (document.getFilePath() != null) {
-                    deleteFile(document.getFilePath());
-                }
                 String savedFilePath = saveFile(file);
                 result.document.setFilePath(savedFilePath);
+                if (oldFilePath != null && !oldFilePath.isBlank()) {
+                    deleteFile(oldFilePath);
+                }
             } catch (IOException e) {
                 result.errors.put("file", "Lỗi lưu file mới: " + e.getMessage());
                 populateFormModel(model, result.document, "/admin/documents/" + id, "Cập nhật tài liệu", result.errors);

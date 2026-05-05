@@ -312,6 +312,8 @@ public class ClassAdminController {
 
         classRepository.save(newClass);
 
+        copyActiveMembers(source.getId(), newClass);
+
         // Touch source class to reflect transfer operation.
         source.setUpdatedAt(LocalDateTime.now());
         classRepository.save(source);
@@ -483,6 +485,33 @@ public class ClassAdminController {
             classStudent.setRoleInClass("HOC_VIEN");
             toSave.add(classStudent);
         }
+        if (!toSave.isEmpty()) {
+            classStudentRepository.saveAll(toSave);
+        }
+    }
+
+    private void copyActiveMembers(Long sourceClassId, TrainingClass targetClass) {
+        List<ClassStudent> members = classStudentRepository.findActiveMembersByClassId(sourceClassId);
+        if (members == null || members.isEmpty()) {
+            return;
+        }
+
+        List<ClassStudent> toSave = new ArrayList<>();
+        for (ClassStudent member : members) {
+            Student student = member.getStudent();
+            if (student == null || student.getId() == null) {
+                continue;
+            }
+            ClassStudentId id = new ClassStudentId(targetClass.getId(), student.getId());
+            ClassStudent clone = new ClassStudent();
+            clone.setId(id);
+            clone.setTrainingClass(targetClass);
+            clone.setStudent(student);
+            clone.setJoinedDate(LocalDate.now());
+            clone.setRoleInClass(member.getRoleInClass() != null ? member.getRoleInClass() : "HOC_VIEN");
+            toSave.add(clone);
+        }
+
         if (!toSave.isEmpty()) {
             classStudentRepository.saveAll(toSave);
         }

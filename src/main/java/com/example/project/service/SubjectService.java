@@ -18,4 +18,8 @@ public interface SubjectService extends BaseService<SubjectDTO, Long> {
     Optional<SubjectDTO> findById(Long id);
 
     List<SubjectDTO> searchSubject(String name, SubjectLevel level);
+
+    boolean codeExists(String code);
+
+    boolean codeExists(String code, Long excludeId);
 }

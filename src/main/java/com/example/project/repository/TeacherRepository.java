@@ -38,5 +38,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
 	Optional<Teacher> findByUserUsername(String username);
 
+    Optional<Teacher> findByUser_EmployeeCode(String employeeCode);
+
     Optional<Teacher> findFirstByOrderByIdAsc();
 }

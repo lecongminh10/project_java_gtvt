@@ -18,6 +18,14 @@ public interface TrainingClassRepository extends JpaRepository<TrainingClass, Lo
 
     List<TrainingClass> findByCourse_Id(Long courseId);
 
+    List<TrainingClass> findByTeacher_User_UsernameOrderByCreatedAtDesc(String username);
+
+    java.util.Optional<TrainingClass> findByIdAndTeacher_User_Username(Long id, String username);
+
+    List<TrainingClass> findByTeacher_IdOrderByCreatedAtDesc(Long teacherId);
+
+    java.util.Optional<TrainingClass> findByIdAndTeacher_Id(Long id, Long teacherId);
+
     @Query("select c from TrainingClass c " +
            "join c.course cr " +
            "left join c.teacher t " +

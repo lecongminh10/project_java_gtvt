@@ -27,4 +27,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     long countBySubjectIdAndDeletedFalse(Long subjectId);
 
     long countByDeletedFalse();
+
+    boolean existsByCodeIgnoreCase(String code);
+
+    boolean existsByCodeIgnoreCaseAndIdNot(String code, Long id);
 }

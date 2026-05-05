@@ -48,6 +48,8 @@ public class SubjectAdminController {
         Map<String, String> errors = new HashMap<>();
         if (subjectDTO.getCode() == null || subjectDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã môn học không được để trống");
+        } else if (subjectService.codeExists(subjectDTO.getCode())) {
+            errors.put("code", "Mã môn học đã tồn tại");
         }
         if (subjectDTO.getName() == null || subjectDTO.getName().trim().isEmpty()) {
             errors.put("name", "Tên môn học không được để trống");
@@ -84,6 +86,8 @@ public class SubjectAdminController {
         Map<String, String> errors = new HashMap<>();
         if (subjectDTO.getCode() == null || subjectDTO.getCode().trim().isEmpty()) {
             errors.put("code", "Mã môn học không được để trống");
+        } else if (subjectService.codeExists(subjectDTO.getCode(), id)) {
+            errors.put("code", "Mã môn học đã tồn tại");
         }
         if (subjectDTO.getName() == null || subjectDTO.getName().trim().isEmpty()) {
             errors.put("name", "Tên môn học không được để trống");

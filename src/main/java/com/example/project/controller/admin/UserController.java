@@ -326,6 +326,8 @@ public class UserController {
             errors.put("email", "Email là bắt buộc để gửi thông tin tài khoản.");
         } else if (!user.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
             errors.put("email", "Email không hợp lệ.");
+        } else if (userService.emailExists(user.getEmail(), user.getId())) {
+            errors.put("email", "Email đã tồn tại.");
         }
 
         if (user.getPhone() != null && !user.getPhone().isBlank()
