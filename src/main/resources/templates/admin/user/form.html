@@ -13,7 +13,9 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Tên đăng nhập</label>
-                                <input type="text" name="username" class="form-control" th:value="${user.username}" required>
+                                <input type="text" name="username" class="form-control" th:value="${user.username}">
+                                <div class="text-danger" style="font-size:0.75rem;"
+                                     th:if="${errors != null && errors['username'] != null}" th:text="${errors['username']}"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Mã nhân viên</label>
@@ -21,23 +23,31 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Họ tên</label>
-                                <input type="text" name="fullName" class="form-control" th:value="${user.fullName}" required>
+                                <input type="text" name="fullName" class="form-control" th:value="${user.fullName}">
+                                <div class="text-danger" style="font-size:0.75rem;"
+                                     th:if="${errors != null && errors['fullName'] != null}" th:text="${errors['fullName']}"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" name="email" class="form-control" th:value="${user.email}">
+                                <div class="text-danger" style="font-size:0.75rem;"
+                                     th:if="${errors != null && errors['email'] != null}" th:text="${errors['email']}"></div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Số điện thoại</label>
                                 <input type="tel" name="phone" class="form-control" th:value="${user.phone}">
+                                <div class="text-danger" style="font-size:0.75rem;"
+                                     th:if="${errors != null && errors['phone'] != null}" th:text="${errors['phone']}"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Vai trò</label>
-                                <select name="role" class="form-select" required>
+                                <select name="role" class="form-select">
                                     <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${user.role == r}"></option>
                                 </select>
+                                <div class="text-danger" style="font-size:0.75rem;"
+                                     th:if="${errors != null && errors['role'] != null}" th:text="${errors['role']}"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Trạng thái</label>

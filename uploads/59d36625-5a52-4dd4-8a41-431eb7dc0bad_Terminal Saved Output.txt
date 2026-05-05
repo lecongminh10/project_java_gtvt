@@ -1,0 +1,332 @@
+Last login: Tue Apr 21 14:20:14 on ttys000
+nqt@NQTs-MacBook-Pro ~ % /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+==> Checking for `sudo` access (which may request your password)...
+Password:
+==> This script will install:
+/opt/homebrew/bin/brew
+/opt/homebrew/share/doc/homebrew
+/opt/homebrew/share/man/man1/brew.1
+/opt/homebrew/share/zsh/site-functions/_brew
+/opt/homebrew/etc/bash_completion.d/brew
+/opt/homebrew
+/etc/paths.d/homebrew
+
+Press RETURN/ENTER to continue or any other key to abort:
+==> /usr/bin/sudo /usr/sbin/chown -R nqt:admin /opt/homebrew
+ENTER
+^[[C^[[D^CFailed during: /usr/bin/sudo /usr/sbin/chown -R nqt:admin /opt/homebrew
+nqt@NQTs-MacBook-Pro ~ % /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+==> Checking for `sudo` access (which may request your password)...
+Password:
+==> This script will install:
+/opt/homebrew/bin/brew
+/opt/homebrew/share/doc/homebrew
+/opt/homebrew/share/man/man1/brew.1
+/opt/homebrew/share/zsh/site-functions/_brew
+/opt/homebrew/etc/bash_completion.d/brew
+/opt/homebrew
+/etc/paths.d/homebrew
+
+Press RETURN/ENTER to continue or any other key to abort:
+==> /usr/bin/sudo /usr/sbin/chown -R nqt:admin /opt/homebrew
+
+==> Downloading and installing Homebrew...
+remote: Enumerating objects: 4663, done.
+remote: Counting objects: 100% (2807/2807), done.
+remote: Compressing objects: 100% (92/92), done.
+remote: Total 4663 (delta 2761), reused 2721 (delta 2715), pack-reused 1856 (from 3)
+==> /usr/bin/sudo /bin/mkdir -p /etc/paths.d
+==> /usr/bin/sudo tee /etc/paths.d/homebrew
+/opt/homebrew/bin
+==> /usr/bin/sudo /usr/sbin/chown root:wheel /etc/paths.d/homebrew
+==> /usr/bin/sudo /bin/chmod a+r /etc/paths.d/homebrew
+==> Updating Homebrew...
+==> Downloading https://ghcr.io/v2/homebrew/core/portable-ruby/blobs/sha256:8ad98d9cf15477d1a43f4012cfd5eff5c271398bca1e2724b55bd4944a0bb1d4
+######################################################################### 100.0%
+==> Pouring portable-ruby-4.0.3.arm64_big_sur.bottle.tar.gz
+Updated 5 taps (heroku/brew, shivammathur/php, mongodb/brew, homebrew/core and homebrew/cask).
+==> Installation successful!
+
+==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
+Read the analytics documentation (and how to opt-out) here:
+  https://docs.brew.sh/Analytics
+No analytics data has been sent yet (nor will any be during this install run).
+
+==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
+  https://github.com/Homebrew/brew#donations
+
+==> Next steps:
+- Run brew help to get started
+- Further documentation:
+    https://docs.brew.sh
+
+nqt@NQTs-MacBook-Pro ~ % brew install openjdk
+==> Fetching downloads for: openjdk
+^C^C^Cle Manifest openjdk (25.0.2)
+nqt@NQTs-MacBook-Pro ~ % 
+nqt@NQTs-MacBook-Pro ~ % brew install openjdk@21
+==> Fetching downloads for: openjdk@21
+✔︎ Bottle Manifest openjdk@21 (21.0.11)               Downloaded   45.1KB/ 45.1KB
+✔︎ Bottle Manifest libpng (1.6.58)                    Downloaded    8.6KB/  8.6KB
+✔︎ Bottle Manifest freetype (2.14.3)                  Downloaded    9.4KB/  9.4KB
+✔︎ Bottle Manifest libunistring (1.4.2)               Downloaded    7.3KB/  7.3KB
+✔︎ Bottle Manifest giflib (6.1.3)                     Downloaded    7.7KB/  7.7KB
+✔︎ Bottle Manifest pcre2 (10.47_1)                    Downloaded   11.7KB/ 11.7KB
+✔︎ Bottle Manifest xorgproto (2025.1)                 Downloaded   13.1KB/ 13.1KB
+✔︎ Bottle Manifest libxau (1.0.12)                    Downloaded   10.3KB/ 10.3KB
+✔︎ Bottle Manifest gettext (1.0)                      Downloaded   13.7KB/ 13.7KB
+✔︎ Bottle Manifest fontconfig (2.17.1)                Downloaded   17.3KB/ 17.3KB
+✔︎ Bottle Manifest glib (2.88.0)                      Downloaded   20.3KB/ 20.3KB
+✔︎ Bottle libxau (1.0.12)                             Downloaded   33.4KB/ 33.4KB
+✔︎ Bottle Manifest libxcb (1.17.0)                    Downloaded   19.2KB/ 19.2KB
+✔︎ Bottle Manifest libx11 (1.8.13)                    Downloaded   14.4KB/ 14.4KB
+✔︎ Bottle Manifest libxext (1.3.7)                    Downloaded   11.5KB/ 11.5KB
+✔︎ Bottle Manifest libxdmcp (1.1.5)                   Downloaded   12.0KB/ 12.0KB
+✔︎ Bottle giflib (6.1.3)                              Downloaded  143.2KB/143.2KB
+✔︎ Bottle fontconfig (2.17.1)                         Downloaded  400.1KB/400.1KB
+✔︎ Bottle xorgproto (2025.1)                          Downloaded  720.1KB/720.1KB
+✔︎ Bottle libxdmcp (1.1.5)                            Downloaded   36.8KB/ 36.8KB
+✔︎ Bottle Manifest libxrender (0.9.12)                Downloaded   14.2KB/ 14.2KB
+✔︎ Bottle Manifest lzo (2.10)                         Downloaded   16.7KB/ 16.7KB
+✔︎ Bottle Manifest cairo (1.18.4)                     Downloaded   29.8KB/ 29.8KB
+✔︎ Bottle Manifest icu4c@78 (78.3)                    Downloaded    9.7KB/  9.7KB
+✔︎ Bottle libxrender (0.9.12)                         Downloaded   54.6KB/ 54.6KB
+✔︎ Bottle Manifest pixman (0.46.4)                    Downloaded    9.3KB/  9.3KB
+✔︎ Bottle lzo (2.10)                                  Downloaded  149.6KB/149.6KB
+✔︎ Bottle Manifest jpeg-turbo (3.1.4.1)               Downloaded    8.4KB/  8.4KB
+✔︎ Bottle libxext (1.3.7)                             Downloaded  109.6KB/109.6KB
+✔︎ Bottle pixman (0.46.4)                             Downloaded  416.2KB/416.2KB
+✔︎ Bottle graphite2 (1.3.14)                          Downloaded   92.6KB/ 92.6KB
+✔︎ Bottle Manifest xz (5.8.3)                         Downloaded   11.8KB/ 11.8KB
+✔︎ Bottle cairo (1.18.4)                              Downloaded    1.6MB/  1.6MB
+✔︎ Bottle Manifest graphite2 (1.3.14)                 Downloaded    8.0KB/  8.0KB
+✔︎ Bottle Manifest harfbuzz (14.2.0)                  Downloaded   34.2KB/ 34.2KB
+✔︎ Bottle Manifest libtiff (4.7.1_1)                  Downloaded   12.6KB/ 12.6KB
+✔︎ Bottle Manifest zstd (1.5.7_1)                     Downloaded   13.2KB/ 13.2KB
+✔︎ Bottle Manifest little-cms2 (2.19)                 Downloaded   13.0KB/ 13.0KB
+✔︎ Bottle libpng (1.6.58)                             Downloaded  459.8KB/459.8KB
+✔︎ Bottle libxcb (1.17.0)                             Downloaded  999.8KB/999.8KB
+✔︎ Bottle libx11 (1.8.13)                             Downloaded    2.3MB/  2.3MB
+✔︎ Bottle libtiff (4.7.1_1)                           Downloaded    1.9MB/  1.9MB
+✔︎ Bottle little-cms2 (2.19)                          Downloaded  433.7KB/433.7KB
+✔︎ Bottle zstd (1.5.7_1)                              Downloaded  793.6KB/793.6KB
+✔︎ Bottle xz (5.8.3)                                  Downloaded  770.8KB/770.8KB
+✔︎ Bottle freetype (2.14.3)                           Downloaded  996.4KB/996.4KB
+✔︎ Bottle jpeg-turbo (3.1.4.1)                        Downloaded    1.1MB/  1.1MB
+✔︎ Bottle libunistring (1.4.2)                        Downloaded    1.9MB/  1.9MB
+✔︎ Bottle pcre2 (10.47_1)                             Downloaded    2.4MB/  2.4MB
+✔︎ Bottle harfbuzz (14.2.0)                           Downloaded    3.6MB/  3.6MB
+✔︎ Bottle glib (2.88.0)                               Downloaded    9.3MB/  9.3MB
+✔︎ Bottle gettext (1.0)                               Downloaded   10.2MB/ 10.2MB
+✔︎ Bottle icu4c@78 (78.3)                             Downloaded   31.8MB/ 31.8MB
+✔︎ Bottle openjdk@21 (21.0.11)                        Downloaded  200.3MB/200.3MB
+==> Installing dependencies for openjdk@21: libpng, freetype, giflib, libunistring, gettext, fontconfig, pcre2, glib, xorgproto, libxau, libxdmcp, libxcb, libx11, libxext, libxrender, lzo, pixman, cairo, graphite2, icu4c@78, harfbuzz, jpeg-turbo, xz, zstd, libtiff and little-cms2
+==> Installing openjdk@21 dependency: libpng
+==> Pouring libpng--1.6.58.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libpng/1.6.58: 28 files, 1.4MB
+==> Installing openjdk@21 dependency: freetype
+==> Pouring freetype--2.14.3.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/freetype/2.14.3: 68 files, 2.7MB
+==> Installing openjdk@21 dependency: giflib
+==> Pouring giflib--6.1.3.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/giflib/6.1.3: 19 files, 534.2KB
+==> Installing openjdk@21 dependency: libunistring
+==> Pouring libunistring--1.4.2.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libunistring/1.4.2: 59 files, 5.8MB
+==> Installing openjdk@21 dependency: gettext
+==> Pouring gettext--1.0.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/gettext/1.0: 2,499 files, 35.3MB
+==> Installing openjdk@21 dependency: fontconfig
+==> Pouring fontconfig--2.17.1.arm64_tahoe.bottle.1.tar.gz
+==> Regenerating font cache, this may take a while
+==> /opt/homebrew/Cellar/fontconfig/2.17.1/bin/fc-cache --force --really-force --verbose
+🍺  /opt/homebrew/Cellar/fontconfig/2.17.1: 98 files, 1.6MB
+==> Installing openjdk@21 dependency: pcre2
+==> Pouring pcre2--10.47_1.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/pcre2/10.47_1: 244 files, 7.3MB
+==> Installing openjdk@21 dependency: glib
+==> Pouring glib--2.88.0.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/glib/2.88.0: 506 files, 40.0MB
+==> Installing openjdk@21 dependency: xorgproto
+==> Pouring xorgproto--2025.1.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/xorgproto/2025.1: 268 files, 4.1MB
+==> Installing openjdk@21 dependency: libxau
+==> Pouring libxau--1.0.12.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libxau/1.0.12: 21 files, 137.4KB
+==> Installing openjdk@21 dependency: libxdmcp
+==> Pouring libxdmcp--1.1.5.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libxdmcp/1.1.5: 12 files, 143.0KB
+==> Installing openjdk@21 dependency: libxcb
+==> Pouring libxcb--1.17.0.arm64_tahoe.bottle.1.tar.gz
+🍺  /opt/homebrew/Cellar/libxcb/1.17.0: 2,498 files, 7.9MB
+==> Installing openjdk@21 dependency: libx11
+==> Pouring libx11--1.8.13.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libx11/1.8.13: 1,043 files, 7.4MB
+==> Installing openjdk@21 dependency: libxext
+==> Pouring libxext--1.3.7.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libxext/1.3.7: 88 files, 472.7KB
+==> Installing openjdk@21 dependency: libxrender
+==> Pouring libxrender--0.9.12.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libxrender/0.9.12: 13 files, 230.5KB
+==> Installing openjdk@21 dependency: lzo
+==> Pouring lzo--2.10.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/lzo/2.10: 32 files, 579.8KB
+==> Installing openjdk@21 dependency: pixman
+==> Pouring pixman--0.46.4.arm64_tahoe.bottle.1.tar.gz
+🍺  /opt/homebrew/Cellar/pixman/0.46.4: 11 files, 1.4MB
+==> Installing openjdk@21 dependency: cairo
+==> Pouring cairo--1.18.4.arm64_tahoe.bottle.2.tar.gz
+🍺  /opt/homebrew/Cellar/cairo/1.18.4: 58 files, 4.7MB
+==> Installing openjdk@21 dependency: graphite2
+==> Pouring graphite2--1.3.14.arm64_tahoe.bottle.2.tar.gz
+🍺  /opt/homebrew/Cellar/graphite2/1.3.14: 19 files, 277.5KB
+==> Installing openjdk@21 dependency: icu4c@78
+==> Pouring icu4c@78--78.3.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/icu4c@78/78.3: 279 files, 87.7MB
+==> Installing openjdk@21 dependency: harfbuzz
+==> Pouring harfbuzz--14.2.0.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/harfbuzz/14.2.0: 94 files, 13.6MB
+==> Installing openjdk@21 dependency: jpeg-turbo
+==> Pouring jpeg-turbo--3.1.4.1.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/jpeg-turbo/3.1.4.1: 47 files, 3.7MB
+==> Installing openjdk@21 dependency: xz
+==> Pouring xz--5.8.3.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/xz/5.8.3: 96 files, 2.7MB
+==> Installing openjdk@21 dependency: zstd
+==> Pouring zstd--1.5.7_1.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/zstd/1.5.7_1: 32 files, 2.3MB
+==> Installing openjdk@21 dependency: libtiff
+==> Pouring libtiff--4.7.1_1.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/libtiff/4.7.1_1: 488 files, 9.0MB
+==> Installing openjdk@21 dependency: little-cms2
+==> Pouring little-cms2--2.19.arm64_tahoe.bottle.tar.gz
+🍺  /opt/homebrew/Cellar/little-cms2/2.19: 23 files, 1.5MB
+==> Installing openjdk@21
+==> Pouring openjdk@21--21.0.11.arm64_tahoe.bottle.tar.gz
+==> Caveats
+For the system Java wrappers to find this JDK, symlink it with
+  sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+
+openjdk@21 is keg-only, which means it was not symlinked into /opt/homebrew,
+because this is an alternate version of another formula.
+
+If you need to have openjdk@21 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openjdk@21 you may need to set:
+  export CPPFLAGS="-I/opt/homebrew/opt/openjdk@21/include"
+==> Summary
+🍺  /opt/homebrew/Cellar/openjdk@21/21.0.11: 600 files, 347.3MB
+==> Running `brew cleanup openjdk@21`...
+Disable this behaviour by setting `HOMEBREW_NO_INSTALL_CLEANUP=1`.
+Hide these hints with `HOMEBREW_NO_ENV_HINTS=1` (see `man brew`).
+==> Caveats
+==> openjdk@21
+For the system Java wrappers to find this JDK, symlink it with
+  sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+
+openjdk@21 is keg-only, which means it was not symlinked into /opt/homebrew,
+because this is an alternate version of another formula.
+
+If you need to have openjdk@21 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openjdk@21 you may need to set:
+  export CPPFLAGS="-I/opt/homebrew/opt/openjdk@21/include"
+nqt@NQTs-MacBook-Pro ~ % brew install openjdk@17
+nqt@NQTs-MacBook-Pro ~ % 
+nqt@NQTs-MacBook-Pro ~ % sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+Password:
+nqt@NQTs-MacBook-Pro ~ % xcode-select --install
+xcode-select: note: Command line tools are already installed. Use "Software Update" in System Settings or the softwareupdate command line interface to install updates
+nqt@NQTs-MacBook-Pro ~ % Software Update
+zsh: command not found: Software
+nqt@NQTs-MacBook-Pro ~ % which cc
+/usr/bin/cc
+nqt@NQTs-MacBook-Pro ~ % cd Documents 
+nqt@NQTs-MacBook-Pro Documents % ls
+$RECYCLE.BIN			BG				ÔN tập GTVT 19.38.02.rar	bot-nqt				gitlab				prj-food-delivery
+2573				DB				Zalo Received Files		desktop.ini			happy-land			qBot
+2584				HitPawEdimakor			aws				docker-application		java				theme
+2593				League of Legends		bento-microservices-express	freelance			nqt-traefik-common		thk
+nqt@NQTs-MacBook-Pro Documents % mkdir code-C
+nqt@NQTs-MacBook-Pro Documents % ls
+$RECYCLE.BIN			BG				ÔN tập GTVT 19.38.02.rar	bot-nqt				freelance			nqt-traefik-common		thk
+2573				DB				Zalo Received Files		code-C				gitlab				prj-food-delivery
+2584				HitPawEdimakor			aws				desktop.ini			happy-land			qBot
+2593				League of Legends		bento-microservices-express	docker-application		java				theme
+nqt@NQTs-MacBook-Pro Documents % cd code-C 
+nqt@NQTs-MacBook-Pro code-C % ls
+nqt@NQTs-MacBook-Pro code-C % nano test.c
+
+  UW PICO 5.09                                                                                                             File: test.c                                                                                                             Modified  
+
+#include <stdio.h>
+
+int main() {
+    printf("Chuc mung! Moi truong C tren Mac cua ban da chay tot.\n");
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+^G Get Help                               ^O WriteOut                               ^R Read File                              ^Y Prev Pg                                ^K Cut Text                               ^C Cur Pos                                
+^X Exit                                   ^J Justify                                ^W Where is                               ^V Next Pg                                ^U UnCut Text                             ^T To Spell                               

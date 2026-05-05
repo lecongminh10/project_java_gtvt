@@ -59,10 +59,12 @@
                 <div class="col-md-6">
                     <label class="form-label">Họ tên phụ huynh</label>
                     <input type="text" name="parentName" class="form-control" th:value="${student.parentName}" placeholder="Nhập họ tên phụ huynh">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['parentName'] != null}" th:text="${errors['parentName']}"></div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Số điện thoại</label>
                     <input type="text" name="parentPhone" class="form-control" th:value="${student.parentPhone}" placeholder="Nhập số điện thoại">
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['parentPhone'] != null}" th:text="${errors['parentPhone']}"></div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Email</label>
@@ -72,6 +74,7 @@
                 <div class="col-12">
                     <label class="form-label">Địa chỉ phụ huynh</label>
                     <textarea name="parentAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ phụ huynh" th:text="${student.parentAddress}"></textarea>
+                    <div class="text-danger" style="font-size:0.75rem;" th:if="${errors['parentAddress'] != null}" th:text="${errors['parentAddress']}"></div>
                 </div>
 
                 <div class="col-12 d-flex justify-content-end gap-2">
