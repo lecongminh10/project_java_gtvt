@@ -316,6 +316,25 @@ public class UserServiceImpl extends AbstractBaseService<User, UserDTO, Long> im
     }
 
     @Override
+    public boolean emailExists(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        return userRepository.existsByEmailIgnoreCase(email.trim());
+    }
+
+    @Override
+    public boolean emailExists(String email, Long excludeId) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        if (excludeId == null) {
+            return emailExists(email);
+        }
+        return userRepository.existsByEmailIgnoreCaseAndIdNot(email.trim(), excludeId);
+    }
+
+    @Override
     public UserDTO getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(this::toDTO)

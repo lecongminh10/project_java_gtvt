@@ -153,4 +153,22 @@ public class CourseServiceImpl extends AbstractBaseService<Course, CourseDTO, Lo
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean codeExists(String code) {
+        if (code == null || code.isBlank()) {
+            return false;
+        }
+        return courseRepository.existsByCodeIgnoreCase(code.trim());
+    }
+
+    @Override
+    public boolean codeExists(String code, Long excludeId) {
+        if (code == null || code.isBlank()) {
+            return false;
+        }
+        if (excludeId == null) {
+            return codeExists(code);
+        }
+        return courseRepository.existsByCodeIgnoreCaseAndIdNot(code.trim(), excludeId);
+    }
 }

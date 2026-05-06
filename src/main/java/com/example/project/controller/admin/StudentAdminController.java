@@ -220,6 +220,19 @@ public class StudentAdminController {
             errors.put("name", "Họ tên học viên là bắt buộc.");
         }
 
+        boolean hasParentInfo = !normalizedParentName.isEmpty()
+                || !normalizedParentPhone.isEmpty()
+                || !normalizedParentEmail.isEmpty()
+                || !normalizedParentAddress.isEmpty();
+
+        if (hasParentInfo && normalizedParentName.isEmpty()) {
+            errors.put("parentName", "Vui lòng nhập họ tên phụ huynh.");
+        }
+
+        if (!normalizedParentPhone.isEmpty() && !normalizedParentPhone.matches("^\\d{9,15}$")) {
+            errors.put("parentPhone", "Số điện thoại không hợp lệ.");
+        }
+
         if (!normalizedParentEmail.isEmpty() && !normalizedParentEmail.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
             errors.put("parentEmail", "Email phụ huynh không hợp lệ.");
         }
@@ -229,6 +242,9 @@ public class StudentAdminController {
         }
 
         LocalDate parsedDob = parseDate(dob, "dob", errors);
+        if (parsedDob != null && parsedDob.isAfter(LocalDate.now())) {
+            errors.put("dob", "Ngày sinh không hợp lệ.");
+        }
 
         student.setName(normalizedName);
         student.setDob(parsedDob);

@@ -1,0 +1,62 @@
+<div layout:decorate="~{admin/layout/admin-layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1>Danh sách lớp học</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/teacher/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Lớp học của tôi</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header-clean">
+                <h5>Lớp học của tôi</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${classes == null || classes.isEmpty()}" class="alert alert-info">
+                    Chưa có lớp học được phân công.
+                </div>
+
+                <div class="table-responsive" th:if="${classes != null && !classes.isEmpty()}">
+                    <table class="table-admin">
+                        <thead>
+                        <tr>
+                            <th>Mã lớp</th>
+                            <th>Tên lớp</th>
+                            <th>Khóa học</th>
+                            <th>Trạng thái</th>
+                            <th>Thời gian</th>
+                            <th>Học viên</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="clazz : ${classes}">
+                            <td th:text="${clazz.code}">CL001</td>
+                            <td th:text="${clazz.name}">Tên lớp</td>
+                            <td th:text="${clazz.course != null ? clazz.course.name : '-'}">Khóa học</td>
+                            <td th:text="${clazz.status != null ? clazz.status.label : '-'}">Đang học</td>
+                            <td>
+                                <span th:text="${clazz.startDate != null ? clazz.startDate : '-'}">2026-01-01</span>
+                                <span> - </span>
+                                <span th:text="${clazz.endDate != null ? clazz.endDate : '-'}">2026-03-01</span>
+                            </td>
+                            <td th:text="${studentCounts[clazz.id]} ?: 0">0</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary" th:href="@{/teacher/classes/{id}(id=${clazz.id})}">
+                                    Xem chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

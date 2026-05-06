@@ -15,7 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -124,17 +126,17 @@ public class UserController {
      */
     @PostMapping
     public String createUser(@ModelAttribute UserDTO user,
+            Model model,
             RedirectAttributes redirectAttributes) {
         try {
-            // Check if username already exists
-            if (userService.usernameExists(user.getUsername())) {
-                redirectAttributes.addFlashAttribute("toastError", "Username already exists!");
-                return "redirect:/admin/users/new";
-            }
-
-            if (user.getEmail() == null || user.getEmail().isBlank()) {
-                redirectAttributes.addFlashAttribute("toastError", "Email là bắt buộc để gửi thông tin tài khoản.");
-                return "redirect:/admin/users/new";
+            Map<String, String> errors = validateUser(user, null);
+            if (!errors.isEmpty()) {
+                model.addAttribute("pageTitle", "Create New User");
+                model.addAttribute("user", user);
+                model.addAttribute("roles", UserRole.values());
+                model.addAttribute("statuses", UserStatus.values());
+                model.addAttribute("errors", errors);
+                return "admin/user/form";
             }
 
             // Set default values
@@ -149,8 +151,12 @@ public class UserController {
             redirectAttributes.addFlashAttribute("toastSuccess", "User created successfully!");
             return "redirect:/admin/users/" + created.getId();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("toastError", "Error creating user: " + e.getMessage());
-            return "redirect:/admin/users/new";
+            model.addAttribute("pageTitle", "Create New User");
+            model.addAttribute("user", user);
+            model.addAttribute("roles", UserRole.values());
+            model.addAttribute("statuses", UserStatus.values());
+            model.addAttribute("error", "Error creating user: " + e.getMessage());
+            return "admin/user/form";
         }
     }
 
@@ -173,9 +179,34 @@ public class UserController {
     @PostMapping("/{id}/edit")
     public String updateUser(@PathVariable Long id,
             @ModelAttribute UserDTO user,
+            Model model,
             RedirectAttributes redirectAttributes) {
         try {
             user.setId(id);
+            UserDTO existing = userService.getById(id);
+            Map<String, String> errors = validateUser(user, existing.getUsername());
+            if (!errors.isEmpty()) {
+                if (user.getRole() == null) {
+                    user.setRole(existing.getRole());
+                }
+                if (user.getStatus() == null) {
+                    user.setStatus(existing.getStatus());
+                }
+                model.addAttribute("pageTitle", "Edit User - " + existing.getUsername());
+                model.addAttribute("user", user);
+                model.addAttribute("roles", UserRole.values());
+                model.addAttribute("statuses", UserStatus.values());
+                model.addAttribute("errors", errors);
+                return "admin/user/form";
+            }
+
+            if (user.getRole() == null) {
+                user.setRole(existing.getRole());
+            }
+            if (user.getStatus() == null) {
+                user.setStatus(existing.getStatus());
+            }
+
             UserDTO updated = userService.update(id, user);
             redirectAttributes.addFlashAttribute("toastSuccess", "Cập nhật người dùng thành công!");
             return "redirect:/admin/users/" + id;
@@ -275,5 +306,35 @@ public class UserController {
             redirectAttributes.addFlashAttribute("toastError", "Không thể ngừng hoạt động người dùng: " + e.getMessage());
             return "redirect:/admin/users/" + id;
         }
+    }
+
+    private Map<String, String> validateUser(UserDTO user, String existingUsername) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            errors.put("username", "Tên đăng nhập không được để trống.");
+        } else if (userService.usernameExists(user.getUsername())
+                && (existingUsername == null || !user.getUsername().equalsIgnoreCase(existingUsername))) {
+            errors.put("username", "Tên đăng nhập đã tồn tại.");
+        }
+
+        if (user.getFullName() == null || user.getFullName().isBlank()) {
+            errors.put("fullName", "Họ tên không được để trống.");
+        }
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            errors.put("email", "Email là bắt buộc để gửi thông tin tài khoản.");
+        } else if (!user.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            errors.put("email", "Email không hợp lệ.");
+        } else if (userService.emailExists(user.getEmail(), user.getId())) {
+            errors.put("email", "Email đã tồn tại.");
+        }
+
+        if (user.getPhone() != null && !user.getPhone().isBlank()
+                && !user.getPhone().matches("^\\+?\\d{9,15}$")) {
+            errors.put("phone", "Số điện thoại không hợp lệ.");
+        }
+
+        return errors;
     }
 }

@@ -105,6 +105,25 @@ public class SubjectServiceImpl extends AbstractBaseService<Subject, SubjectDTO,
     }
 
     @Override
+    public boolean codeExists(String code) {
+        if (code == null || code.isBlank()) {
+            return false;
+        }
+        return subjectRepository.existsByCodeIgnoreCase(code.trim());
+    }
+
+    @Override
+    public boolean codeExists(String code, Long excludeId) {
+        if (code == null || code.isBlank()) {
+            return false;
+        }
+        if (excludeId == null) {
+            return codeExists(code);
+        }
+        return subjectRepository.existsByCodeIgnoreCaseAndIdNot(code.trim(), excludeId);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if (!subjectRepository.existsById(id)) {
             throw new RuntimeException("Subject not found with id: " + id);

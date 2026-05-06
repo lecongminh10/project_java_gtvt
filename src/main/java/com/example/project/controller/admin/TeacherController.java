@@ -12,7 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/teachers")
@@ -114,17 +116,18 @@ public class TeacherController {
     @PostMapping
     public String createTeacher(@ModelAttribute TeacherDTO teacher,
             @RequestParam(required = false) Boolean contractNoEndDate,
+            Model model,
             RedirectAttributes redirectAttributes) {
         try {
-            // Check if code already exists
-            if (teacherService.teacherCodeExists(teacher.getCode())) {
-                redirectAttributes.addFlashAttribute("error", "Mã giáo viên đã tồn tại!");
-                return "redirect:/admin/teachers/new";
-            }
-
-            if (teacher.getEmail() == null || teacher.getEmail().isBlank()) {
-                redirectAttributes.addFlashAttribute("error", "Vui lòng nhập email để tạo tài khoản giáo viên.");
-                return "redirect:/admin/teachers/new";
+            Map<String, String> errors = validateTeacher(teacher, contractNoEndDate, null);
+            if (!errors.isEmpty()) {
+                model.addAttribute("pageTitle", "Thêm giáo viên");
+                model.addAttribute("teacher", teacher);
+                model.addAttribute("statuses", UserStatus.values());
+                model.addAttribute("contractTypes", new String[] { "FULL_TIME", "PART_TIME", "FREELANCE" });
+                model.addAttribute("actionUrl", "/admin/teachers");
+                model.addAttribute("errors", errors);
+                return "admin/teacher/form";
             }
 
             // Set defaults
@@ -132,22 +135,17 @@ public class TeacherController {
                 teacher.setStatus(UserStatus.ACTIVE);
             }
 
-            if (Boolean.TRUE.equals(contractNoEndDate)) {
-                teacher.setContractEndDate(null);
-            }
-
-            if (teacher.getContractStartDate() != null && teacher.getContractEndDate() != null
-                    && teacher.getContractEndDate().isBefore(teacher.getContractStartDate())) {
-                redirectAttributes.addFlashAttribute("error", "Ngày kết thúc không được bé hơn ngày bắt đầu.");
-                return "redirect:/admin/teachers/new";
-            }
-
             TeacherDTO created = teacherService.create(teacher);
             redirectAttributes.addFlashAttribute("success", "Đã tạo giáo viên và tài khoản đăng nhập.");
             return "redirect:/admin/teachers/" + created.getId();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Lỗi tạo giáo viên: " + e.getMessage());
-            return "redirect:/admin/teachers/new";
+            model.addAttribute("pageTitle", "Thêm giáo viên");
+            model.addAttribute("teacher", teacher);
+            model.addAttribute("statuses", UserStatus.values());
+            model.addAttribute("contractTypes", new String[] { "FULL_TIME", "PART_TIME", "FREELANCE" });
+            model.addAttribute("actionUrl", "/admin/teachers");
+            model.addAttribute("error", "Lỗi tạo giáo viên: " + e.getMessage());
+            return "admin/teacher/form";
         }
     }
 
@@ -172,17 +170,22 @@ public class TeacherController {
     public String updateTeacher(@PathVariable Long id,
             @ModelAttribute TeacherDTO teacher,
             @RequestParam(required = false) Boolean contractNoEndDate,
+            Model model,
             RedirectAttributes redirectAttributes) {
         try {
             teacher.setId(id);
-            if (Boolean.TRUE.equals(contractNoEndDate)) {
-                teacher.setContractEndDate(null);
+            TeacherDTO existing = teacherService.getById(id);
+            Map<String, String> errors = validateTeacher(teacher, contractNoEndDate, existing.getCode());
+            if (!errors.isEmpty()) {
+                model.addAttribute("pageTitle", "Chỉnh sửa giáo viên - " + existing.getName());
+                model.addAttribute("teacher", teacher);
+                model.addAttribute("statuses", UserStatus.values());
+                model.addAttribute("contractTypes", new String[] { "FULL_TIME", "PART_TIME", "FREELANCE" });
+                model.addAttribute("actionUrl", "/admin/teachers/" + id + "/edit");
+                model.addAttribute("errors", errors);
+                return "admin/teacher/form";
             }
-            if (teacher.getContractStartDate() != null && teacher.getContractEndDate() != null
-                    && teacher.getContractEndDate().isBefore(teacher.getContractStartDate())) {
-                redirectAttributes.addFlashAttribute("error", "Ngày kết thúc không được bé hơn ngày bắt đầu.");
-                return "redirect:/admin/teachers/" + id + "/edit";
-            }
+
             TeacherDTO updated = teacherService.update(id, teacher);
             redirectAttributes.addFlashAttribute("success", "Cập nhật giáo viên thành công!");
             return "redirect:/admin/teachers/" + id;
@@ -190,6 +193,70 @@ public class TeacherController {
             redirectAttributes.addFlashAttribute("error", "Lỗi cập nhật giáo viên: " + e.getMessage());
             return "redirect:/admin/teachers/" + id + "/edit";
         }
+    }
+
+    private Map<String, String> validateTeacher(TeacherDTO teacher, Boolean contractNoEndDate, String existingCode) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (teacher.getCode() == null || teacher.getCode().isBlank()) {
+            errors.put("code", "Mã giáo viên không được để trống.");
+        } else if (teacherService.teacherCodeExists(teacher.getCode())
+                && (existingCode == null || !teacher.getCode().equalsIgnoreCase(existingCode))) {
+            errors.put("code", "Mã giáo viên đã tồn tại!");
+        }
+
+        if (teacher.getName() == null || teacher.getName().isBlank()) {
+            errors.put("name", "Họ tên không được để trống.");
+        }
+
+        if (teacher.getEmail() == null || teacher.getEmail().isBlank()) {
+            errors.put("email", "Vui lòng nhập email để tạo tài khoản giáo viên.");
+        } else if (!teacher.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            errors.put("email", "Email không hợp lệ.");
+        }
+
+        if (teacher.getPhone() != null && !teacher.getPhone().isBlank()
+                && !teacher.getPhone().matches("^\\+?\\d{9,15}$")) {
+            errors.put("phone", "Số điện thoại không hợp lệ.");
+        }
+
+        if (teacher.getDob() != null && teacher.getDob().isAfter(LocalDate.now())) {
+            errors.put("dob", "Ngày sinh không hợp lệ.");
+        }
+
+        if (teacher.getSalary() != null && teacher.getSalary().signum() < 0) {
+            errors.put("salary", "Mức lương phải là số dương.");
+        }
+
+        if (teacher.getSalary() != null && (teacher.getSalaryCurrency() == null
+                || teacher.getSalaryCurrency().isBlank())) {
+            errors.put("salaryCurrency", "Vui lòng chọn đơn vị tiền.");
+        }
+
+        if (teacher.getSalary() != null && (teacher.getSalaryPayPeriod() == null
+                || teacher.getSalaryPayPeriod().isBlank())) {
+            errors.put("salaryPayPeriod", "Vui lòng chọn chu kỳ trả.");
+        }
+
+        if (Boolean.TRUE.equals(contractNoEndDate)) {
+            teacher.setContractEndDate(null);
+        }
+
+        if (teacher.getContractEndDate() != null && teacher.getContractStartDate() == null) {
+            errors.put("contractStartDate", "Vui lòng nhập ngày bắt đầu.");
+        }
+
+        if (teacher.getContractStartDate() != null && teacher.getContractEndDate() != null
+                && teacher.getContractEndDate().isBefore(teacher.getContractStartDate())) {
+            errors.put("contractEndDate", "Ngày kết thúc không được bé hơn ngày bắt đầu.");
+        }
+
+        if ((teacher.getContractStartDate() != null || teacher.getContractEndDate() != null)
+                && (teacher.getContractType() == null || teacher.getContractType().isBlank())) {
+            errors.put("contractType", "Vui lòng chọn loại hợp đồng.");
+        }
+
+        return errors;
     }
 
     /**
@@ -249,3 +316,4 @@ public class TeacherController {
         return "admin/teacher/expiring-contracts";
     }
 }
+

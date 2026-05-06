@@ -24,6 +24,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    boolean existsByEmailIgnoreCase(String email);
+
+    boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+
     @Query("SELECT u FROM User u WHERE u.status = 'ACTIVE' AND u.role = 'ADMIN'")
     List<User> findActiveAdmins();
 }

@@ -25,23 +25,33 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label">Mã giáo viên *</label>
-                        <input type="text" name="code" class="form-control" th:value="${teacher.code}" required>
+                        <input type="text" name="code" class="form-control" th:value="${teacher.code}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['code'] != null}" th:text="${errors['code']}"></div>
                     </div>
                     <div class="col-md-8">
                         <label class="form-label">Họ tên *</label>
-                        <input type="text" name="name" class="form-control" th:value="${teacher.name}" required>
+                        <input type="text" name="name" class="form-control" th:value="${teacher.name}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['name'] != null}" th:text="${errors['name']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Email *</label>
-                        <input type="email" name="email" class="form-control" th:value="${teacher.email}" required>
+                        <input type="email" name="email" class="form-control" th:value="${teacher.email}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['email'] != null}" th:text="${errors['email']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Số điện thoại</label>
                         <input type="tel" name="phone" class="form-control" th:value="${teacher.phone}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['phone'] != null}" th:text="${errors['phone']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Ngày sinh</label>
                         <input type="date" name="dob" class="form-control" th:value="${teacher.dob}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['dob'] != null}" th:text="${errors['dob']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Trạng thái</label>
@@ -65,6 +75,8 @@
                     <div class="col-md-4">
                         <label class="form-label">Mức lương</label>
                         <input type="number" name="salary" step="0.01" class="form-control" th:value="${teacher.salary}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['salary'] != null}" th:text="${errors['salary']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Đơn vị tiền</label>
@@ -73,6 +85,8 @@
                             <option value="USD" th:selected="${teacher.salaryCurrency == 'USD'}">USD</option>
                             <option value="EUR" th:selected="${teacher.salaryCurrency == 'EUR'}">EUR</option>
                         </select>
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['salaryCurrency'] != null}" th:text="${errors['salaryCurrency']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Chu kỳ trả</label>
@@ -81,6 +95,8 @@
                             <option value="HOURLY" th:selected="${teacher.salaryPayPeriod == 'HOURLY'}">Theo giờ</option>
                             <option value="CONTRACT" th:selected="${teacher.salaryPayPeriod == 'CONTRACT'}">Theo hợp đồng</option>
                         </select>
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['salaryPayPeriod'] != null}" th:text="${errors['salaryPayPeriod']}"></div>
                     </div>
                 </div>
             </div>
@@ -95,10 +111,14 @@
                     <div class="col-md-4">
                         <label class="form-label">Ngày bắt đầu</label>
                         <input type="date" name="contractStartDate" id="contractStartDate" class="form-control" th:value="${teacher.contractStartDate}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['contractStartDate'] != null}" th:text="${errors['contractStartDate']}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Ngày kết thúc</label>
                         <input type="date" name="contractEndDate" id="contractEndDate" class="form-control" th:value="${teacher.contractEndDate}">
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['contractEndDate'] != null}" th:text="${errors['contractEndDate']}"></div>
                         <div class="form-check" style="margin-top:0.5rem;">
                             <input class="form-check-input" type="checkbox" id="contractNoEndDate" name="contractNoEndDate"
                                    th:checked="${teacher.contractEndDate == null}">
@@ -112,6 +132,8 @@
                             <option value="PART_TIME" th:selected="${teacher.contractType == 'PART_TIME'}">Bán thời gian</option>
                             <option value="FREELANCE" th:selected="${teacher.contractType == 'FREELANCE'}">Cộng tác</option>
                         </select>
+                        <div class="text-danger" style="font-size:0.75rem;"
+                             th:if="${errors != null && errors['contractType'] != null}" th:text="${errors['contractType']}"></div>
                     </div>
                 </div>
             </div>

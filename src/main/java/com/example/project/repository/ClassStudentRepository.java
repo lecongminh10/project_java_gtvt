@@ -40,6 +40,8 @@ public interface ClassStudentRepository extends JpaRepository<ClassStudent, Clas
                                                 """)
                 List<ClassStudent> findActiveMembersByClassId(@Param("classId") Long classId);
 
+    long countByTrainingClass_IdAndLeaveDateIsNull(Long classId);
+
     @Modifying
     @Transactional
     @Query("delete from ClassStudent cs where cs.student.id = :studentId")

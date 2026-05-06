@@ -16,4 +16,8 @@ public interface CourseService extends BaseService<CourseDTO, Long> {
     Optional<CourseDTO> findById(Long id);
 
     List<CourseDTO> searchCourses(String courseName, ClassStatus status);
+
+    boolean codeExists(String code);
+
+    boolean codeExists(String code, Long excludeId);
 }

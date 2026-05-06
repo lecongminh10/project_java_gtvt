@@ -1,0 +1,95 @@
+<div layout:decorate="~{admin/layout/admin-layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1 th:text="${trainingClass.name}">Chi tiết lớp</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/teacher/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/teacher/classes}">Lớp học</a></li>
+                        <li class="breadcrumb-item active" th:text="${trainingClass.code}">Lớp</li>
+                    </ol>
+                </nav>
+            </div>
+            <div>
+                <a class="btn-ghost" th:href="@{/teacher/classes}">Quay lại</a>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header-clean">
+                        <h5>Thông tin lớp</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-6 text-muted">Mã lớp</div>
+                            <div class="col-6" th:text="${trainingClass.code}">CL001</div>
+                            <div class="col-6 text-muted">Khóa học</div>
+                            <div class="col-6" th:text="${trainingClass.course != null ? trainingClass.course.name : '-'}">Khóa học</div>
+                            <div class="col-6 text-muted">Trạng thái</div>
+                            <div class="col-6" th:text="${trainingClass.status != null ? trainingClass.status.label : '-'}">Đang học</div>
+                            <div class="col-6 text-muted">Thời gian</div>
+                            <div class="col-6">
+                                <span th:text="${trainingClass.startDate != null ? trainingClass.startDate : '-'}">2026-01-01</span>
+                                <span> - </span>
+                                <span th:text="${trainingClass.endDate != null ? trainingClass.endDate : '-'}">2026-03-01</span>
+                            </div>
+                            <div class="col-6 text-muted">Phòng học</div>
+                            <div class="col-6" th:text="${trainingClass.room != null ? trainingClass.room : '-'}">A1</div>
+                            <div class="col-6 text-muted">Số học viên</div>
+                            <div class="col-6" th:text="${studentCount}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header-clean">
+                        <h5>Ghi chú</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0" th:text="${trainingClass.description != null ? trainingClass.description : 'Chưa có ghi chú'}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header-clean">
+                <h5>Danh sách học viên</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${members == null || members.isEmpty()}" class="alert alert-info">
+                    Lớp chưa có học viên đang theo học.
+                </div>
+                <div class="table-responsive" th:if="${members != null && !members.isEmpty()}">
+                    <table class="table-admin">
+                        <thead>
+                        <tr>
+                            <th>Mã học viên</th>
+                            <th>Họ tên</th>
+                            <th>Ngày sinh</th>
+                            <th>Phụ huynh</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="member : ${members}">
+                            <td th:text="${member.student.code}">HV0001</td>
+                            <td th:text="${member.student.name}">Nguyễn Văn A</td>
+                            <td th:text="${member.student.dob != null ? member.student.dob : '-'}">2000-01-01</td>
+                            <td>
+                                <div th:text="${member.student.parentName != null ? member.student.parentName : '-'}"></div>
+                                <div class="text-muted" style="font-size:0.85rem;" th:text="${member.student.parentPhone != null ? member.student.parentPhone : ''}"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

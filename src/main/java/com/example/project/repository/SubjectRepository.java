@@ -20,4 +20,8 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
                                                 order by s.id desc
                         """)
         List<Subject> searchSubjects(@Param("keyword") String keyword, @Param("level") SubjectLevel level);
+
+        boolean existsByCodeIgnoreCase(String code);
+
+        boolean existsByCodeIgnoreCaseAndIdNot(String code, Long id);
 }
